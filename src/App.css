@@ -1,0 +1,472 @@
+/* ================= FONT ================= */
+@font-face {
+  font-family: "Chalet";
+  src: url("./assets/fonts/Chalet.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "PricedownBl";
+  src: url("./assets/fonts/PricedownBl.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/* ================= GLOBAL ================= */
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+
+  font-family: "Chalet", sans-serif;
+  color: #f9f9f9;
+
+  background: #0b0d12;
+  overflow-x: hidden;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* ================= HEADER ================= */
+header,
+.global-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 3000;
+
+  width: 100%;
+  height: 80px;
+  padding: 0 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 50px;
+
+  background:
+    linear-gradient(180deg, rgba(5, 5, 14, 0.78), rgba(5, 5, 14, 0.34));
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.28),
+    0 0 22px rgba(0, 229, 255, 0.08);
+}
+
+.logo-image {
+  height: 60px;
+  width: auto;
+  object-fit: contain;
+}
+
+.logo-container {
+  margin-left: 50px;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+}
+
+/* ================= NAV ================= */
+.header-nav ul {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 50px;
+  row-gap: 0;
+  align-items: center;
+}
+
+.header-nav > ul > li {
+  display: flex;
+}
+
+.header-nav > ul > li > a {
+  position: relative;
+
+  display: inline-flex;
+  align-items: center;
+
+  padding-bottom: 5px;
+
+  color: rgba(255, 255, 255, 0.82);
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+
+  cursor: pointer;
+
+  transition:
+    color 0.22s ease,
+    text-shadow 0.22s ease;
+}
+
+.header-nav > ul > li > a:hover {
+  color: #ffffff;
+  text-shadow: 0 0 14px rgba(0, 229, 255, 0.24);
+}
+
+.header-nav > ul > li > a::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+
+  width: 0%;
+  height: 2px;
+
+  transform: translateX(-50%);
+
+  border-radius: 999px;
+
+  background: linear-gradient(90deg, #00e5ff, #ff4ec4);
+
+  opacity: 0;
+
+  box-shadow:
+    0 0 12px rgba(0, 229, 255, 0.24),
+    0 0 16px rgba(255, 78, 196, 0.16);
+
+  transition:
+    width 0.22s ease,
+    opacity 0.22s ease;
+}
+
+.header-nav > ul > li > a:hover::after {
+  width: 100%;
+  opacity: 1;
+}
+
+/* ================= BUTTONS ================= */
+.login-btn {
+  min-height: 38px;
+  padding: 9px 18px;
+
+  border: 1px solid rgba(0, 229, 255, 0.36);
+  border-radius: 999px;
+
+  background:
+    linear-gradient(135deg, rgba(0, 229, 255, 0.14), rgba(255, 78, 196, 0.08)),
+    rgba(0, 0, 0, 0.38);
+
+  color: #ffffff;
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.76rem;
+  font-weight: 1000;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 10px 22px rgba(0, 0, 0, 0.24),
+    0 0 16px rgba(0, 229, 255, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+  transition:
+    transform 0.18s ease,
+    filter 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+
+  border-color: rgba(255, 78, 196, 0.45);
+
+  box-shadow:
+    0 14px 28px rgba(0, 0, 0, 0.32),
+    0 0 18px rgba(255, 78, 196, 0.16),
+    0 0 22px rgba(0, 229, 255, 0.14);
+}
+
+/* ================= DROPDOWN TOGGLE ================= */
+.dropdown-toggle {
+  background: none;
+  border: none;
+  color: #f9f9f9;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 16px;
+  position: relative;
+  padding-bottom: 4px;
+}
+
+.dropdown-toggle::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 0%;
+  height: 2px;
+  background-color: #fff;
+  opacity: 0;
+  transition: width 0.3s ease, left 0.3s ease, opacity 0.3s ease;
+}
+
+.dropdown-toggle:hover::after {
+  width: 100%;
+  left: 0;
+  opacity: 1;
+}
+
+.header-nav ul li.products {
+  position: relative;
+}
+
+/* ================= DROPDOWN MENU ================= */
+.dropdown-menu {
+  position: absolute;
+  top: 255%;
+  left: 50%;
+  z-index: 3000;
+
+  min-width: 178px;
+  padding: 8px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  list-style: none;
+
+  visibility: hidden;
+  opacity: 0;
+
+  transform: translate(-50%, -12px) scale(0.96);
+
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-top-color: rgba(255, 255, 255, 0.24);
+
+  background:
+    radial-gradient(circle at 20% 0%, rgba(0, 229, 255, 0.14), transparent 38%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.035)),
+    rgba(8, 8, 20, 0.86);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  box-shadow:
+    0 20px 46px rgba(0, 0, 0, 0.42),
+    0 0 24px rgba(0, 229, 255, 0.12),
+    0 0 30px rgba(255, 78, 196, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    visibility 0.2s ease;
+}
+
+.dropdown-menu.show {
+  visibility: visible;
+  opacity: 1;
+  transform: translate(-50%, 0) scale(1);
+}
+
+.dropdown-menu::before {
+  content: "";
+  position: absolute;
+  top: -7px;
+  left: 50%;
+
+  width: 12px;
+  height: 12px;
+
+  transform: translateX(-50%) rotate(45deg);
+
+  background: rgba(8, 8, 20, 0.86);
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.dropdown-menu li {
+  width: 100%;
+}
+
+.dropdown-menu li a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 36px;
+  padding: 8px 14px;
+
+  border-radius: 12px;
+
+  color: rgba(255, 255, 255, 0.8);
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+  text-decoration: none;
+
+  transition:
+    color 0.18s ease,
+    background 0.18s ease,
+    transform 0.18s ease;
+}
+
+.dropdown-menu li a:hover {
+  color: #ffffff;
+
+  background:
+    linear-gradient(135deg, rgba(0, 229, 255, 0.14), rgba(255, 78, 196, 0.08));
+
+  transform: translateY(-1px);
+}
+
+/* ================= MODAL ================= */
+.account-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 360px;
+  max-width: 90%;
+  padding: 30px;
+  border-radius: 12px;
+  background: rgba(21, 42, 53, 0.6);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  z-index: 5000;
+  display: flex;
+  flex-direction: column;
+}
+
+.account-modal input,
+.account-modal select {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+  border-radius: 6px;
+  border: 1px solid #00e5ff;
+  background: rgba(21, 42, 53, 0.8);
+  font-weight: 700;
+  color: #f9f9f9;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+  .logo-image {
+    height: 50px;
+  }
+
+  .header-nav ul {
+    gap: 20px;
+    row-gap: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-image {
+    height: 40px;
+  }
+
+  .header-nav ul {
+    gap: 12px;
+    font-size: 14px;
+  }
+}
+
+/* ================= MOBILE / DESKTOP VISIBILITY ================= */
+@media (max-width: 1024px) {
+  .global-header {
+    display: none;
+  }
+
+  html,
+  body {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (min-width: 1025px) {
+  .mobile-header-wrapper,
+  .mobile-header {
+    display: none;
+  }
+}
+
+/* ================= MOBILE HEADER ================= */
+.mobile-header {
+  position: sticky;
+  top: 0;
+  z-index: 4000;
+
+  height: 64px;
+  padding: 10px 15px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background:
+    linear-gradient(180deg, rgba(5, 5, 14, 0.92), rgba(5, 5, 14, 0.72));
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.32),
+    0 0 18px rgba(0, 229, 255, 0.08);
+}
+
+.mobile-logo img {
+  height: 40px;
+}
+
+.mobile-nav ul {
+  list-style: none;
+
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  margin: 0;
+  padding: 0;
+}
+
+.mobile-nav a {
+  color: rgba(255, 255, 255, 0.82);
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.mobile-nav a:hover {
+  color: #ffffff;
+}

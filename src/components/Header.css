@@ -1,0 +1,216 @@
+/* Header.css */
+
+/* Import Chalet font */
+@font-face {
+  font-family: "Chalet";
+  src: url("/fonts/Chalet.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.global-header {
+  width: 100%;
+  background-color: #111; /* site background color */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10000;
+  box-sizing: border-box;
+  font-family: "Chalet", sans-serif;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 1400px; /* centers content on large screens */
+  padding: 0 24px;
+  justify-content: flex-start; /* links on left */
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  margin-right: 48px; /* double spacing from links */
+}
+
+.logo-image {
+  padding-top: 35px;
+  height: 50px;
+  object-fit: contain;
+}
+
+.header-nav {
+  flex: 1;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 36px; /* evenly spaced links */
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links li {
+  position: relative;
+}
+
+.nav-links a,
+.nav-links button {
+  text-decoration: none;
+  color: #ffffff;
+  font-family: "Chalet", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.nav-links a:hover {
+  text-decoration: none; /* no hover color */
+}
+
+/* Login button */
+
+.header-nav .nav-links li .login-btn {
+  background-color: #00e5ff !important; /* enforce desktop color */
+  color: #111 !important;
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-family: "Chalet", sans-serif;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background 0.25s, color 0.25s;
+}
+
+.header-nav .nav-links li .login-btn:hover {
+  background-color: #ff4ec4 !important;
+  color: #fff !important;
+}
+
+/* Products Dropdown */
+.products .dropdown-toggle {
+  background: none;
+  border: none;
+  font-family: "Chalet", sans-serif;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Dropdown menu */
+.products .dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10px); /* start slightly above */
+  margin-top: 36px;
+  flex-direction: column;
+  background-color: #111;
+  border-radius: 12px;
+  padding: 0;              /* remove padding for full control */
+  min-width: 180px;
+  box-shadow: 0 12px 12px rgba(0,0,0,0.5);
+  z-index: 2000;
+  text-align: center;
+
+  opacity: 0;           
+  pointer-events: none;
+  transition: opacity 0.75s ease, transform 0.75s ease;
+}
+
+/* Show dropdown */
+.products .dropdown-menu.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+/* Dropdown arrow pointing up to button */
+.dropdown-arrow {
+  width: 0;
+  height: 0;
+  margin: 0;           /* remove the bottom margin */
+}
+
+/* Dropdown list items */
+.dropdown-menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;              /* remove default padding */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dropdown-menu ul li {
+  margin: 0;               /* remove spacing between items */
+}
+
+/* Product dropdown list items */
+.dropdown-menu ul li a {
+  color: #ffffff;
+  text-decoration: none;
+  font-family: "Chalet", sans-serif;
+  font-weight: 500;
+  padding: 12px 24px; /* adjust padding here */
+  display: block;
+  transition: background .25s;
+}
+
+/* Hover color when dropdown is active */
+.products .dropdown-menu.show ul li a:hover {
+  background-color: #ff4ec4; /* adjust hover color */
+  border-radius: 6px; /* optional rounded corners */
+}
+
+.dropdown-menu ul li a:hover {
+  text-decoration: none; /* no hover effect on links */
+}
+
+/* Remove unwanted outline on buttons/links */
+button, a {
+  outline: none;
+}
+
+.nav-links a.instagram-link {
+  background: linear-gradient(90deg, #00e5ff, #ff4ec4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text; /* Firefox support */
+  color: transparent;
+  font-family: "Chalet", sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  text-decoration: none;
+  position: relative;  /* needed for ::after */
+  display: inline-block; /* ensures pseudo-element aligns correctly */
+}
+
+/* Underline effect */
+.nav-links a.instagram-link::after {
+  content: "";
+  position: absolute;
+  left: 0;               /* align with left edge of link */
+  bottom: -2px;          /* distance from text */
+  width: 100%;            /* full width of link */
+  height: 2px;            /* thickness of underline */
+  background: linear-gradient(90deg, #00e5ff, #ff4ec4);
+  transform: scaleX(0);   /* initially hidden */
+  transform-origin: center; /* animate from center */
+  transition: transform 0.3s ease;
+}
+
+/* Animate underline on hover */
+.nav-links a.instagram-link:hover::after {
+  transform: scaleX(1); /* expand to full width */
+}

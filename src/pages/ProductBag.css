@@ -1,0 +1,1221 @@
+/* src/pages/ProductBag.css */
+
+/* =============================== */
+/* FLYING ADD-TO-BAG ITEM           */
+/* =============================== */
+
+.flying-bag-item {
+  position: fixed;
+  right: 34px;
+  bottom: 112px;
+  z-index: 9999;
+
+  width: 58px;
+  height: 58px;
+  border-radius: 20px;
+
+  display: grid;
+  place-items: center;
+
+  background: rgba(16, 16, 32, 0.74);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.45),
+    0 0 28px rgba(255, 78, 196, 0.32),
+    0 0 38px rgba(0, 229, 255, 0.18);
+
+  pointer-events: none;
+  animation: flyToBag 820ms cubic-bezier(0.2, 0.95, 0.16, 1) both;
+}
+
+.flying-bag-item img {
+  width: 76%;
+  height: 76%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.45));
+}
+
+@keyframes flyToBag {
+  0% {
+    opacity: 0;
+    transform: translate(-120px, -220px) scale(0.55) rotate(-10deg);
+  }
+
+  18% {
+    opacity: 1;
+  }
+
+  72% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1) rotate(5deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(18px, 12px) scale(0.35) rotate(12deg);
+  }
+}
+
+/* =============================== */
+/* DOCKED / FLOATING BAG BUTTON     */
+/* =============================== */
+
+.bag-dock {
+  width: 100%;
+  min-height: 70px;
+  margin-top: 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bag-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+
+  width: 100%;
+  margin: 0;
+
+  transition:
+    opacity 0.22s ease,
+    transform 0.22s ease,
+    filter 0.22s ease;
+}
+
+.bag-row.is-floating {
+  position: fixed;
+  right: 22px;
+  bottom: calc(92px + env(safe-area-inset-bottom));
+  z-index: 21000;
+
+  width: auto;
+  margin: 0;
+
+  pointer-events: none;
+
+  animation: floatingBagIn 260ms ease both;
+}
+
+.bag-row.is-floating .bag-hint {
+  display: none;
+}
+
+.bag-hint {
+  color: rgba(255, 255, 255, 0.78);
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.bag-hint.is-empty {
+  color: rgba(255, 255, 255, 0.48);
+}
+
+.bag-btn {
+  position: relative;
+
+  width: 54px;
+  height: 54px;
+  border-radius: 18px;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid rgba(255, 255, 255, 0.18);
+
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.18), transparent 34%),
+    linear-gradient(145deg, rgba(255, 78, 196, 0.26), rgba(0, 229, 255, 0.16)),
+    rgba(16, 16, 32, 0.76);
+
+  box-shadow:
+    0 16px 36px rgba(0, 0, 0, 0.35),
+    0 0 24px rgba(255, 78, 196, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+
+  cursor: pointer;
+
+  animation: bagButtonPop 520ms cubic-bezier(0.22, 1.2, 0.22, 1) both;
+
+  transition:
+    transform 0.18s ease,
+    filter 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.bag-row.is-floating .bag-btn {
+  width: 62px;
+  height: 62px;
+  border-radius: 22px;
+
+  pointer-events: auto;
+
+  background:
+    radial-gradient(circle at 28% 0%, rgba(0, 229, 255, 0.2), transparent 38%),
+    radial-gradient(circle at 82% 18%, rgba(255, 78, 196, 0.16), transparent 34%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04)),
+    rgba(7, 7, 18, 0.84);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.46),
+    0 0 24px rgba(0, 229, 255, 0.18),
+    0 0 32px rgba(255, 78, 196, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.bag-btn:hover {
+  transform: translateY(-2px) scale(1.04);
+  filter: brightness(1.08);
+}
+
+.bag-btn:active {
+  transform: scale(0.975);
+}
+
+.bag-btn.has-items {
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.42),
+    0 0 28px rgba(255, 78, 196, 0.32),
+    0 0 42px rgba(0, 229, 255, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.bag-btn.has-items::after {
+  content: "";
+  position: absolute;
+  inset: -7px;
+
+  border-radius: 23px;
+  border: 1px solid rgba(78, 255, 154, 0.42);
+
+  opacity: 0;
+  animation: bagRingPulse 720ms ease-out both;
+}
+
+.bag-icon {
+  font-size: 1.35rem;
+  transform-origin: center;
+  animation: bagIconBounce 620ms cubic-bezier(0.22, 1.25, 0.22, 1) both;
+}
+
+.bag-row.is-floating .bag-icon {
+  font-size: 1.55rem;
+
+  filter:
+    drop-shadow(0 8px 14px rgba(0, 0, 0, 0.42))
+    drop-shadow(0 0 12px rgba(0, 229, 255, 0.2));
+}
+
+.bag-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  z-index: 3;
+
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+
+  display: grid;
+  place-items: center;
+
+  color: #08120e;
+  background: linear-gradient(135deg, #4eff9a, #00e5ff);
+
+  font-size: 0.72rem;
+  font-weight: 900;
+
+  box-shadow:
+    0 0 18px rgba(78, 255, 154, 0.58),
+    0 0 26px rgba(0, 229, 255, 0.24);
+}
+
+/* =============================== */
+/* FLOATING BAG CLONE              */
+/* =============================== */
+
+.floating-bag-clone {
+  position: fixed;
+  right: 22px;
+  bottom: calc(92px + env(safe-area-inset-bottom));
+  z-index: 22000;
+
+  pointer-events: none;
+
+  animation: floatingBagCloneIn 280ms ease both;
+}
+
+.floating-bag-btn {
+  width: 62px;
+  height: 62px;
+  border-radius: 22px;
+
+  pointer-events: auto;
+
+  background:
+    radial-gradient(circle at 28% 0%, rgba(0, 229, 255, 0.2), transparent 38%),
+    radial-gradient(circle at 82% 18%, rgba(255, 78, 196, 0.16), transparent 34%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04)),
+    rgba(7, 7, 18, 0.84);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.46),
+    0 0 24px rgba(0, 229, 255, 0.18),
+    0 0 32px rgba(255, 78, 196, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.floating-bag-btn .bag-icon {
+  font-size: 1.55rem;
+
+  filter:
+    drop-shadow(0 8px 14px rgba(0, 0, 0, 0.42))
+    drop-shadow(0 0 12px rgba(0, 229, 255, 0.2));
+}
+
+.floating-bag-btn .bag-count {
+  min-width: 24px;
+  height: 24px;
+
+  border: 1px solid rgba(78, 255, 154, 0.56);
+
+  font-size: 0.68rem;
+  font-weight: 1000;
+}
+
+@keyframes floatingBagCloneIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.9);
+    filter: blur(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .floating-bag-clone {
+    right: 14px;
+    bottom: calc(82px + env(safe-area-inset-bottom));
+  }
+
+  .floating-bag-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 20px;
+  }
+
+  .floating-bag-btn .bag-icon {
+    font-size: 1.42rem;
+  }
+
+  .floating-bag-btn .bag-count {
+    top: -7px;
+    right: -7px;
+
+    min-width: 22px;
+    height: 22px;
+
+    font-size: 0.62rem;
+  }
+}
+
+.bag-row.is-floating .bag-count {
+  min-width: 24px;
+  height: 24px;
+
+  border: 1px solid rgba(78, 255, 154, 0.56);
+
+  font-size: 0.68rem;
+  font-weight: 1000;
+}
+
+@keyframes floatingBagIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.9);
+    filter: blur(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .bag-row.is-floating {
+    right: 14px;
+    bottom: calc(82px + env(safe-area-inset-bottom));
+  }
+
+  .bag-row.is-floating .bag-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 20px;
+  }
+
+  .bag-row.is-floating .bag-icon {
+    font-size: 1.42rem;
+  }
+
+  .bag-row.is-floating .bag-count {
+    top: -7px;
+    right: -7px;
+
+    min-width: 22px;
+    height: 22px;
+
+    font-size: 0.62rem;
+  }
+}
+
+@keyframes bagButtonPop {
+  0% {
+    transform: scale(0.72) rotate(-8deg);
+  }
+
+  55% {
+    transform: scale(1.12) rotate(4deg);
+  }
+
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes bagRingPulse {
+  0% {
+    opacity: 0.8;
+    transform: scale(0.82);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.35);
+  }
+}
+
+@keyframes bagIconBounce {
+  0% {
+    transform: translateY(0) rotate(0);
+  }
+
+  35% {
+    transform: translateY(-5px) rotate(-8deg);
+  }
+
+  70% {
+    transform: translateY(2px) rotate(5deg);
+  }
+
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+}
+
+/* =============================== */
+/* PORTAL BAG OVERLAY               */
+/* =============================== */
+
+body:has(.bag-modal-overlay) {
+  overflow: hidden;
+}
+
+.bag-modal-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 999999 !important;
+
+  width: 100vw !important;
+  height: 100dvh !important;
+  min-height: 100dvh !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  padding: 16px !important;
+  margin: 0 !important;
+
+  overflow: hidden !important;
+
+  background:
+    radial-gradient(circle at 50% 12%, rgba(255, 78, 196, 0.18), transparent 36%),
+    radial-gradient(circle at 50% 88%, rgba(0, 229, 255, 0.14), transparent 38%),
+    rgba(4, 4, 12, 0.82) !important;
+
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+/* =============================== */
+/* REALISTIC BAG MODAL              */
+/* =============================== */
+
+.bag-modal-overlay .realistic-bag-modal {
+  position: relative !important;
+  isolation: isolate;
+
+  width: min(540px, calc(100vw - 32px)) !important;
+  height: min(680px, calc(100dvh - 32px)) !important;
+  max-height: calc(100dvh - 32px) !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden !important;
+
+  border-radius: 36px 36px 46px 46px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+
+  background:
+    linear-gradient(115deg, rgba(255, 255, 255, 0.14), transparent 24%),
+    linear-gradient(180deg, rgba(44, 42, 58, 0.96), rgba(17, 17, 31, 0.98) 58%, rgba(7, 7, 16, 0.98)),
+    #101020;
+
+  box-shadow:
+    0 42px 100px rgba(0, 0, 0, 0.62),
+    0 0 70px rgba(255, 78, 196, 0.22),
+    0 0 96px rgba(0, 229, 255, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -38px 64px rgba(0, 0, 0, 0.34);
+
+  transform-origin: center;
+  animation: realisticBagPop 460ms cubic-bezier(0.18, 1.15, 0.24, 1) both;
+}
+
+.bag-modal-overlay .realistic-bag-modal::before,
+.bag-modal-overlay .realistic-bag-modal::after {
+  content: "";
+  position: absolute;
+  top: 84px;
+  bottom: 0;
+  z-index: 0;
+
+  width: 90px;
+  pointer-events: none;
+}
+
+.bag-modal-overlay .realistic-bag-modal::before {
+  left: 0;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.1), transparent);
+}
+
+.bag-modal-overlay .realistic-bag-modal::after {
+  right: 0;
+  background: linear-gradient(270deg, rgba(0, 0, 0, 0.28), transparent);
+}
+
+.bag-modal-overlay .bag-back-glow {
+  position: absolute;
+  inset: -30%;
+  z-index: -1;
+
+  background:
+    radial-gradient(circle at 50% 12%, rgba(255, 78, 196, 0.32), transparent 30%),
+    radial-gradient(circle at 50% 68%, rgba(0, 229, 255, 0.22), transparent 34%);
+
+  filter: blur(12px);
+  opacity: 0.8;
+}
+
+.bag-modal-overlay .bag-handle {
+  position: absolute;
+  top: 13px;
+  left: 50%;
+  z-index: 4;
+
+  width: 168px;
+  height: 78px;
+
+  border: none;
+  background: none;
+  box-shadow: none;
+
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.bag-modal-overlay .bag-handle span {
+  position: absolute;
+  inset: 0;
+
+  border-radius: 999px 999px 40px 40px;
+  border: 11px solid rgba(255, 255, 255, 0.18);
+  border-bottom-color: transparent;
+
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent);
+
+  box-shadow:
+    0 0 28px rgba(255, 78, 196, 0.22),
+    inset 0 0 18px rgba(255, 255, 255, 0.08);
+}
+
+.bag-modal-overlay .bag-rim {
+  position: absolute;
+  top: 78px;
+  left: 18px;
+  right: 18px;
+  z-index: 3;
+
+  height: 26px;
+  border-radius: 999px;
+
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.04)),
+    rgba(16, 16, 32, 0.74);
+
+  border: 1px solid rgba(255, 255, 255, 0.16);
+
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.36),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.bag-modal-overlay .modal-zipper {
+  position: absolute;
+  top: 90px;
+  left: 50%;
+  z-index: 4;
+
+  width: min(340px, 68%);
+  height: 4px;
+
+  transform: translateX(-50%);
+  border-radius: 999px;
+
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.6) 0 5px,
+      rgba(0, 0, 0, 0.24) 5px 9px
+    );
+
+  opacity: 0.34;
+}
+
+.bag-modal-overlay .bag-lining {
+  position: absolute;
+  inset: 104px 17px 18px;
+  z-index: 0;
+
+  border-radius: 28px 28px 38px 38px;
+
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(16, 16, 32, 0.08),
+      rgba(16, 16, 32, 0.52)
+    ),
+    url("/textures/bag-lining.webp");
+
+  background-position: top center;
+  background-size: 100% auto;
+  background-repeat: repeat-y;
+  background-blend-mode: multiply;
+
+  opacity: 0.5;
+  transform: none;
+  filter: none;
+  pointer-events: none;
+}
+
+.bag-modal-overlay .bag-mouth-shadow {
+  position: absolute;
+  top: 102px;
+  left: 22px;
+  right: 22px;
+  z-index: 2;
+
+  height: 54px;
+  border-radius: 0 0 50% 50%;
+
+  background: radial-gradient(ellipse at top, rgba(0, 0, 0, 0.5), transparent 70%);
+  pointer-events: none;
+}
+
+.bag-modal-overlay .bag-content {
+  position: relative;
+  z-index: 5;
+
+  height: 100%;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 112px 20px 18px;
+  overflow: hidden;
+}
+
+.bag-modal-overlay .bag-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+
+  margin-bottom: 14px;
+}
+
+.bag-modal-overlay .bag-eyebrow {
+  display: block;
+  margin-bottom: 4px;
+
+  color: #00e5ff;
+
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+
+  text-shadow: 0 0 18px rgba(0, 229, 255, 0.35);
+}
+
+.bag-modal-overlay .bag-header h1 {
+  margin: 0;
+
+  color: #ffffff;
+
+  font-size: clamp(2rem, 8vw, 3.35rem);
+  line-height: 0.92;
+  letter-spacing: 0.045em;
+
+  text-transform: uppercase;
+
+  text-shadow:
+    0 0 24px rgba(255, 78, 196, 0.28),
+    0 0 34px rgba(0, 229, 255, 0.16);
+}
+
+.bag-modal-overlay .bag-x {
+  width: 42px;
+  height: 42px;
+  border-radius: 16px;
+
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+
+  font-size: 1.4rem;
+  line-height: 1;
+
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* =============================== */
+/* BAG ITEMS                        */
+/* =============================== */
+
+.bag-modal-overlay .bag-scroll-area {
+  flex: 1;
+  min-height: 0;
+  max-height: none;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+
+  padding: 4px 4px 12px;
+  margin-bottom: 0;
+}
+
+.bag-modal-overlay .bag-scroll-area::-webkit-scrollbar {
+  width: 7px;
+}
+
+.bag-modal-overlay .bag-scroll-area::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ff4ec4, #00e5ff);
+}
+
+.bag-modal-overlay .modal-line-item {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+
+  margin-bottom: 12px;
+  padding: 14px;
+
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.04)),
+    rgba(10, 10, 22, 0.58);
+
+  box-shadow:
+    0 14px 32px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+
+  backdrop-filter: blur(16px);
+  animation: bagItemIn 320ms ease both;
+}
+
+.bag-modal-overlay .modal-line-info strong {
+  display: block;
+
+  color: #ffffff;
+  font-size: 0.94rem;
+}
+
+.bag-modal-overlay .modal-qty {
+  margin-top: 5px;
+
+  color: rgba(255, 255, 255, 0.56);
+
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.bag-modal-overlay .modal-line-price {
+  color: #4eff9a;
+
+  font-weight: 900;
+  text-shadow: 0 0 18px rgba(78, 255, 154, 0.28);
+}
+
+.bag-modal-overlay .modal-trash-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 14px;
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 78, 196, 0.12);
+
+  cursor: pointer;
+}
+
+/* =============================== */
+/* BAG TOTALS + ACTIONS             */
+/* =============================== */
+
+.bag-modal-overlay .modal-totals {
+  flex: 0 0 auto;
+
+  margin-top: 10px;
+  padding: 14px;
+
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.04)),
+    rgba(7, 7, 16, 0.66);
+
+  box-shadow:
+    0 -8px 24px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+
+  backdrop-filter: blur(18px);
+}
+
+.bag-modal-overlay .modal-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  color: rgba(255, 255, 255, 0.68);
+
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.bag-modal-overlay .modal-total-row + .modal-total-row {
+  margin-top: 8px;
+}
+
+.bag-modal-overlay .modal-total-row strong {
+  color: #ffffff;
+}
+
+.bag-modal-overlay .modal-grand-total {
+  margin-top: 12px;
+  padding-top: 12px;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+
+  color: #ffffff;
+  font-size: 1.05rem;
+}
+
+.bag-modal-overlay .modal-grand-total strong {
+  color: #4eff9a;
+  text-shadow: 0 0 20px rgba(78, 255, 154, 0.32);
+}
+
+.bag-modal-overlay .modal-actions {
+  position: relative;
+  bottom: auto;
+  z-index: 8;
+
+  flex: 0 0 auto;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+
+  padding-top: 14px;
+  padding-bottom: 0;
+
+  background:
+    linear-gradient(
+      180deg,
+      transparent,
+      rgba(10, 10, 22, 0.82) 38%,
+      rgba(10, 10, 22, 0.92)
+    );
+
+  backdrop-filter: blur(12px);
+}
+
+.bag-modal-overlay .modal-actions button {
+  min-width: 108px;
+  height: 46px;
+  border-radius: 16px;
+
+  border: 0;
+
+  font-family: "Chalet", sans-serif;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+
+  cursor: pointer;
+}
+
+.bag-modal-overlay .modal-clear {
+  border: 1px solid rgba(255, 158, 74, 0.34);
+
+  color: #ff9e4a;
+  background: rgba(255, 158, 74, 0.1);
+}
+
+.bag-modal-overlay .modal-close {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.bag-modal-overlay .modal-checkout {
+  border: 1px solid rgba(78, 255, 154, 0.4);
+
+  color: #06130c;
+  background: linear-gradient(135deg, #4eff9a, #00e5ff);
+
+  box-shadow:
+    0 0 22px rgba(78, 255, 154, 0.32),
+    0 0 30px rgba(0, 229, 255, 0.18);
+}
+
+/* =============================== */
+/* EMPTY BAG STATE                  */
+/* =============================== */
+
+.bag-modal-overlay .modal-empty-state {
+  height: 100%;
+  min-height: 330px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
+  padding: 28px 18px;
+}
+
+.bag-modal-overlay .empty-bag-illustration {
+  position: relative;
+
+  width: 124px;
+  height: 132px;
+  margin-bottom: 20px;
+
+  filter:
+    drop-shadow(0 24px 34px rgba(0, 0, 0, 0.38))
+    drop-shadow(0 0 28px rgba(255, 78, 196, 0.22));
+}
+
+.bag-modal-overlay .empty-bag-handle {
+  position: absolute;
+  top: 0;
+  left: 50%;
+
+  width: 68px;
+  height: 50px;
+
+  transform: translateX(-50%);
+
+  border: 8px solid rgba(255, 255, 255, 0.28);
+  border-bottom-color: transparent;
+  border-radius: 999px 999px 28px 28px;
+}
+
+.bag-modal-overlay .empty-bag-body {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 0;
+
+  height: 92px;
+  border-radius: 20px 20px 28px 28px;
+
+  background:
+    radial-gradient(circle at 30% 18%, rgba(255, 255, 255, 0.2), transparent 24%),
+    linear-gradient(145deg, rgba(255, 78, 196, 0.3), rgba(0, 229, 255, 0.18)),
+    rgba(16, 16, 32, 0.82);
+
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.bag-modal-overlay .empty-bag-body span {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+
+  width: 42px;
+  height: 5px;
+  border-radius: 999px;
+
+  transform: translate(-50%, -50%);
+
+  background: rgba(255, 255, 255, 0.34);
+}
+
+.bag-modal-overlay .modal-empty-state h2 {
+  margin: 0 0 8px;
+
+  color: #ffffff;
+
+  font-size: 1.35rem;
+  letter-spacing: -0.03em;
+}
+
+.bag-modal-overlay .modal-empty-state p {
+  max-width: 310px;
+  margin: 0;
+
+  color: rgba(255, 255, 255, 0.6);
+
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+/* =============================== */
+/* BAG ANIMATIONS                   */
+/* =============================== */
+
+@keyframes realisticBagPop {
+  0% {
+    opacity: 0;
+    transform: translateY(34px) scale(0.88) rotateX(12deg);
+    filter: blur(10px);
+  }
+
+  58% {
+    opacity: 1;
+    transform: translateY(-6px) scale(1.018) rotateX(0);
+    filter: blur(0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotateX(0);
+  }
+}
+
+@keyframes bagItemIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* =============================== */
+/* MOBILE BAG                       */
+/* =============================== */
+
+@media (max-width: 640px) {
+  .bag-modal-overlay {
+    align-items: center !important;
+    justify-items: center !important;
+
+    padding:
+      12px
+      10px
+      calc(12px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .bag-modal-overlay .realistic-bag-modal {
+    width: min(430px, calc(100vw - 20px)) !important;
+    height: min(610px, calc(100dvh - 24px)) !important;
+    max-height: calc(100dvh - 24px) !important;
+
+    border-radius: 30px 30px 26px 26px !important;
+  }
+
+  .bag-modal-overlay .bag-handle {
+    top: 8px !important;
+    width: 124px !important;
+    height: 56px !important;
+  }
+
+  .bag-modal-overlay .bag-handle span {
+    border-width: 8px !important;
+  }
+
+  .bag-modal-overlay .bag-rim {
+    top: 60px !important;
+    left: 14px !important;
+    right: 14px !important;
+    height: 22px !important;
+  }
+
+  .bag-modal-overlay .modal-zipper {
+    top: 71px !important;
+  }
+
+  .bag-modal-overlay .bag-lining {
+    inset: 84px 12px 12px !important;
+
+    background-position: top center !important;
+    background-size: 100% auto !important;
+    background-repeat: repeat-y !important;
+  }
+
+  .bag-modal-overlay .bag-mouth-shadow {
+    top: 82px !important;
+    left: 16px !important;
+    right: 16px !important;
+    height: 42px !important;
+  }
+
+  .bag-modal-overlay .bag-content {
+    height: 100% !important;
+    min-height: 0 !important;
+
+    padding: 90px 12px 12px !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+
+    overflow: hidden !important;
+  }
+
+  .bag-modal-overlay .bag-header {
+    margin-bottom: 10px !important;
+  }
+
+  .bag-modal-overlay .bag-header h1 {
+    font-size: clamp(2rem, 12vw, 3rem) !important;
+  }
+
+  .bag-modal-overlay .bag-scroll-area {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+
+    margin-bottom: 0 !important;
+    padding-bottom: 10px !important;
+  }
+
+  .bag-modal-overlay .modal-totals {
+    flex: 0 0 auto !important;
+    margin-top: 8px !important;
+    padding: 12px !important;
+  }
+
+  .bag-modal-overlay .modal-actions {
+    position: relative !important;
+    bottom: auto !important;
+
+    flex: 0 0 auto !important;
+
+    display: flex !important;
+    justify-content: center !important;
+    gap: 8px !important;
+
+    padding-top: 10px !important;
+    padding-bottom: 0 !important;
+  }
+
+  .bag-modal-overlay .modal-actions button {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    height: 44px !important;
+
+    font-size: 0.7rem !important;
+    letter-spacing: 0.04em !important;
+  }
+
+  .bag-modal-overlay .modal-line-item {
+    grid-template-columns: 1fr auto !important;
+    gap: 8px !important;
+
+    padding: 12px !important;
+    border-radius: 18px !important;
+  }
+
+  .bag-modal-overlay .modal-line-price {
+    font-size: 0.84rem !important;
+  }
+
+  .bag-modal-overlay .modal-trash-btn {
+    grid-column: 2 !important;
+    width: 36px !important;
+    height: 36px !important;
+  }
+}
+
+@media (max-width: 390px) {
+  .bag-modal-overlay .realistic-bag-modal {
+    height: min(570px, calc(100dvh - 20px)) !important;
+  }
+
+  .bag-modal-overlay .bag-content {
+    padding-top: 86px !important;
+  }
+
+  .bag-modal-overlay .bag-header h1 {
+    font-size: 2.35rem !important;
+  }
+
+  .bag-modal-overlay .bag-eyebrow {
+    font-size: 0.62rem !important;
+  }
+}

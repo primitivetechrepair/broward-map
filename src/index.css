@@ -1,0 +1,121 @@
+/* ========================== */
+/* Font Loading               */
+/* ========================== */
+
+/* Load PricedownBl for main titles */
+@font-face {
+  font-family: "PricedownBl";
+  src: url("./fonts/PricedownBl.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Load Chalet for body and secondary text */
+@font-face {
+  font-family: "Chalet";
+  src: url("./fonts/Chalet.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* ========================== */
+/* Global Styles              */
+/* ========================== */
+
+html {
+  min-height: 100%;
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+
+  background-image: url("/backgroundmain.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #000;
+
+  position: relative;
+}
+
+/* ========================== */
+/* Global Dark Overlay (FIXED) */
+/* ========================== */
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Keep app above overlay */
+#root {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+}
+
+/* ========================== */
+/* Headings                   */
+/* ========================== */
+
+/* H1: PricedownBl for main titles */
+h1 {
+  font-family: "PricedownBl", sans-serif;
+  font-weight: 400; /* Adjust to 700 if bolder is desired */
+  margin: 0;
+  font-size: 3rem; /* Adjust size as needed */
+  line-height: 1.2;
+  color: #fff; /* Ensure visible if default body is dark */
+}
+
+/* H2: Chalet for secondary titles */
+h2 {
+  font-family: "Chalet", sans-serif;
+  font-weight: 700;
+  font-size: 2rem;
+  line-height: 1.3;
+  margin: 0;
+}
+
+/* H3: Chalet, smaller than H2 */
+h3 {
+  font-family: "Chalet", sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 1.3;
+  margin: 0;
+}
+
+/* H4: Chalet, smaller than H3 */
+h4 {
+  font-family: "Chalet", sans-serif;
+  font-weight: 700;
+  font-size: 1.25rem;
+  line-height: 1.2;
+  margin: 0;
+}
+
+/* ========================== */
+/* Body and text              */
+/* ========================== */
+body, p, span, a, li {
+  font-family: "Chalet", sans-serif;
+  font-weight: 400;
+  color: #fff; /* Default text color */
+  margin: 0;
+}
+
+/* Ensure all headings inherit the proper font unless overridden */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+}

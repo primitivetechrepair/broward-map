@@ -1,0 +1,253 @@
+/* Mobile header wrapper (only visible on mobile) */
+.mobile-header {
+  position: fixed; /* sticks to top */
+  top: 0;
+  left: 0; /* ensure full-width positioning */
+  width: 100%;
+  height: 64px;
+  background: rgba(0, 0, 0, 1.0); /* 80% opacity */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 4000;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* centers logo */
+  padding: 0;
+}
+
+/* Content wrapper inside header: logo centered, buttons positioned absolutely */
+.mobile-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* logo stays centered */
+  width: 100%;
+  padding: 0 12px;
+  position: relative; /* for absolute positioning of login & hamburger */
+  height: 100%;
+}
+
+/* Logo */
+.mobile-logo img {
+  height: 42px;
+  z-index: 4100;
+}
+
+/* Login button on the left side */
+.mobile-login-btn {
+  position: absolute;
+  left: 12px; /* far left */
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 6px 12px;
+  background-color: #00e5ff; /* brand highlight color */
+  color: #000;
+  font-weight: 700;
+  font-size: 12px;
+  border-radius: 10px;
+  border: 0px solid #00e5ff; /* or whatever color you want */
+  outline: none;             /* removes default focus outline */
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease, color 0.3s ease;
+  z-index: 4100;
+}
+
+.mobile-login-btn:hover {
+  background-color: #152a35;
+  color: #00e5ff;
+}
+
+/* Hamburger button on the right side */
+.hamburger-btn {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 35px;
+  height: 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  right: 12px; /* far right */
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 4100;
+}
+
+.hamburger-line {
+  width: 100%;
+  height: 4px;
+  background: #f9f9f9;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.hamburger-btn.open .hamburger-line:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger-btn.open .hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger-btn.open .hamburger-line:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+
+/* Drawer menu */
+.mobile-drawer {
+  position: fixed;
+  top: 0;
+  right: -100%; /* hidden by default */
+  width: 250px;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8); /* 80% opacity */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: right 0.3s ease;
+  z-index: 4500;
+  padding-top: 64px; /* leave space for header */
+}
+
+.mobile-drawer.open {
+  right: 0; /* slide in */
+}
+
+.mobile-drawer ul {
+  list-style: none;
+  margin: 0;
+  padding: 0px;
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+}
+
+.mobile-drawer a {
+  color: #f9f9f9;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 18px;
+  padding: 10px 15px;
+  border-radius: 0px;
+  transition: background 0.8s ease, width 0.8s ease;
+  display: block;
+  width: 100%;   /* <-- make full width */
+}
+
+/* Hover effect: change background to #00e5ff, keep text #f9f9f9 */
+.mobile-drawer a:hover {
+  background-color: #00e5ff;
+  color: #f9f9f9; 
+  width: 100%; /* expand full width of drawer */
+}
+
+/* Overlay */
+.drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  z-index: 4400;
+}
+
+/* Close button inside drawer */
+.drawer-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: 28px;
+  background: none;
+  border: none;
+  color: #f9f9f9; /* matches hamburger */
+  cursor: pointer;
+  z-index: 4600;
+}
+
+/* Mobile Account Modal Overlay */
+.mobile-account-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5000;
+}
+
+/* Mobile Account Modal Container */
+.mobile-account-modal {
+  background-color: rgba(21,42,53,0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 20px 24px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 360px;
+  text-align: center;
+  font-family: 'Chalet', sans-serif;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+
+/* Modal Form Inputs */
+.mobile-account-modal input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #152a35;
+  background: #f9f9f9;
+  font-size: 16px;
+  font-family: 'Chalet', sans-serif;
+}
+
+/* Modal Form Button */
+.mobile-account-modal button {
+  width: 100%;
+  padding: 10px 0;
+  margin-top: 12px;
+  background-color: #00e5ff;
+  color: #152a35;
+  font-weight: 700;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.mobile-account-modal button:hover {
+  background-color: #152a35;
+  color: #00e5ff;
+}
+
+/* Switch Account Text */
+.mobile-account-modal .switch-btn {
+  margin-top: 12px;
+  font-size: 14px;
+  color: #f9f9f9;
+  cursor: pointer;
+}
+
+/* Cancel Button Text */
+.mobile-account-modal .cancel-btn {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #f9f9f9;
+  cursor: pointer;
+}
+
+/* Hide mobile header on desktop */
+@media (min-width: 1025px) {
+  .mobile-header {
+    display: none;
+  }
+}
