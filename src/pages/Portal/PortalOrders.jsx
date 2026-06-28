@@ -18,6 +18,131 @@ export default function PortalOrders() {
       .replace(/\b\w/g, (char) => char.toUpperCase());
   };
 
+const normalizeOrderStatus = (status) => {
+  return String(status || "")
+    .trim()
+    .toLowerCase()
+    .replaceAll(" ", "_");
+};
+
+const getCustomerTimelineDate = (order, { labels = [], types = [] }) => {
+  const savedTimeline = Array.isArray(order.order_timeline)
+    ? order.order_timeline
+    : [];
+
+  const matchingEvent = [...savedTimeline]
+    .filter((event) => event?.at)
+    .sort((a, b) => new Date(b.at) - new Date(a.at))
+    .find((event) => {
+      const eventLabel = String(event.label || "");
+      const eventType = String(event.type || "");
+
+      return labels.includes(eventLabel) || types.includes(eventType);
+    });
+
+  return matchingEvent?.at || null;
+};
+
+const formatCustomerTimelineDate = (value) => {
+  if (!value) return "";
+
+  return new Date(value).toLocaleString();
+};
+
+const getCustomerTrackerSteps = (order) => {
+  const orderStatus = normalizeOrderStatus(order.order_status);
+  const paymentStatus = normalizeOrderStatus(order.payment_status);
+
+  const isCancelled = orderStatus === "cancelled";
+
+  if (isCancelled) {
+    return [
+      {
+        key: "received",
+        label: "Order Received",
+        description: "Your order was submitted.",
+        done: true,
+        current: false,
+        at: order.created_at,
+      },
+      {
+        key: "cancelled",
+        label: "Order Cancelled",
+        description: "This order was cancelled.",
+        done: true,
+        current: true,
+        at:
+          getCustomerTimelineDate(order, {
+            labels: ["Order Cancelled"],
+            types: ["cancelled"],
+          }) || null,
+      },
+    ];
+  }
+
+  const steps = [
+    {
+      key: "received",
+      label: "Order Received",
+      description: "Your order was submitted.",
+      done: true,
+      at: order.created_at,
+    },
+    {
+      key: "payment",
+      label: "Payment Received",
+      description: "Your payment has been confirmed.",
+      done: paymentStatus === "received",
+      at:
+        order.paid_at ||
+        getCustomerTimelineDate(order, {
+          labels: ["Payment Received", "Payment Received & Order Confirmed"],
+          types: ["payment_status"],
+        }),
+    },
+    {
+      key: "confirmed",
+      label: "Order Confirmed",
+      description: "Your order has been confirmed.",
+      done: ["confirmed", "out_for_delivery", "completed"].includes(orderStatus),
+      at: getCustomerTimelineDate(order, {
+        labels: ["Order Confirmed", "Payment Received & Order Confirmed"],
+        types: ["confirmed"],
+      }),
+    },
+    {
+      key: "out_for_delivery",
+      label: "Out For Delivery",
+      description: "Your order is on the way.",
+      done: ["out_for_delivery", "completed"].includes(orderStatus),
+      at: getCustomerTimelineDate(order, {
+        labels: ["Out For Delivery"],
+        types: ["out_for_delivery"],
+      }),
+    },
+    {
+      key: "completed",
+      label: "Completed",
+      description: "Your order has been completed.",
+      done: orderStatus === "completed",
+      at: getCustomerTimelineDate(order, {
+        labels: ["Order Completed"],
+        types: ["completed"],
+      }),
+    },
+  ];
+
+  const firstIncompleteIndex = steps.findIndex((step) => !step.done);
+
+  return steps.map((step, index) => ({
+    ...step,
+    current:
+      firstIncompleteIndex === -1
+        ? step.key === "completed"
+        : index === firstIncompleteIndex,
+  }));
+};
+
   const getCustomerStatusMessage = (order) => {
   if (order.order_status === "cancelled") {
     return {
@@ -166,6 +291,7 @@ export default function PortalOrders() {
             orders.map((order) => {
               const items = Array.isArray(order.items) ? order.items : [];
               const statusMessage = getCustomerStatusMessage(order);
+              const trackerSteps = getCustomerTrackerSteps(order);
 
               return (
                 <article key={order.id} className="customer-order-card">
@@ -196,6 +322,36 @@ export default function PortalOrders() {
 <div className={`customer-status-message customer-status-${statusMessage.tone}`}>
   <strong>{statusMessage.title}</strong>
   <p>{statusMessage.message}</p>
+</div>
+
+<div className="customer-order-tracker">
+  <span>Order Progress</span>
+
+  <div className="customer-tracker-steps">
+    {trackerSteps.map((step) => (
+      <div
+        key={step.key}
+        className={`customer-tracker-step ${
+          step.done ? "is-done" : ""
+        } ${step.current ? "is-current" : ""}`}
+      >
+        <div className="customer-tracker-dot"></div>
+
+        <div>
+          <strong>{step.label}</strong>
+          <p>{step.description}</p>
+
+          <small>
+            {step.done && step.at
+              ? formatCustomerTimelineDate(step.at)
+              : step.current
+                ? "Current step"
+                : "Pending"}
+          </small>
+        </div>
+      </div>
+    ))}
+  </div>
 </div>
 
 {order.payment_status === "pending" && (

@@ -1787,3 +1787,120 @@
   border-color: rgba(255, 199, 87, 0.75);
   box-shadow: 0 0 14px rgba(255, 199, 87, 0.24);
 }
+
+/* =============================== */
+/* CUSTOMER ORDER TRACKER           */
+/* =============================== */
+
+.customer-order-tracker {
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: 20px;
+
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(78, 255, 154, 0.08), transparent 34%),
+    rgba(255, 255, 255, 0.045);
+}
+
+.customer-order-tracker > span {
+  display: block;
+  margin-bottom: 12px;
+
+  color: rgba(255, 255, 255, 0.54);
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.68rem;
+  font-weight: 1000;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.customer-tracker-steps {
+  display: grid;
+  gap: 12px;
+}
+
+.customer-tracker-step {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  gap: 10px;
+
+  position: relative;
+}
+
+.customer-tracker-step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 18px;
+  bottom: -12px;
+
+  width: 1px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.customer-tracker-dot {
+  width: 14px;
+  height: 14px;
+  margin-top: 2px;
+  border-radius: 999px;
+
+  border: 2px solid rgba(255, 255, 255, 0.24);
+  background: rgba(10, 10, 20, 0.96);
+}
+
+.customer-tracker-step.is-done .customer-tracker-dot {
+  border-color: rgba(78, 255, 154, 0.72);
+  background: #4eff9a;
+
+  box-shadow: 0 0 14px rgba(78, 255, 154, 0.22);
+}
+
+.customer-tracker-step.is-current .customer-tracker-dot {
+  border-color: rgba(255, 199, 87, 0.8);
+  background: #ffc757;
+
+  box-shadow: 0 0 14px rgba(255, 199, 87, 0.24);
+}
+
+.customer-tracker-step strong {
+  display: block;
+
+  color: #ffffff;
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 1000;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.customer-tracker-step.is-done strong {
+  color: #4eff9a;
+}
+
+.customer-tracker-step.is-current strong {
+  color: #ffc757;
+}
+
+.customer-tracker-step p {
+  margin: 4px 0;
+
+  color: rgba(255, 255, 255, 0.66);
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.customer-tracker-step small {
+  display: block;
+
+  color: rgba(255, 255, 255, 0.42);
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
