@@ -220,7 +220,6 @@ setHoveredCity(null);
   className={`map-wrapper ${
     isCountyTransitioning ? "county-transitioning" : ""
   }`}
-  style={{ width: "100%", height: "100svh" }}
 >
 
   <div className="map-heading-container">
@@ -269,19 +268,24 @@ setHoveredCity(null);
   key={selectedCounty}
   center={currentCounty.center}
   zoom={
-  isMobile
-    ? currentCounty.mobileZoom
-    : currentCounty.zoom
-}
-          minZoom={9.8}
-          maxZoom={14}
-          zoomSnap={0.1}
-          style={{ width: "100%", height: "100%" }}
-          dragging
-          doubleClickZoom
-          touchZoom
-          scrollWheelZoom
-        >
+    isMobile
+      ? currentCounty.mobileZoom
+      : currentCounty.zoom
+  }
+  minZoom={9.8}
+  maxZoom={14}
+  zoomSnap={0.1}
+  style={{ width: "100%", height: "100%" }}
+  dragging={false}
+  scrollWheelZoom={false}
+  doubleClickZoom={false}
+  touchZoom={false}
+  boxZoom={false}
+  keyboard={false}
+  zoomControl={false}
+  tap={true}
+  tapTolerance={20}
+>
           <TileLayer url="" opacity={0} />
 
           {geoData.features.map((f, i) => (
