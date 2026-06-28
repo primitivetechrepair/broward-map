@@ -2305,3 +2305,102 @@
 .hide-customer-update-btn:active {
   transform: translateY(1px) scale(0.98);
 }
+
+/* =============================== */
+/* CUSTOMER ORDER SUPPORT           */
+/* =============================== */
+
+.customer-order-support {
+  display: grid;
+  gap: 9px;
+
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 20px;
+
+  border: 1px solid rgba(87, 209, 255, 0.26);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(87, 209, 255, 0.11), transparent 36%),
+    rgba(255, 255, 255, 0.045);
+
+  font-family: "Chalet", sans-serif;
+}
+
+.customer-order-support > span {
+  color: rgba(255, 255, 255, 0.56);
+
+  font-size: 0.66rem;
+  font-weight: 1000;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.customer-order-support p {
+  margin: 0;
+
+  color: rgba(255, 255, 255, 0.68);
+
+  font-size: 0.82rem;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.customer-order-support p strong {
+  color: #57d1ff;
+}
+
+.customer-order-support div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.customer-order-support a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 38px;
+
+  padding: 0 13px;
+  border-radius: 999px;
+
+  border: 1px solid rgba(87, 209, 255, 0.34);
+  color: #57d1ff;
+  background: rgba(87, 209, 255, 0.08);
+
+  text-decoration: none;
+
+  font-size: 0.68rem;
+  font-weight: 1000;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  transition:
+    transform 0.16s ease,
+    border-color 0.16s ease,
+    background 0.16s ease,
+    color 0.16s ease;
+}
+
+.customer-order-support a:hover {
+  transform: translateY(-1px);
+
+  border-color: rgba(255, 199, 87, 0.38);
+  color: #ffc757;
+  background: rgba(255, 199, 87, 0.08);
+}
+
+.customer-order-support a:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+@media (max-width: 640px) {
+  .customer-order-support div {
+    display: grid;
+  }
+
+  .customer-order-support a {
+    width: 100%;
+  }
+}

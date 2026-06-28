@@ -4,6 +4,8 @@ import { supabase } from "../../lib/supabaseClient.js";
 import { useAuth } from "../../context/AuthContext.jsx";
 import "../Auth/AuthPages.css";
 
+const SUPPORT_EMAIL = "YOUR_SUPPORT_EMAIL";
+
 export default function PortalOrders() {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
@@ -238,15 +240,31 @@ const getCustomerTrackerSteps = (order) => {
 
 
   const copyToClipboard = async (text) => {
-  if (!text) return;
+    if (!text) return;
 
-  try {
-    await navigator.clipboard.writeText(text);
-    setOrderError("");
-  } catch (error) {
-    setOrderError("Could not copy memo. Please copy it manually.");
-  }
-};
+    try {
+      await navigator.clipboard.writeText(text);
+      setOrderError("");
+    } catch (error) {
+      setOrderError("Could not copy memo. Please copy it manually.");
+    }
+  };
+
+  const buildSupportEmailSubject = (order) => {
+    return encodeURIComponent(`Help with order ${order.payment_memo}`);
+  };
+
+  const buildSupportEmailBody = (order) => {
+    return encodeURIComponent(
+      `Hi, I need help with order ${order.payment_memo}.
+
+Order ID: ${order.id}
+Order Memo: ${order.payment_memo}
+Order Status: ${formatStatusLabel(order.order_status)}
+Payment Status: ${formatStatusLabel(order.payment_status)}
+Total: $${Number(order.total || 0).toFixed(2)}`
+    );
+  };
 
   const loadOrders = async () => {
     if (!user?.id) return;
@@ -255,29 +273,29 @@ const getCustomerTrackerSteps = (order) => {
     setOrderError("");
 
     const { data, error } = await supabase
-  .from("orders")
-  .select(`
-    id,
-    user_id,
-    customer_name,
-    phone,
-    address,
-    apt,
-    city,
-    notes,
-    items,
-    total,
-    delivery_fee,
-    payment_method,
-    payment_status,
-    payment_memo,
-    order_status,
-    paid_at,
-    order_timeline,
-    created_at
-  `)
-  .eq("user_id", user.id)
-  .order("created_at", { ascending: false });
+      .from("orders")
+      .select(`
+        id,
+        user_id,
+        customer_name,
+        phone,
+        address,
+        apt,
+        city,
+        notes,
+        items,
+        total,
+        delivery_fee,
+        payment_method,
+        payment_status,
+        payment_memo,
+        order_status,
+        paid_at,
+        order_timeline,
+        created_at
+      `)
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
 
     if (error) {
       setOrderError(error.message);
@@ -498,6 +516,23 @@ const getCustomerTrackerSteps = (order) => {
                       ))
                     )}
                   </div>
+
+                  <div className="customer-order-support">
+  <span>Need Help With This Order?</span>
+
+  <p>
+    Email support and reference{" "}
+    <strong>{order.payment_memo}</strong>.
+  </p>
+
+  <div>
+    <a
+      href={`mailto:${SUPPORT_EMAIL}?subject=${buildSupportEmailSubject(order)}&body=${buildSupportEmailBody(order)}`}
+    >
+      Email Support
+    </a>
+  </div>
+</div>
 
                   <div className="customer-order-actions">
   <button
