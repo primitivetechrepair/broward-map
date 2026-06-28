@@ -24,10 +24,12 @@
 
 html {
   min-height: 100%;
+  background: #000;
 }
 
 body {
-  min-height: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
   margin: 0;
   padding: 0;
 
@@ -47,12 +49,14 @@ body {
 body::before {
   content: "";
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  inset: 0;
 
-  background: rgba(0, 0, 0, 0.6);
+  width: auto;
+  height: auto;
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  background: rgba(0, 0, 0, 0.68);
   z-index: 0;
   pointer-events: none;
 }
@@ -61,7 +65,11 @@ body::before {
 #root {
   position: relative;
   z-index: 1;
+
   min-height: 100vh;
+  min-height: 100dvh;
+
+  isolation: isolate;
 }
 
 /* ========================== */
@@ -126,4 +134,23 @@ h1, h2, h3, h4, h5, h6 {
 
 .site-main-content {
   min-height: calc(100vh - 74px);
+}
+
+/* ========================== */
+/* Mobile Map Scroll Fix      */
+/* ========================== */
+
+@media (max-width: 768px) {
+  .leaflet-container {
+    touch-action: pan-y !important;
+  }
+
+  .leaflet-pane,
+  .leaflet-map-pane,
+  .leaflet-tile-pane,
+  .leaflet-overlay-pane,
+  .leaflet-marker-pane,
+  .leaflet-interactive {
+    touch-action: pan-y !important;
+  }
 }

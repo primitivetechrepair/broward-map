@@ -7,10 +7,8 @@ const SUPPORT_EMAIL = "YOUR_SUPPORT_EMAIL";
 
 export default function SiteHeader() {
   const navigate = useNavigate();
-  const { user, profile, signOut } = useAuth();
+  const { user, signOut } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
-
-  const isAdmin = profile?.role === "admin";
 
   const closeMenu = () => {
     setMenuOpen(false);
@@ -72,12 +70,6 @@ export default function SiteHeader() {
           {user && (
             <NavLink to="/portal" onClick={closeMenu}>
               Account
-            </NavLink>
-          )}
-
-          {isAdmin && (
-            <NavLink to="/admin/orders" onClick={closeMenu}>
-              Admin
             </NavLink>
           )}
 
