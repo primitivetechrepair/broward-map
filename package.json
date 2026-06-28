@@ -4,12 +4,14 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"npm run frontend\" \"npm run backend\"",
+    "dev": "npm run clean:ports && concurrently npm:frontend npm:backend",
     "frontend": "vite",
     "backend": "nodemon --watch server --ext js,mjs,cjs,json server/sendOrder.js",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "clean:ports": "kill-port 5000 5173 5174",
+    "dev:reset": "kill-port 5000 5173 5174 && npm run dev"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.108.2",
@@ -27,6 +29,7 @@
     "@vitejs/plugin-react": "^5.1.3",
     "concurrently": "^8.2.0",
     "eslint": "^8.0.0",
+    "kill-port": "^2.0.1",
     "nodemon": "^3.0.1",
     "vite": "^5.0.0"
   }
