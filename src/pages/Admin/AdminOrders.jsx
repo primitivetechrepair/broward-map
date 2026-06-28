@@ -786,11 +786,12 @@ const orderSummary = {
   </p>
 
   <button
-    type="button"
-    onClick={() => sendCustomerUpdate(order.id)}
-  >
-    Send Customer Update
-  </button>
+  type="button"
+  className="send-customer-update-btn"
+  onClick={() => sendCustomerUpdate(order.id)}
+>
+  Send Customer Update
+</button>
 </div>
 
 <div className="admin-quick-actions">
