@@ -80,6 +80,9 @@ export default function CheckoutPage() {
     form.address.trim() &&
     idFileName;
 
+    const selectedPaymentInfo =
+  PAYMENT_INSTRUCTIONS[form.payment] || PAYMENT_INSTRUCTIONS.zelle;
+
   const handleSubmit = async (e) => {
   e.preventDefault();
 
@@ -381,6 +384,17 @@ if (!isApproved) {
       {label}
     </button>
   ))}
+</div>
+
+<div className="selected-payment-preview">
+  <span>Selected Payment</span>
+
+  <strong>{selectedPaymentInfo.label}</strong>
+
+  <p>
+    Payment instructions will appear after you place the order. Send the exact
+    total and include your order memo.
+  </p>
 </div>
             </div>
 

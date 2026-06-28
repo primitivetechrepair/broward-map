@@ -908,3 +908,56 @@
     font-size: 0.8rem;
   }
 }
+
+/* =============================== */
+/* SELECTED PAYMENT PREVIEW         */
+/* =============================== */
+
+.selected-payment-preview {
+  margin-top: 12px;
+  padding: 14px;
+
+  border-radius: 18px;
+  border: 1px solid rgba(78, 255, 154, 0.24);
+
+  background:
+    radial-gradient(circle at 18% 0%, rgba(78, 255, 154, 0.11), transparent 34%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.025)),
+    rgba(7, 7, 18, 0.58);
+}
+
+.selected-payment-preview span {
+  display: block;
+
+  color: rgba(255, 255, 255, 0.54);
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.selected-payment-preview strong {
+  display: block;
+  margin-top: 6px;
+
+  color: #4eff9a;
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.96rem;
+  font-weight: 1000;
+
+  text-shadow: 0 0 14px rgba(78, 255, 154, 0.22);
+}
+
+.selected-payment-preview p {
+  margin: 8px 0 0;
+
+  color: rgba(255, 255, 255, 0.64);
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
