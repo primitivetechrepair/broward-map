@@ -336,6 +336,25 @@ const getTimelineEntries = (order) => {
     .sort((a, b) => new Date(b.at) - new Date(a.at));
 };
 
+const getCustomerUpdateEvents = (order) => {
+  const savedTimeline = Array.isArray(order.order_timeline)
+    ? order.order_timeline
+    : [];
+
+  return savedTimeline
+    .filter((event) => {
+      const label = String(event?.label || "");
+      const type = String(event?.type || "");
+
+      return event?.at && (type === "customer_update" || label.includes("Customer Update"));
+    })
+    .sort((a, b) => new Date(b.at) - new Date(a.at));
+};
+
+const getLatestCustomerUpdate = (order) => {
+  return getCustomerUpdateEvents(order)[0] || null;
+};
+
 const formatTimelineDate = (value) => {
   if (!value) return "Unknown time";
 
@@ -429,6 +448,10 @@ const orderSummary = {
     (order) => order.order_status === "completed"
   ).length,
 
+    customerUpdates: orders.filter(
+    (order) => getCustomerUpdateEvents(order).length > 0
+  ).length,
+
   todayRevenue: orders
   .filter((order) => {
     if (!order.paid_at) return false;
@@ -505,14 +528,19 @@ const orderSummary = {
   </div>
 
   <div>
-    <span>Completed</span>
-    <strong>{orderSummary.completed}</strong>
-  </div>
+  <span>Completed</span>
+  <strong>{orderSummary.completed}</strong>
+</div>
 
-  <div>
-    <span>Today’s Revenue</span>
-    <strong>${orderSummary.todayRevenue.toFixed(2)}</strong>
-  </div>
+<div>
+  <span>Customer Updates</span>
+  <strong>{orderSummary.customerUpdates}</strong>
+</div>
+
+<div>
+  <span>Today’s Revenue</span>
+  <strong>${orderSummary.todayRevenue.toFixed(2)}</strong>
+</div>
 </div>
 
         <div className="admin-order-filters">
@@ -580,6 +608,7 @@ const orderSummary = {
   const items = Array.isArray(order.items) ? order.items : [];
   const orderStatus = normalizeOrderStatus(order.order_status);
   const paymentStatus = normalizeOrderStatus(order.payment_status);
+  const latestCustomerUpdate = getLatestCustomerUpdate(order);
 
               return (
                 <article key={order.id} className="admin-order-card">
@@ -606,6 +635,16 @@ const orderSummary = {
   {formatStatusLabel(order.order_status)}
 </strong>
 </div>
+
+{latestCustomerUpdate && (
+  <div className="admin-latest-customer-update">
+    <span>Customer Update Sent</span>
+
+    <strong>{latestCustomerUpdate.message || "Customer update sent."}</strong>
+
+    <small>{formatTimelineDate(latestCustomerUpdate.at)}</small>
+  </div>
+)}
 
 {paymentStatus === "pending" && (
   <div className="payment-warning">
