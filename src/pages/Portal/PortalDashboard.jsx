@@ -4,6 +4,8 @@ import { supabase } from "../../lib/supabaseClient.js";
 import { useAuth } from "../../context/AuthContext.jsx";
 import "../Auth/AuthPages.css";
 
+const SUPPORT_EMAIL = "support@yourdomain.com";
+
 export default function PortalDashboard() {
   const navigate = useNavigate();
 
@@ -21,12 +23,28 @@ export default function PortalDashboard() {
   const [uploadError, setUploadError] = useState("");
 
   const handleSignOut = async () => {
-    await signOut();
-    navigate("/", { replace: true });
-  };
+  await signOut();
+  navigate("/", { replace: true });
+};
 
-  const handleIdUpload = async (e) => {
-    e.preventDefault();
+const buildAccountSupportEmailSubject = () => {
+  return encodeURIComponent("Account support request");
+};
+
+const buildAccountSupportEmailBody = () => {
+  return encodeURIComponent(
+    `Hi, I need help with my account.
+
+Email: ${user?.email || ""}
+User ID: ${user?.id || ""}
+Verification Status: ${profile?.verification_status || "unsubmitted"}
+Age Verified: ${profile?.age_verified ? "Yes" : "No"}
+Order Access: ${isApproved ? "Approved" : "Pending Approval"}`
+  );
+};
+
+const handleIdUpload = async (e) => {
+  e.preventDefault();
 
     setUploadMessage("");
     setUploadError("");
@@ -188,7 +206,28 @@ export default function PortalDashboard() {
           </form>
         )}
 
+        <div className="customer-order-support account-support-box">
+          <span>Need Account Help?</span>
+
+          <p>
+            Email support for account approval, ID review, order access, or
+            profile help.
+          </p>
+
+          <div>
+            <a
+              href={`mailto:${SUPPORT_EMAIL}?subject=${buildAccountSupportEmailSubject()}&body=${buildAccountSupportEmailBody()}`}
+            >
+              Email Support
+            </a>
+          </div>
+        </div>
+
         <div className="portal-actions">
+          <button type="button" onClick={() => navigate("/portal/orders")}>
+            My Orders
+          </button>
+
           <button type="button" onClick={() => navigate("/")}>
             Back To Map
           </button>

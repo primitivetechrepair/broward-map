@@ -2404,3 +2404,12 @@
     width: 100%;
   }
 }
+
+/* =============================== */
+/* ACCOUNT SUPPORT BOX              */
+/* =============================== */
+
+.account-support-box {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
