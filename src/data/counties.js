@@ -6,7 +6,7 @@ const COUNTY_CONFIG = {
   order: 1,
 
   file: "/broward.geojson",
-    desktopCenter: [26.15, -80.26],
+    desktopCenter: [26.12, -80.26],
     desktopZoom: 11.2,
 
     mobileCenter: [26.15, -80.26],
@@ -122,7 +122,7 @@ mobileLabelOffsets: {
   order: 2,
 
   file: "/miami.geojson",
-  desktopCenter: [25.71, -80.32],
+  desktopCenter: [25.66, -80.32],
   desktopZoom: 10.8,
 
   mobileCenter: [25.71, -80.32],
@@ -245,11 +245,11 @@ mobileLabelOffsets: {
   order: 3,
 
   file: "/palmbeach.geojson",
-  desktopCenter: [26.64, -80.2],
+  desktopCenter: [26.59, -80.2],
   desktopZoom: 10.4,
 
-  mobileCenter: [26.64, -80.2],
-  mobileZoom: 9.5,
+  mobileCenter: [26.63, -80.2],
+  mobileZoom: 9.7,
   defaultDeliveryFee: 6,
   defaultEta: "30–40 min",
 

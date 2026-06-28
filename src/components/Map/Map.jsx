@@ -52,22 +52,23 @@ const hoveredCityInfo = hoveredCity
       eta: getCityDeliveryEta(hoveredCity),
     }
   : null;
+  
 
-const getCurrentMapCenter = () => {
-  if (isMobile) {
-    return currentCounty.mobileCenter || currentCounty.center;
-  }
+const currentMapCenter = isMobile
+  ? currentCounty.mobileCenter || currentCounty.center
+  : currentCounty.desktopCenter || currentCounty.center;
 
-  return currentCounty.desktopCenter || currentCounty.center;
-};
+const currentMapZoom = isMobile
+  ? currentCounty.mobileZoom ?? currentCounty.zoom
+  : currentCounty.desktopZoom ?? currentCounty.zoom;
+  
+const currentMinZoom = isMobile
+  ? currentCounty.mobileMinZoom ?? 8.5
+  : currentCounty.desktopMinZoom ?? 9.8;
 
-const getCurrentMapZoom = () => {
-  if (isMobile) {
-    return currentCounty.mobileZoom ?? currentCounty.zoom;
-  }
-
-  return currentCounty.desktopZoom ?? currentCounty.zoom;
-};
+const currentMaxZoom = isMobile
+  ? currentCounty.mobileMaxZoom ?? 14
+  : currentCounty.desktopMaxZoom ?? 14;
 
   const handleCountyChange = (countyKey) => {
   if (countyKey === selectedCounty) return;
@@ -92,8 +93,8 @@ const handleResetMap = () => {
 
   if (mapRef.current) {
     mapRef.current.flyTo(
-  getCurrentMapCenter(),
-  getCurrentMapZoom(),
+  currentMapCenter,
+  currentMapZoom,
   {
     duration: 0.45,
     easeLinearity: 0.35,
@@ -112,6 +113,26 @@ const handleResetMap = () => {
       window.removeEventListener("orientationchange", handleResize);
     };
   }, []);
+
+  useEffect(() => {
+  if (!mapRef.current) return;
+
+  mapRef.current.setView(
+    currentMapCenter,
+    currentMapZoom,
+    {
+      animate: false,
+    }
+  );
+}, [
+  selectedCounty,
+  isMobile,
+  currentMapCenter?.[0],
+  currentMapCenter?.[1],
+  currentMapZoom,
+  currentMinZoom,
+  currentMaxZoom,
+]);
 
   /* ================= Mobile Render Delay */
   useEffect(() => {
@@ -207,13 +228,13 @@ setHoveredCity(null);
 
   if (mapRef.current && selectedCenter) {
     mapRef.current.flyTo(
-      [selectedCenter.lat, selectedCenter.lng],
-      isMobile ? currentCounty.mobileZoom + 0.25 : currentCounty.zoom + 0.25,
-      {
-        duration: 0.45,
-        easeLinearity: 0.35,
-      }
-    );
+  [selectedCenter.lat, selectedCenter.lng],
+  currentMapZoom + 0.25,
+  {
+    duration: 0.45,
+    easeLinearity: 0.35,
+  }
+);
   }
 }
   });
@@ -282,10 +303,10 @@ setHoveredCity(null);
         <MapContainer
   ref={mapRef}
   key={`${selectedCounty}-${isMobile ? "mobile" : "desktop"}`}
-  center={getCurrentMapCenter()}
-  zoom={getCurrentMapZoom()}
-  minZoom={9.8}
-  maxZoom={14}
+  center={currentMapCenter}
+  zoom={currentMapZoom}
+  minZoom={currentMinZoom}
+  maxZoom={currentMaxZoom}
   zoomSnap={0.1}
   style={{ width: "100%", height: "100%" }}
   dragging={false}
