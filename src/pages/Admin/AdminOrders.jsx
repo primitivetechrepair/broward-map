@@ -185,6 +185,35 @@ const filteredOrders = orders.filter((order) => {
   return matchesFilter && searchableText.includes(searchValue);
 });
 
+const todayKey = new Date().toDateString();
+
+const orderSummary = {
+  total: orders.length,
+
+  pendingPayment: orders.filter(
+    (order) => order.payment_status === "pending"
+  ).length,
+
+  outForDelivery: orders.filter(
+    (order) => order.order_status === "out_for_delivery"
+  ).length,
+
+  completed: orders.filter(
+    (order) => order.order_status === "completed"
+  ).length,
+
+  todayRevenue: orders
+    .filter((order) => {
+      const orderDateKey = new Date(order.created_at).toDateString();
+
+      return (
+        orderDateKey === todayKey &&
+        order.payment_status === "received"
+      );
+    })
+    .reduce((sum, order) => sum + Number(order.total || 0), 0),
+};
+
   return (
     <div className="auth-page">
       <div className="auth-orb auth-orb-one"></div>
@@ -229,6 +258,33 @@ const filteredOrders = orders.filter((order) => {
             Sign Out
           </button>
         </div>
+
+        <div className="admin-order-summary">
+  <div>
+    <span>Total Orders</span>
+    <strong>{orderSummary.total}</strong>
+  </div>
+
+  <div>
+    <span>Pending Payment</span>
+    <strong>{orderSummary.pendingPayment}</strong>
+  </div>
+
+  <div>
+    <span>Out For Delivery</span>
+    <strong>{orderSummary.outForDelivery}</strong>
+  </div>
+
+  <div>
+    <span>Completed</span>
+    <strong>{orderSummary.completed}</strong>
+  </div>
+
+  <div>
+    <span>Today’s Revenue</span>
+    <strong>${orderSummary.todayRevenue.toFixed(2)}</strong>
+  </div>
+</div>
 
         <div className="admin-order-filters">
   {ORDER_FILTER_OPTIONS.map((filter) => (
