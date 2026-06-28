@@ -280,46 +280,81 @@ const copyToClipboard = async (text) => {
                   </div>
 
                   <div className="admin-order-controls">
-                    <label>
-                      Payment Status
-                      <select
-                        value={order.payment_status}
-                        onChange={(e) =>
-                          updateOrderField({
-                            orderId: order.id,
-                            field: "payment_status",
-                            value: e.target.value,
-                          })
-                        }
-                      >
-                        {PAYMENT_STATUS_OPTIONS.map((status) => (
-                          <option key={status} value={status}>
-                            {formatStatusLabel(status)}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
+  <label>
+    Payment Status
+    <select
+      value={order.payment_status}
+      onChange={(e) =>
+        updateOrderField({
+          orderId: order.id,
+          field: "payment_status",
+          value: e.target.value,
+        })
+      }
+    >
+      {PAYMENT_STATUS_OPTIONS.map((status) => (
+        <option key={status} value={status}>
+          {formatStatusLabel(status)}
+        </option>
+      ))}
+    </select>
+  </label>
 
-                    <label>
-                      Order Status
-                      <select
-                        value={order.order_status}
-                        onChange={(e) =>
-                          updateOrderField({
-                            orderId: order.id,
-                            field: "order_status",
-                            value: e.target.value,
-                          })
-                        }
-                      >
-                        {ORDER_STATUS_OPTIONS.map((status) => (
-                          <option key={status} value={status}>
-                            {formatStatusLabel(status)}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                  </div>
+  <label>
+    Order Status
+    <select
+      value={order.order_status}
+      onChange={(e) =>
+        updateOrderField({
+          orderId: order.id,
+          field: "order_status",
+          value: e.target.value,
+        })
+      }
+    >
+      {ORDER_STATUS_OPTIONS.map((status) => (
+        <option key={status} value={status}>
+          {formatStatusLabel(status)}
+        </option>
+      ))}
+    </select>
+  </label>
+</div>
+
+<div className="admin-internal-notes">
+  <label>
+    Internal Notes
+    <textarea
+      value={order.admin_notes || ""}
+      placeholder="Example: Payment confirmed, driver assigned, customer texted..."
+      onChange={(e) =>
+        setOrders((prev) =>
+          prev.map((item) =>
+            item.id === order.id
+              ? {
+                  ...item,
+                  admin_notes: e.target.value,
+                }
+              : item
+          )
+        )
+      }
+    />
+  </label>
+
+  <button
+    type="button"
+    onClick={() =>
+      updateOrderField({
+        orderId: order.id,
+        field: "admin_notes",
+        value: order.admin_notes || "",
+      })
+    }
+  >
+    Save Notes
+  </button>
+</div>
                 </article>
               );
             })

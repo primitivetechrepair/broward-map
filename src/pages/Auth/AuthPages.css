@@ -1088,3 +1088,81 @@
   font-weight: 1000;
   letter-spacing: 0.06em;
 }
+
+/* =============================== */
+/* ADMIN INTERNAL ORDER NOTES       */
+/* =============================== */
+
+.admin-internal-notes {
+  display: grid;
+  gap: 10px;
+
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: 20px;
+
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.admin-internal-notes label {
+  display: grid;
+  gap: 8px;
+
+  color: rgba(255, 255, 255, 0.62);
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.admin-internal-notes textarea {
+  width: 100%;
+  min-height: 92px;
+  resize: vertical;
+
+  padding: 12px 14px;
+  border-radius: 16px;
+
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  background: rgba(6, 6, 16, 0.82);
+
+  outline: none;
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.84rem;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.admin-internal-notes textarea::placeholder {
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.admin-internal-notes button {
+  width: fit-content;
+  min-height: 40px;
+
+  padding: 0 16px;
+  border-radius: 999px;
+
+  border: 1px solid rgba(78, 255, 154, 0.32);
+  color: #4eff9a;
+  background: rgba(78, 255, 154, 0.08);
+
+  cursor: pointer;
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 1000;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.admin-internal-notes button:hover {
+  border-color: rgba(78, 255, 154, 0.55);
+  background: rgba(78, 255, 154, 0.13);
+}
