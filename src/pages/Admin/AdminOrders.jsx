@@ -684,23 +684,25 @@ const orderSummary = {
     </span>
 
     <button
-      type="button"
-      onClick={() =>
-        updateOrderFields({
-          orderId: order.id,
-          updates: {
-            order_status: "confirmed",
-            payment_status:
-              order.payment_status === "received"
-                ? "received"
-                : "pending",
-          },
-          message: "Order reopened and moved back to confirmed.",
-        })
-      }
-    >
-      Reopen Order
-    </button>
+  type="button"
+  onClick={() => {
+    setActiveFilter("active");
+
+    updateOrderFields({
+      orderId: order.id,
+      updates: {
+        order_status: "confirmed",
+        payment_status:
+          order.payment_status === "received"
+            ? "received"
+            : "pending",
+      },
+      message: "Order reopened and moved back to confirmed.",
+    });
+  }}
+>
+  Reopen Order
+</button>
   </>
 )}
 </div>
