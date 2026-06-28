@@ -11,10 +11,10 @@ export default function SiteFooter() {
     <footer className="site-footer">
       <div className="site-footer-inner">
         <div className="site-footer-brand">
-          <span className="site-brand-mark">GM</span>
+          <span className="site-brand-mark">THC</span>
 
           <div>
-            <strong>Gas Map</strong>
+            <strong>The High Council</strong>
             <p>
               Premium delivery coverage, product ordering, account verification,
               and order tracking in one secure customer portal.
@@ -57,7 +57,7 @@ export default function SiteFooter() {
         </div>
 
         <div className="site-footer-bottom">
-          <p>© {currentYear} Gas Map. All rights reserved.</p>
+          <p>© {currentYear} The High Council. All rights reserved.</p>
 
           <p>
             Account approval and age verification may be required before order
