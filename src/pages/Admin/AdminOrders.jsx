@@ -21,12 +21,27 @@ const PAYMENT_STATUS_OPTIONS = [
 
 const ORDER_FILTER_OPTIONS = [
   "all",
+  "active",
   "pending",
   "confirmed",
   "out_for_delivery",
   "completed",
   "cancelled",
 ];
+
+const ACTIVE_ORDER_STATUSES = [
+  "pending",
+  "confirmed",
+  "out_for_delivery",
+];
+
+const ORDER_STATUS_WEIGHT = {
+  pending: 1,
+  confirmed: 2,
+  out_for_delivery: 3,
+  completed: 4,
+  cancelled: 5,
+};
 
 export default function AdminOrders() {
   const navigate = useNavigate();
@@ -173,9 +188,23 @@ const buildMapsUrl = (order) => {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`;
 };
 
-const filteredOrders = orders.filter((order) => {
+const sortedOrders = [...orders].sort((a, b) => {
+  const statusA = ORDER_STATUS_WEIGHT[a.order_status] || 99;
+  const statusB = ORDER_STATUS_WEIGHT[b.order_status] || 99;
+
+  if (statusA !== statusB) {
+    return statusA - statusB;
+  }
+
+  return new Date(b.created_at) - new Date(a.created_at);
+});
+
+const filteredOrders = sortedOrders.filter((order) => {
   const matchesFilter =
-    activeFilter === "all" || order.order_status === activeFilter;
+    activeFilter === "all" ||
+    order.order_status === activeFilter ||
+    (activeFilter === "active" &&
+      ACTIVE_ORDER_STATUSES.includes(order.order_status));
 
   const searchValue = searchTerm.trim().toLowerCase();
 
@@ -310,13 +339,21 @@ const orderSummary = {
       className={activeFilter === filter ? "active" : ""}
       onClick={() => setActiveFilter(filter)}
     >
-      {filter === "all" ? "All" : formatStatusLabel(filter)}
+      {filter === "all"
+  ? "All"
+  : filter === "active"
+    ? "Active"
+    : formatStatusLabel(filter)}
 
-      <span>
-        {filter === "all"
-          ? orders.length
-          : orders.filter((order) => order.order_status === filter).length}
-      </span>
+<span>
+  {filter === "all"
+    ? orders.length
+    : filter === "active"
+      ? orders.filter((order) =>
+          ACTIVE_ORDER_STATUSES.includes(order.order_status)
+        ).length
+      : orders.filter((order) => order.order_status === filter).length}
+</span>
     </button>
   ))}
 </div>
