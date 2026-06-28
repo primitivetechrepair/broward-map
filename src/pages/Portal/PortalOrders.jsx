@@ -408,12 +408,12 @@ const getCustomerTrackerSteps = (order) => {
           <p>{step.description}</p>
 
           <small>
-            {step.done && step.at
-              ? formatCustomerTimelineDate(step.at)
-              : step.current
-                ? "Current step"
-                : "Pending"}
-          </small>
+  {step.done && step.at
+    ? formatCustomerTimelineDate(step.at)
+    : step.current
+      ? "Next step"
+      : "Pending"}
+</small>
         </div>
       </div>
     ))}
