@@ -1456,3 +1456,95 @@
 .customer-status-neutral {
   border-color: rgba(255, 255, 255, 0.14);
 }
+
+/* =============================== */
+/* ADMIN ORDER SEARCH               */
+/* =============================== */
+
+.admin-order-search {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: end;
+
+  margin: 0 0 16px;
+  padding: 14px;
+  border-radius: 20px;
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.admin-order-search label {
+  display: grid;
+  gap: 8px;
+
+  color: rgba(255, 255, 255, 0.62);
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.admin-order-search input {
+  width: 100%;
+  min-height: 46px;
+
+  padding: 0 14px;
+  border-radius: 16px;
+
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  background: rgba(6, 6, 16, 0.82);
+
+  outline: none;
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.admin-order-search input::placeholder {
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.admin-order-search input:focus {
+  border-color: rgba(78, 255, 154, 0.42);
+  box-shadow: 0 0 0 3px rgba(78, 255, 154, 0.08);
+}
+
+.admin-order-search button {
+  min-height: 46px;
+
+  padding: 0 16px;
+  border-radius: 999px;
+
+  border: 1px solid rgba(255, 82, 82, 0.34);
+  color: #ff7373;
+  background: rgba(255, 82, 82, 0.08);
+
+  cursor: pointer;
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 1000;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.admin-order-search button:hover {
+  border-color: rgba(255, 82, 82, 0.58);
+  background: rgba(255, 82, 82, 0.14);
+}
+
+@media (max-width: 720px) {
+  .admin-order-search {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-order-search button {
+    width: 100%;
+  }
+}

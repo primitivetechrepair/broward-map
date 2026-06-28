@@ -37,6 +37,7 @@ export default function AdminOrders() {
   const [actionMessage, setActionMessage] = useState("");
   const [actionError, setActionError] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const loadOrders = async () => {
     setLoading(true);
@@ -158,10 +159,31 @@ const buildMapsUrl = (order) => {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`;
 };
 
-const filteredOrders =
-  activeFilter === "all"
-    ? orders
-    : orders.filter((order) => order.order_status === activeFilter);
+const filteredOrders = orders.filter((order) => {
+  const matchesFilter =
+    activeFilter === "all" || order.order_status === activeFilter;
+
+  const searchValue = searchTerm.trim().toLowerCase();
+
+  if (!searchValue) return matchesFilter;
+
+  const searchableText = [
+    order.id,
+    order.customer_name,
+    order.phone,
+    order.city,
+    order.address,
+    order.payment_memo,
+    order.payment_method,
+    order.payment_status,
+    order.order_status,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+
+  return matchesFilter && searchableText.includes(searchValue);
+});
 
   return (
     <div className="auth-page">
@@ -227,6 +249,24 @@ const filteredOrders =
   ))}
 </div>
 
+<div className="admin-order-search">
+  <label>
+    Search Orders
+    <input
+      type="search"
+      value={searchTerm}
+      placeholder="Search name, phone, city, memo, or order ID..."
+      onChange={(e) => setSearchTerm(e.target.value)}
+    />
+  </label>
+
+  {searchTerm.trim() && (
+    <button type="button" onClick={() => setSearchTerm("")}>
+      Clear
+    </button>
+  )}
+</div>
+
         <div className="admin-orders-list">
           {loading ? (
   <div className="portal-alert">
@@ -238,8 +278,8 @@ const filteredOrders =
   </div>
 ) : filteredOrders.length === 0 ? (
   <div className="portal-alert">
-    No orders match this filter.
-  </div>
+  No orders match this filter or search.
+</div>
 ) : (
   filteredOrders.map((order) => {
               const items = Array.isArray(order.items) ? order.items : [];
