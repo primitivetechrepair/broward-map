@@ -60,6 +60,8 @@ export default function ProductsPage() {
   const [bagPulseKey, setBagPulseKey] = useState(0);
   const [flyingProduct, setFlyingProduct] = useState(null);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const reorderLoadedRef = useRef(false);
+  const [reorderMessage, setReorderMessage] = useState("");
 
   const [quantities, setQuantities] = useState(
     PRODUCTS.reduce((acc, p) => ({ ...acc, [p.id]: 0 }), {})
@@ -93,6 +95,56 @@ useEffect(() => {
   setSelectedCity(city);
   setDeliveryFee(Number(fee) || 0);
 }, [location.state, navigate]);
+
+// Reorder loader
+useEffect(() => {
+  if (reorderLoadedRef.current) return;
+  if (!selectedCity) return;
+
+  const draftFromRoute = location.state?.reorderDraft;
+
+  let draftFromStorage = null;
+
+  try {
+    draftFromStorage = JSON.parse(
+      sessionStorage.getItem("browardReorderDraft") || "null"
+    );
+  } catch (error) {
+    draftFromStorage = null;
+  }
+
+  const reorderDraft = draftFromRoute || draftFromStorage;
+
+  if (!reorderDraft?.items?.length) return;
+
+  reorderLoadedRef.current = true;
+
+  if (typeof clearCart === "function") {
+    clearCart();
+  }
+
+  reorderDraft.items.forEach((item) => {
+    const quantity = Math.max(1, Number(item.quantity || item.qty || 1));
+
+    addItem({
+      ...item,
+      id: item.id || item.product_id || `${item.name}-${item.gram || ""}`,
+      name: item.name,
+      gram: item.gram,
+      price: Number(item.price || 0),
+      quantity,
+      category: item.category || "Flowers",
+    });
+  });
+
+  sessionStorage.removeItem("browardReorderDraft");
+
+  setReorderMessage(
+    `Reorder loaded from ${reorderDraft.sourcePaymentMemo || "your previous order"}.`
+  );
+
+  setIsBagOpen(true);
+}, [selectedCity, location.state, addItem, clearCart]);
 
 // Show floating bag clone after the original bag starts leaving the screen
 useEffect(() => {
@@ -401,6 +453,13 @@ useEffect(() => {
       )}
 
       {renderProductHeading("The Stash", "Delivery Menu")}
+
+      {reorderMessage && (
+  <div className="reorder-loaded-banner">
+    <strong>Reorder Ready</strong>
+    <p>{reorderMessage}</p>
+  </div>
+)}
 
       {/* DELIVERY */}
       <div className="delivery-card">

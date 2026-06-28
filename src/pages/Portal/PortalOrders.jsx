@@ -274,20 +274,53 @@ export default function PortalOrders() {
 
                   <div className="customer-order-actions">
   <button
-  type="button"
-  onClick={() =>
-    navigate("/products", {
-      state: {
+    type="button"
+    onClick={() =>
+      navigate("/products", {
+        state: {
+          city: order.city,
+          selectedCity: order.city,
+          deliveryFee: Number(order.delivery_fee || 0),
+          fromOrderHistory: true,
+        },
+      })
+    }
+  >
+    Shop Again
+  </button>
+
+  <button
+    type="button"
+    className="reorder-action"
+    onClick={() => {
+      const reorderDraft = {
         city: order.city,
         selectedCity: order.city,
         deliveryFee: Number(order.delivery_fee || 0),
-        fromOrderHistory: true,
-      },
-    })
-  }
->
-  Shop Again
-</button>
+        items: Array.isArray(order.items) ? order.items : [],
+        sourceOrderId: order.id,
+        sourcePaymentMemo: order.payment_memo,
+        createdAt: new Date().toISOString(),
+      };
+
+      sessionStorage.setItem(
+        "browardReorderDraft",
+        JSON.stringify(reorderDraft)
+      );
+
+      navigate("/products", {
+        state: {
+          city: order.city,
+          selectedCity: order.city,
+          deliveryFee: Number(order.delivery_fee || 0),
+          reorderDraft,
+          fromReorder: true,
+        },
+      });
+    }}
+  >
+    Reorder
+  </button>
 
   <button
     type="button"

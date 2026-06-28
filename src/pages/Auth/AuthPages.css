@@ -1613,3 +1613,65 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* =============================== */
+/* CUSTOMER ORDER ACTIONS           */
+/* =============================== */
+
+.customer-order-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  margin-top: 14px;
+}
+
+.customer-order-actions button {
+  min-height: 40px;
+
+  padding: 0 14px;
+  border-radius: 999px;
+
+  border: 1px solid rgba(78, 255, 154, 0.3);
+  color: #4eff9a;
+  background: rgba(78, 255, 154, 0.08);
+
+  cursor: pointer;
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 1000;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.customer-order-actions button:hover {
+  border-color: rgba(78, 255, 154, 0.55);
+  background: rgba(78, 255, 154, 0.14);
+}
+
+@media (max-width: 720px) {
+  .customer-order-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .customer-order-actions button {
+    width: 100%;
+  }
+}
+
+/* =============================== */
+/* CUSTOMER REORDER ACTION          */
+/* =============================== */
+
+.customer-order-actions .reorder-action {
+  border-color: rgba(255, 199, 87, 0.36);
+  color: #ffc757;
+  background: rgba(255, 199, 87, 0.09);
+}
+
+.customer-order-actions .reorder-action:hover {
+  border-color: rgba(255, 199, 87, 0.6);
+  background: rgba(255, 199, 87, 0.15);
+}
