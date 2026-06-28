@@ -58,7 +58,7 @@ export default function AdminOrders() {
   const [loading, setLoading] = useState(true);
   const [actionMessage, setActionMessage] = useState("");
   const [actionError, setActionError] = useState("");
-  const [activeFilter, setActiveFilter] = useState("all");
+  const [activeFilter, setActiveFilter] = useState("active");
   const [searchTerm, setSearchTerm] = useState("");
 
   const loadOrders = async () => {
@@ -677,11 +677,32 @@ const orderSummary = {
     )}
 
   {(order.order_status === "completed" ||
-    order.order_status === "cancelled") && (
+  order.order_status === "cancelled") && (
+  <>
     <span className="admin-quick-actions-empty">
-      No active quick actions for this order.
+      This order is closed.
     </span>
-  )}
+
+    <button
+      type="button"
+      onClick={() =>
+        updateOrderFields({
+          orderId: order.id,
+          updates: {
+            order_status: "confirmed",
+            payment_status:
+              order.payment_status === "received"
+                ? "received"
+                : "pending",
+          },
+          message: "Order reopened and moved back to confirmed.",
+        })
+      }
+    >
+      Reopen Order
+    </button>
+  </>
+)}
 </div>
 
 <div className="admin-internal-notes">
