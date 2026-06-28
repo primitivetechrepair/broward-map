@@ -90,16 +90,43 @@ export default function AdminOrders() {
     navigate("/", { replace: true });
   };
 
-  const updateOrderField = async ({ orderId, field, value }) => {
+  const updateOrderField = async ({
+  orderId,
+  field,
+  value,
+  timelineLabel,
+  timelineMessage,
+}) => {
   setActionMessage("");
   setActionError("");
+
+  const existingOrder = orders.find((order) => order.id === orderId);
+
+  const existingTimeline = Array.isArray(existingOrder?.order_timeline)
+    ? existingOrder.order_timeline
+    : [];
 
   const updates = {
     [field]: value,
   };
 
   if (field === "payment_status" && value === "received") {
-    updates.paid_at = new Date().toISOString();
+    updates.paid_at = existingOrder?.paid_at || new Date().toISOString();
+  }
+
+  if (field !== "admin_notes") {
+    updates.order_timeline = [
+      ...existingTimeline,
+      buildTimelineEntry({
+        type: field,
+        label:
+          timelineLabel ||
+          getTimelineLabelFromUpdates(updates, "Order Updated"),
+        message:
+          timelineMessage ||
+          `${formatStatusLabel(field)} changed to ${formatStatusLabel(value)}.`,
+      }),
+    ];
   }
 
   const { error } = await supabase
@@ -130,13 +157,28 @@ export default function AdminOrders() {
   setActionMessage("");
   setActionError("");
 
+  const existingOrder = orders.find((order) => order.id === orderId);
+
+  const existingTimeline = Array.isArray(existingOrder?.order_timeline)
+    ? existingOrder.order_timeline
+    : [];
+
   const finalUpdates = {
     ...updates,
   };
 
   if (finalUpdates.payment_status === "received") {
-    finalUpdates.paid_at = new Date().toISOString();
+    finalUpdates.paid_at = existingOrder?.paid_at || new Date().toISOString();
   }
+
+  finalUpdates.order_timeline = [
+    ...existingTimeline,
+    buildTimelineEntry({
+      type: finalUpdates.order_status || finalUpdates.payment_status || "update",
+      label: getTimelineLabelFromUpdates(finalUpdates, "Order Updated"),
+      message: message || "Order updated.",
+    }),
+  ];
 
   const { error } = await supabase
     .from("orders")
@@ -166,6 +208,64 @@ export default function AdminOrders() {
   return String(value || "")
     .replaceAll("_", " ")
     .replace(/\b\w/g, (char) => char.toUpperCase());
+};
+
+const buildTimelineEntry = ({ type, label, message }) => {
+  return {
+    id:
+      typeof crypto !== "undefined" && crypto.randomUUID
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random()}`,
+    type,
+    label,
+    message,
+    at: new Date().toISOString(),
+  };
+};
+
+const getTimelineLabelFromUpdates = (updates, fallback = "Order Updated") => {
+  if (updates.order_status === "cancelled") return "Order Cancelled";
+  if (updates.order_status === "completed") return "Order Completed";
+  if (updates.order_status === "out_for_delivery") return "Out For Delivery";
+
+  if (
+  updates.order_status === "confirmed" &&
+  updates.payment_status === "received"
+) {
+  return "Payment Received & Order Confirmed";
+}
+
+  if (updates.order_status === "confirmed") return "Order Confirmed";
+  if (updates.payment_status === "received") return "Payment Received";
+  if (updates.payment_status) return `Payment ${formatStatusLabel(updates.payment_status)}`;
+
+  return fallback;
+};
+
+const getTimelineEntries = (order) => {
+  const savedTimeline = Array.isArray(order.order_timeline)
+    ? order.order_timeline
+    : [];
+
+  const baseTimeline = [
+    {
+      id: `created-${order.id}`,
+      type: "created",
+      label: "Order Created",
+      message: "Customer submitted this order.",
+      at: order.created_at,
+    },
+  ];
+
+  return [...baseTimeline, ...savedTimeline]
+    .filter((event) => event?.at)
+    .sort((a, b) => new Date(b.at) - new Date(a.at));
+};
+
+const formatTimelineDate = (value) => {
+  if (!value) return "Unknown time";
+
+  return new Date(value).toLocaleString();
 };
 
 const copyToClipboard = async (text) => {
@@ -705,6 +805,22 @@ const orderSummary = {
 </button>
   </>
 )}
+</div>
+
+<div className="admin-order-timeline">
+  <span>Order Timeline</span>
+
+  {getTimelineEntries(order).map((event) => (
+    <div key={event.id} className={`timeline-event timeline-${event.type}`}>
+      <div className="timeline-dot"></div>
+
+      <div>
+        <strong>{event.label}</strong>
+        <p>{event.message}</p>
+        <small>{formatTimelineDate(event.at)}</small>
+      </div>
+    </div>
+  ))}
 </div>
 
 <div className="admin-internal-notes">
