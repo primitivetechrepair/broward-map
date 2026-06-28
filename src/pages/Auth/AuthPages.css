@@ -469,3 +469,185 @@
   opacity: 0.55;
   cursor: not-allowed;
 }
+
+/* =============================== */
+/* ADMIN REVIEW DASHBOARD           */
+/* =============================== */
+
+.admin-card {
+  width: min(980px, 94vw);
+}
+
+.admin-toolbar {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+
+  margin: 20px 0;
+}
+
+.admin-toolbar button,
+.admin-review-actions button {
+  min-height: 48px;
+  padding: 0 16px;
+
+  border-radius: 16px;
+  border: 1px solid rgba(78, 255, 154, 0.42);
+
+  color: #06130c;
+  background:
+    linear-gradient(135deg, #4eff9a, #00e5ff);
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 1000;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 16px 36px rgba(0, 0, 0, 0.3),
+    0 0 22px rgba(78, 255, 154, 0.22),
+    0 0 30px rgba(0, 229, 255, 0.14);
+}
+
+.admin-toolbar button:disabled,
+.admin-review-actions button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: grayscale(0.35);
+}
+
+.admin-review-list {
+  display: grid;
+  gap: 16px;
+}
+
+.admin-review-card {
+  padding: 18px;
+  border-radius: 26px;
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  background:
+    radial-gradient(circle at 12% 0%, rgba(0, 229, 255, 0.1), transparent 34%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.025)),
+    rgba(7, 7, 18, 0.6);
+
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.admin-review-card.review-approved {
+  border-color: rgba(78, 255, 154, 0.32);
+}
+
+.admin-review-card.review-rejected {
+  border-color: rgba(255, 78, 196, 0.32);
+}
+
+.admin-review-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.admin-review-top h2 {
+  margin: 4px 0 6px;
+
+  color: #ffffff;
+
+  font-family: "Chalet", sans-serif;
+  font-size: 1.1rem;
+  font-weight: 1000;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.admin-review-top p {
+  margin: 0;
+
+  color: rgba(255, 255, 255, 0.62);
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.84rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.admin-review-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+
+  margin: 16px 0;
+}
+
+.admin-review-meta div {
+  padding: 12px;
+  border-radius: 18px;
+
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-review-meta span {
+  display: block;
+
+  color: rgba(255, 255, 255, 0.5);
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.admin-review-meta strong {
+  display: block;
+  margin-top: 6px;
+
+  color: #ffffff;
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 1000;
+  word-break: break-word;
+}
+
+.admin-review-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.admin-review-actions button:nth-child(3) {
+  color: #ffffff;
+  border-color: rgba(255, 78, 196, 0.46);
+
+  background:
+    linear-gradient(135deg, #ff4ec4, #8c52ff);
+}
+
+@media (max-width: 720px) {
+  .admin-review-top {
+    display: grid;
+  }
+
+  .admin-review-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-toolbar,
+  .admin-review-actions {
+    display: grid;
+  }
+
+  .admin-toolbar button,
+  .admin-review-actions button {
+    width: 100%;
+  }
+}
