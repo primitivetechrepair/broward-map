@@ -119,3 +119,11 @@ body, p, span, a, li {
 h1, h2, h3, h4, h5, h6 {
   margin: 0;
 }
+
+/* ========================== */
+/* Universal Layout Spacing   */
+/* ========================== */
+
+.site-main-content {
+  min-height: calc(100vh - 74px);
+}

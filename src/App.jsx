@@ -2,8 +2,9 @@ import React from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 
 import Map from "./components/Map/Map";
-import Header from "./components/Header";
-import MobileHeader from "./components/MobileHeader/MobileHeader";
+
+import SiteHeader from "./components/SiteChrome/SiteHeader.jsx";
+import SiteFooter from "./components/SiteChrome/SiteFooter.jsx";
 
 import ProductsPage from "./pages/ProductsPage";
 import CheckoutPage from "./pages/CheckoutPage/CheckoutPage";
@@ -11,6 +12,7 @@ import CheckoutPage from "./pages/CheckoutPage/CheckoutPage";
 import LoginPage from "./pages/Auth/LoginPage";
 import RegisterPage from "./pages/Auth/RegisterPage";
 import PortalDashboard from "./pages/Portal/PortalDashboard";
+import PortalOrders from "./pages/Portal/PortalOrders";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import AdminOrders from "./pages/Admin/AdminOrders";
 
@@ -31,7 +33,9 @@ function AppWrapper() {
     "/admin",
   ];
 
-  const showBackground = !noGlobalBackgroundRoutes.includes(location.pathname);
+  const showBackground = !noGlobalBackgroundRoutes.some((route) =>
+    location.pathname.startsWith(route)
+  );
 
   return (
     <>
@@ -41,17 +45,9 @@ function AppWrapper() {
         </div>
       )}
 
-      {/* Mobile Header */}
-      <div className="mobile-header-wrapper">
-        <MobileHeader />
-      </div>
+      <SiteHeader />
 
-      {/* Desktop Header */}
-      <div className="desktop-header-wrapper">
-        <Header />
-      </div>
-
-      <main className="page-content">
+      <main className="page-content site-main-content">
         <Routes>
           <Route path="/" element={<Map />} />
 
@@ -80,6 +76,15 @@ function AppWrapper() {
           />
 
           <Route
+            path="/portal/orders"
+            element={
+              <ProtectedRoute>
+                <PortalOrders />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
             path="/admin"
             element={
               <AdminRoute>
@@ -89,15 +94,17 @@ function AppWrapper() {
           />
 
           <Route
-  path="/admin/orders"
-  element={
-    <AdminRoute>
-      <AdminOrders />
-    </AdminRoute>
-  }
-/>
+            path="/admin/orders"
+            element={
+              <AdminRoute>
+                <AdminOrders />
+              </AdminRoute>
+            }
+          />
         </Routes>
       </main>
+
+      <SiteFooter />
     </>
   );
 }
