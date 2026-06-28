@@ -43,6 +43,13 @@ const ORDER_STATUS_WEIGHT = {
   cancelled: 5,
 };
 
+const normalizeOrderStatus = (status) => {
+  return String(status || "")
+    .trim()
+    .toLowerCase()
+    .replaceAll(" ", "_");
+};
+
 export default function AdminOrders() {
   const navigate = useNavigate();
   const { signOut } = useAuth();
@@ -189,8 +196,8 @@ const buildMapsUrl = (order) => {
 };
 
 const sortedOrders = [...orders].sort((a, b) => {
-  const statusA = ORDER_STATUS_WEIGHT[a.order_status] || 99;
-  const statusB = ORDER_STATUS_WEIGHT[b.order_status] || 99;
+  const statusA = ORDER_STATUS_WEIGHT[normalizeOrderStatus(a.order_status)] || 99;
+  const statusB = ORDER_STATUS_WEIGHT[normalizeOrderStatus(b.order_status)] || 99;
 
   if (statusA !== statusB) {
     return statusA - statusB;
@@ -200,11 +207,14 @@ const sortedOrders = [...orders].sort((a, b) => {
 });
 
 const filteredOrders = sortedOrders.filter((order) => {
+  const orderStatus = normalizeOrderStatus(order.order_status);
+  const currentFilter = normalizeOrderStatus(activeFilter);
+
   const matchesFilter =
-    activeFilter === "all" ||
-    order.order_status === activeFilter ||
-    (activeFilter === "active" &&
-      ACTIVE_ORDER_STATUSES.includes(order.order_status));
+    currentFilter === "all" ||
+    orderStatus === currentFilter ||
+    (currentFilter === "active" &&
+      ACTIVE_ORDER_STATUSES.includes(orderStatus));
 
   const searchValue = searchTerm.trim().toLowerCase();
 
@@ -350,9 +360,11 @@ const orderSummary = {
     ? orders.length
     : filter === "active"
       ? orders.filter((order) =>
-          ACTIVE_ORDER_STATUSES.includes(order.order_status)
+          ACTIVE_ORDER_STATUSES.includes(normalizeOrderStatus(order.order_status))
         ).length
-      : orders.filter((order) => order.order_status === filter).length}
+      : orders.filter(
+          (order) => normalizeOrderStatus(order.order_status) === filter
+        ).length}
 </span>
     </button>
   ))}
