@@ -5,7 +5,7 @@ import "./SiteChrome.css";
 
 const SUPPORT_EMAIL = "YOUR_SUPPORT_EMAIL";
 
-export default function SiteHeader() {
+export default function SiteHeader({ compact = false }) {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -21,7 +21,7 @@ export default function SiteHeader() {
   };
 
   return (
-    <header className="site-header">
+    <header className={`site-header ${compact ? "site-header-compact" : ""}`}>
       <div className="site-header-inner">
         <button
           type="button"
@@ -44,7 +44,7 @@ export default function SiteHeader() {
           type="button"
           className={`site-menu-toggle ${menuOpen ? "is-open" : ""}`}
           onClick={() => setMenuOpen((prev) => !prev)}
-          aria-label="Toggle menu"
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
           aria-expanded={menuOpen}
         >
           <span></span>

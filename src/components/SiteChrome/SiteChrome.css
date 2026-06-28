@@ -5,9 +5,13 @@
 .site-header {
   position: sticky;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 1000;
 
-  width: 100%;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
 
   border-bottom: 1px solid rgba(255, 199, 87, 0.16);
   background:
@@ -26,10 +30,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 18px;
+  gap: 22px;
 
-  width: min(1180px, calc(100% - 32px));
-  min-height: 74px;
+  width: min(1280px, calc(100% - 36px));
+  min-height: 86px;
 
   margin: 0 auto;
 }
@@ -52,9 +56,9 @@
   align-items: center;
   justify-content: center;
 
-  width: 42px;
-  height: 42px;
-  border-radius: 16px;
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
 
   border: 1px solid rgba(255, 199, 87, 0.36);
   color: #101014;
@@ -62,7 +66,7 @@
     linear-gradient(135deg, #ffc757, #ffdd87);
 
   font-family: "Chalet", sans-serif;
-  font-size: 0.78rem;
+  font-size: 1rem;
   font-weight: 1000;
   letter-spacing: 0.06em;
 
@@ -77,7 +81,7 @@
   color: #ffffff;
 
   font-family: "Chalet", sans-serif;
-  font-size: 0.95rem;
+  font-size: 1.9rem;
   font-weight: 1000;
   letter-spacing: 0.08em;
   line-height: 1.05;
@@ -87,12 +91,12 @@
 .site-brand small {
   display: block;
 
-  margin-top: 3px;
+  margin-top: 4px;
 
   color: rgba(255, 255, 255, 0.48);
 
   font-family: "Chalet", sans-serif;
-  font-size: 0.62rem;
+  font-size: 0.76rem;
   font-weight: 900;
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -145,19 +149,6 @@
   background: rgba(255, 199, 87, 0.07);
 }
 
-.site-nav .site-admin-link {
-  color: #57d1ff;
-  border-color: rgba(87, 209, 255, 0.2);
-  background: rgba(87, 209, 255, 0.055);
-}
-
-.site-nav .site-admin-link:hover,
-.site-nav .site-admin-link.active {
-  color: #57d1ff;
-  border-color: rgba(87, 209, 255, 0.34);
-  background: rgba(87, 209, 255, 0.1);
-}
-
 .site-nav .site-nav-cta {
   margin-left: 5px;
 
@@ -182,6 +173,77 @@
 }
 
 /* =============================== */
+/* HOME HEADER                      */
+/* =============================== */
+
+.site-header-compact .site-header-inner {
+  min-height: 78px;
+}
+
+.site-header-compact .site-brand {
+  gap: 12px;
+}
+
+.site-header-compact .site-brand-mark {
+  width: 50px;
+  height: 50px;
+  border-radius: 17px;
+
+  font-size: 0.92rem;
+}
+
+.site-header-compact .site-brand strong {
+  font-size: 1.7rem;
+}
+
+.site-header-compact .site-brand small {
+  margin-top: 3px;
+  font-size: 0.7rem;
+}
+
+.site-header-compact .site-nav {
+  gap: 6px;
+}
+
+.site-header-compact .site-nav a,
+.site-header-compact .site-nav button {
+  min-height: 36px;
+  padding: 0 11px;
+
+  font-size: 0.64rem;
+}
+
+@media (max-width: 860px) {
+  .site-header-compact .site-header-inner {
+    min-height: 62px;
+  }
+
+  .site-header-compact .site-brand-mark {
+    width: 38px;
+    height: 38px;
+    border-radius: 14px;
+  }
+
+  .site-header-compact .site-brand strong {
+    font-size: 0.92rem;
+  }
+
+  .site-header-compact .site-brand small {
+    display: none;
+  }
+
+  .site-header-compact .site-menu-toggle {
+    width: 38px;
+    height: 38px;
+    border-radius: 13px;
+  }
+
+  .site-header-compact .site-nav {
+    top: 70px;
+  }
+}
+
+/* =============================== */
 /* UNIVERSAL SITE FOOTER            */
 /* =============================== */
 
@@ -189,7 +251,7 @@
   position: relative;
   z-index: 2;
 
-  margin-top: 72px;
+  margin-top: 0;
 
   border-top: 1px solid rgba(255, 199, 87, 0.14);
   background:
@@ -485,14 +547,8 @@
       linear-gradient(135deg, #ffc757, #ffdd87);
   }
 
-  .site-nav .site-admin-link {
-    color: #57d1ff;
-    border-color: rgba(87, 209, 255, 0.28);
-    background: rgba(87, 209, 255, 0.08);
-  }
-
   .site-footer {
-  margin-top: 64px;
+  margin-top: 0;
 }
 
   .site-footer-inner {
