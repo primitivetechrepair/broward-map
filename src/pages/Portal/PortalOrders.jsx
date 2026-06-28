@@ -271,6 +271,31 @@ export default function PortalOrders() {
                       ))
                     )}
                   </div>
+
+                  <div className="customer-order-actions">
+  <button
+  type="button"
+  onClick={() =>
+    navigate("/products", {
+      state: {
+        city: order.city,
+        selectedCity: order.city,
+        deliveryFee: Number(order.delivery_fee || 0),
+        fromOrderHistory: true,
+      },
+    })
+  }
+>
+  Shop Again
+</button>
+
+  <button
+    type="button"
+    onClick={() => navigate("/")}
+  >
+    Back To Map
+  </button>
+</div>
                 </article>
               );
             })
