@@ -60,6 +60,7 @@ export default function AdminOrders() {
   const [actionError, setActionError] = useState("");
   const [activeFilter, setActiveFilter] = useState("active");
   const [searchTerm, setSearchTerm] = useState("");
+  const [customerUpdateDrafts, setCustomerUpdateDrafts] = useState({});
 
   const loadOrders = async () => {
     setLoading(true);
@@ -153,7 +154,12 @@ export default function AdminOrders() {
   );
 };
 
-  const updateOrderFields = async ({ orderId, updates, message }) => {
+  const updateOrderFields = async ({
+  orderId,
+  updates,
+  message,
+  customerMessage,
+}) => {
   setActionMessage("");
   setActionError("");
 
@@ -171,12 +177,14 @@ export default function AdminOrders() {
     finalUpdates.paid_at = existingOrder?.paid_at || new Date().toISOString();
   }
 
+  const cleanCustomerMessage = String(customerMessage || "").trim();
+
   finalUpdates.order_timeline = [
     ...existingTimeline,
     buildTimelineEntry({
       type: finalUpdates.order_status || finalUpdates.payment_status || "update",
       label: getTimelineLabelFromUpdates(finalUpdates, "Order Updated"),
-      message: message || "Order updated.",
+      message: cleanCustomerMessage || message || "Order updated.",
     }),
   ];
 
@@ -192,6 +200,12 @@ export default function AdminOrders() {
 
   setActionMessage(message || "Order updated.");
 
+  setCustomerUpdateDrafts((prev) => {
+    const next = { ...prev };
+    delete next[orderId];
+    return next;
+  });
+
   setOrders((prev) =>
     prev.map((order) =>
       order.id === orderId
@@ -204,7 +218,67 @@ export default function AdminOrders() {
   );
 };
 
-  const formatStatusLabel = (value) => {
+const sendCustomerUpdate = async (orderId) => {
+  setActionMessage("");
+  setActionError("");
+
+  const cleanCustomerMessage = String(customerUpdateDrafts[orderId] || "").trim();
+
+  if (!cleanCustomerMessage) {
+    setActionError("Type a customer update message first.");
+    return;
+  }
+
+  const existingOrder = orders.find((order) => order.id === orderId);
+
+  const existingTimeline = Array.isArray(existingOrder?.order_timeline)
+    ? existingOrder.order_timeline
+    : [];
+
+  const updatedTimeline = [
+    ...existingTimeline,
+    buildTimelineEntry({
+      type: "customer_update",
+      label: "Customer Update",
+      message: cleanCustomerMessage,
+    }),
+  ];
+
+  const { data: savedOrder, error } = await supabase
+    .from("orders")
+    .update({
+      order_timeline: updatedTimeline,
+    })
+    .eq("id", orderId)
+    .select("*")
+    .single();
+
+  if (error) {
+    setActionError(error.message);
+    return;
+  }
+
+  setActionMessage("Customer update sent.");
+
+  setCustomerUpdateDrafts((prev) => {
+    const next = { ...prev };
+    delete next[orderId];
+    return next;
+  });
+
+  setOrders((prev) =>
+    prev.map((order) =>
+      order.id === orderId
+        ? {
+            ...order,
+            ...savedOrder,
+          }
+        : order
+    )
+  );
+};
+
+const formatStatusLabel = (value) => {
   return String(value || "")
     .replaceAll("_", " ")
     .replace(/\b\w/g, (char) => char.toUpperCase());
@@ -533,7 +607,7 @@ const orderSummary = {
 </strong>
 </div>
 
-{order.payment_status === "pending" && (
+{paymentStatus === "pending" && (
   <div className="payment-warning">
     Payment is still pending. Check Zelle / Apple Pay for this memo:
     <strong>{order.payment_memo}</strong>
@@ -645,14 +719,14 @@ const orderSummary = {
 
                   <div className="admin-order-controls">
   <label>
-  Payment Status
+    Payment Status
 
-  <strong className={`mini-status-pill payment-${normalizeOrderStatus(order.payment_status)}`}>
-    {formatStatusLabel(order.payment_status)}
-  </strong>
+    <strong className={`mini-status-pill payment-${paymentStatus}`}>
+      {formatStatusLabel(order.payment_status)}
+    </strong>
 
-  <select
-    value={order.payment_status}
+    <select
+      value={order.payment_status}
       onChange={(e) =>
         updateOrderField({
           orderId: order.id,
@@ -671,6 +745,7 @@ const orderSummary = {
 
   <label>
     Order Status
+
     <select
       value={order.order_status}
       onChange={(e) =>
@@ -690,20 +765,49 @@ const orderSummary = {
   </label>
 </div>
 
+<div className="admin-customer-update-message">
+  <label>
+    Customer Update Message
+    <textarea
+      value={customerUpdateDrafts[order.id] || ""}
+      placeholder="Example: Driver is 15 minutes away. Meet near the front entrance..."
+      onChange={(e) =>
+        setCustomerUpdateDrafts((prev) => ({
+          ...prev,
+          [order.id]: e.target.value,
+        }))
+      }
+    />
+  </label>
+
+  <p>
+    Click Send Customer Update to show this message in the customer portal.
+    Quick action buttons can also use this message.
+  </p>
+
+  <button
+    type="button"
+    onClick={() => sendCustomerUpdate(order.id)}
+  >
+    Send Customer Update
+  </button>
+</div>
+
 <div className="admin-quick-actions">
   {paymentStatus !== "received" &&
-    order.order_status !== "cancelled" && (
+    orderStatus !== "cancelled" && (
       <button
         type="button"
         onClick={() =>
           updateOrderFields({
-            orderId: order.id,
-            updates: {
-              payment_status: "received",
-              order_status: "confirmed",
-            },
-            message: "Payment marked received and order confirmed.",
-          })
+  orderId: order.id,
+  updates: {
+    payment_status: "received",
+    order_status: "confirmed",
+  },
+  message: "Payment marked received and order confirmed.",
+  customerMessage: customerUpdateDrafts[order.id],
+})
         }
       >
         Mark Paid
@@ -715,20 +819,20 @@ const orderSummary = {
       type="button"
       onClick={() =>
         updateOrderFields({
-          orderId: order.id,
-          updates: {
-            order_status: "confirmed",
-          },
-          message: "Order confirmed.",
-        })
+  orderId: order.id,
+  updates: {
+    order_status: "confirmed",
+  },
+  message: "Order confirmed.",
+  customerMessage: customerUpdateDrafts[order.id],
+})
       }
     >
       Confirm Order
     </button>
   )}
 
-  {(order.order_status === "pending" ||
-    order.order_status === "confirmed") && (
+  {(orderStatus === "pending" || orderStatus === "confirmed") && (
     <button
       type="button"
       onClick={() =>
@@ -738,6 +842,7 @@ const orderSummary = {
             order_status: "out_for_delivery",
           },
           message: "Order marked out for delivery.",
+          customerMessage: customerUpdateDrafts[order.id],
         })
       }
     >
@@ -745,73 +850,71 @@ const orderSummary = {
     </button>
   )}
 
-  {order.order_status !== "completed" &&
-    order.order_status !== "cancelled" && (
-      <button
-        type="button"
-        onClick={() =>
-          updateOrderFields({
-            orderId: order.id,
-            updates: {
-              order_status: "completed",
-              payment_status: "received",
-            },
-            message: "Order completed and payment marked received.",
-          })
-        }
-      >
-        Complete Order
-      </button>
-    )}
-
-  {order.order_status !== "cancelled" &&
-    order.order_status !== "completed" && (
-      <button
-        type="button"
-        className="danger-action"
-        onClick={() =>
-          updateOrderFields({
-            orderId: order.id,
-            updates: {
-              order_status: "cancelled",
-            },
-            message: "Order cancelled.",
-          })
-        }
-      >
-        Cancel Order
-      </button>
-    )}
-
-  {(order.order_status === "completed" ||
-  order.order_status === "cancelled") && (
-  <>
-    <span className="admin-quick-actions-empty">
-      This order is closed.
-    </span>
-
+  {orderStatus !== "completed" && orderStatus !== "cancelled" && (
     <button
-  type="button"
-  onClick={() => {
-    setActiveFilter("active");
+      type="button"
+      onClick={() =>
+        updateOrderFields({
+          orderId: order.id,
+          updates: {
+            order_status: "completed",
+            payment_status: "received",
+          },
+          message: "Order completed and payment marked received.",
+          customerMessage: customerUpdateDrafts[order.id],
+        })
+      }
+    >
+      Complete Order
+    </button>
+  )}
 
-    updateOrderFields({
-      orderId: order.id,
-      updates: {
-        order_status: "confirmed",
-        payment_status:
-          order.payment_status === "received"
-            ? "received"
-            : "pending",
-      },
-      message: "Order reopened and moved back to confirmed.",
-    });
-  }}
->
-  Reopen Order
-</button>
-  </>
-)}
+  {orderStatus !== "cancelled" && orderStatus !== "completed" && (
+    <button
+      type="button"
+      className="danger-action"
+      onClick={() =>
+        updateOrderFields({
+          orderId: order.id,
+          updates: {
+            order_status: "cancelled",
+          },
+          message: "Order cancelled.",
+          customerMessage: customerUpdateDrafts[order.id],
+        })
+      }
+    >
+      Cancel Order
+    </button>
+  )}
+
+  {(orderStatus === "completed" || orderStatus === "cancelled") && (
+    <>
+      <span className="admin-quick-actions-empty">
+        This order is closed.
+      </span>
+
+      <button
+        type="button"
+        onClick={() => {
+          setActiveFilter("active");
+
+          updateOrderFields({
+            orderId: order.id,
+            updates: {
+              order_status: "confirmed",
+              payment_status:
+                paymentStatus === "received" ? "received" : "pending",
+            },
+            message: "Order reopened and moved back to confirmed.",
+            customerMessage: customerUpdateDrafts[order.id],
+          });
+        }}
+      >
+        Reopen Order
+      </button>
+    </>
+  )}
 </div>
 
 <div className="admin-order-timeline">

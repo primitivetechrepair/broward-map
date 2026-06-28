@@ -69,12 +69,24 @@ const getLatestCustomerOrderUpdate = (order) => {
 
   const label = String(latestEvent.label || "");
   const type = String(latestEvent.type || "");
+  const savedMessage = String(latestEvent.message || "").trim();
+
+  if (label.includes("Customer Update") || type === "customer_update") {
+  return {
+    tone: "neutral",
+    title: "Customer Update",
+    message: savedMessage || "Your order was updated.",
+    at: latestEvent.at,
+  };
+}
 
   if (label.includes("Cancelled") || type === "cancelled") {
     return {
       tone: "danger",
       title: "Order Cancelled",
-      message: "This order was cancelled. Contact us if you believe this was a mistake.",
+      message:
+        savedMessage ||
+        "This order was cancelled. Contact us if you believe this was a mistake.",
       at: latestEvent.at,
     };
   }
@@ -83,7 +95,7 @@ const getLatestCustomerOrderUpdate = (order) => {
     return {
       tone: "success",
       title: "Order Completed",
-      message: "Your order has been completed.",
+      message: savedMessage || "Your order has been completed.",
       at: latestEvent.at,
     };
   }
@@ -92,7 +104,9 @@ const getLatestCustomerOrderUpdate = (order) => {
     return {
       tone: "success",
       title: "Out For Delivery",
-      message: "Your order is on the way. Please keep your phone nearby.",
+      message:
+        savedMessage ||
+        "Your order is on the way. Please keep your phone nearby.",
       at: latestEvent.at,
     };
   }
@@ -101,7 +115,9 @@ const getLatestCustomerOrderUpdate = (order) => {
     return {
       tone: "success",
       title: "Payment Received",
-      message: "Your payment was received and your order is being processed.",
+      message:
+        savedMessage ||
+        "Your payment was received and your order is being processed.",
       at: latestEvent.at,
     };
   }
@@ -110,7 +126,7 @@ const getLatestCustomerOrderUpdate = (order) => {
     return {
       tone: "success",
       title: "Order Confirmed",
-      message: "Your order has been confirmed.",
+      message: savedMessage || "Your order has been confirmed.",
       at: latestEvent.at,
     };
   }
@@ -118,7 +134,7 @@ const getLatestCustomerOrderUpdate = (order) => {
   return {
     tone: "neutral",
     title: label || "Order Updated",
-    message: "Your order was updated.",
+    message: savedMessage || "Your order was updated.",
     at: latestEvent.at,
   };
 };
@@ -288,10 +304,29 @@ const getCustomerTrackerSteps = (order) => {
     setOrderError("");
 
     const { data, error } = await supabase
-      .from("orders")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false });
+  .from("orders")
+  .select(`
+    id,
+    user_id,
+    customer_name,
+    phone,
+    address,
+    apt,
+    city,
+    notes,
+    items,
+    total,
+    delivery_fee,
+    payment_method,
+    payment_status,
+    payment_memo,
+    order_status,
+    paid_at,
+    order_timeline,
+    created_at
+  `)
+  .eq("user_id", user.id)
+  .order("created_at", { ascending: false });
 
     if (error) {
       setOrderError(error.message);
@@ -304,8 +339,8 @@ const getCustomerTrackerSteps = (order) => {
   };
 
   useEffect(() => {
-    loadOrders();
-  }, [user?.id]);
+  loadOrders();
+}, [user?.id]);
 
   const handleSignOut = async () => {
     await signOut();
