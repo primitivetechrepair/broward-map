@@ -69,42 +69,56 @@ export default function AdminOrders() {
   };
 
   const updateOrderField = async ({ orderId, field, value }) => {
-    setActionMessage("");
-    setActionError("");
+  setActionMessage("");
+  setActionError("");
 
-    const { error } = await supabase
-      .from("orders")
-      .update({
-        [field]: value,
-      })
-      .eq("id", orderId);
-
-    if (error) {
-      setActionError(error.message);
-      return;
-    }
-
-    setActionMessage("Order updated.");
-
-    setOrders((prev) =>
-      prev.map((order) =>
-        order.id === orderId
-          ? {
-              ...order,
-              [field]: value,
-            }
-          : order
-      )
-    );
+  const updates = {
+    [field]: value,
   };
+
+  if (field === "payment_status" && value === "received") {
+    updates.paid_at = new Date().toISOString();
+  }
+
+  const { error } = await supabase
+    .from("orders")
+    .update(updates)
+    .eq("id", orderId);
+
+  if (error) {
+    setActionError(error.message);
+    return;
+  }
+
+  setActionMessage("Order updated.");
+
+  setOrders((prev) =>
+    prev.map((order) =>
+      order.id === orderId
+        ? {
+            ...order,
+            ...updates,
+          }
+        : order
+    )
+  );
+};
 
   const updateOrderFields = async ({ orderId, updates, message }) => {
   setActionMessage("");
   setActionError("");
 
+  const finalUpdates = {
+    ...updates,
+  };
+
+  if (finalUpdates.payment_status === "received") {
+    finalUpdates.paid_at = new Date().toISOString();
+  }
+
   const { error } = await supabase
     .from("orders")
-    .update(updates)
+    .update(finalUpdates)
     .eq("id", orderId);
 
   if (error) {
@@ -119,7 +133,7 @@ export default function AdminOrders() {
       order.id === orderId
         ? {
             ...order,
-            ...updates,
+            ...finalUpdates,
           }
         : order
     )
@@ -203,15 +217,17 @@ const orderSummary = {
   ).length,
 
   todayRevenue: orders
-    .filter((order) => {
-      const orderDateKey = new Date(order.created_at).toDateString();
+  .filter((order) => {
+    if (!order.paid_at) return false;
 
-      return (
-        orderDateKey === todayKey &&
-        order.payment_status === "received"
-      );
-    })
-    .reduce((sum, order) => sum + Number(order.total || 0), 0),
+    const paidDateKey = new Date(order.paid_at).toDateString();
+
+    return (
+      paidDateKey === todayKey &&
+      order.payment_status === "received"
+    );
+  })
+  .reduce((sum, order) => sum + Number(order.total || 0), 0),
 };
 
   return (
