@@ -88,10 +88,22 @@ export default function AdminOrders() {
   };
 
   const formatStatusLabel = (value) => {
-    return value
-      .replaceAll("_", " ")
-      .replace(/\b\w/g, (char) => char.toUpperCase());
-  };
+  return String(value || "")
+    .replaceAll("_", " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+};
+
+const copyToClipboard = async (text) => {
+  if (!text) return;
+
+  try {
+    await navigator.clipboard.writeText(text);
+    setActionMessage("Payment memo copied.");
+    setActionError("");
+  } catch (error) {
+    setActionError("Could not copy memo. Please copy it manually.");
+  }
+};
 
   return (
     <div className="auth-page">
@@ -154,20 +166,35 @@ export default function AdminOrders() {
               return (
                 <article key={order.id} className="admin-order-card">
                   <div className="admin-order-top">
-                    <div>
-                      <span className="auth-eyebrow">Order</span>
+  <div>
+    <span className="auth-eyebrow">Customer</span>
 
-                      <h2>{order.customer_name}</h2>
+    <h2>{order.customer_name}</h2>
 
-                      <p>
-                        {order.phone} · {order.city}
-                      </p>
-                    </div>
+    <p>
+      {order.phone} · {order.city}
+    </p>
 
-                    <strong className={`status-pill status-${order.order_status}`}>
-                      {formatStatusLabel(order.order_status)}
-                    </strong>
-                  </div>
+    <button
+      type="button"
+      className="copy-memo-btn"
+      onClick={() => copyToClipboard(order.payment_memo)}
+    >
+      Copy Payment Memo
+    </button>
+  </div>
+
+  <strong className={`status-pill status-${order.order_status}`}>
+    {formatStatusLabel(order.order_status)}
+  </strong>
+</div>
+
+{order.payment_status === "pending" && (
+  <div className="payment-warning">
+    Payment is still pending. Check Zelle / Apple Pay for this memo:
+    <strong>{order.payment_memo}</strong>
+  </div>
+)}
 
                   <div className="admin-order-meta">
                     <div>
