@@ -53,6 +53,22 @@ const hoveredCityInfo = hoveredCity
     }
   : null;
 
+const getCurrentMapCenter = () => {
+  if (isMobile) {
+    return currentCounty.mobileCenter || currentCounty.center;
+  }
+
+  return currentCounty.desktopCenter || currentCounty.center;
+};
+
+const getCurrentMapZoom = () => {
+  if (isMobile) {
+    return currentCounty.mobileZoom ?? currentCounty.zoom;
+  }
+
+  return currentCounty.desktopZoom ?? currentCounty.zoom;
+};
+
   const handleCountyChange = (countyKey) => {
   if (countyKey === selectedCounty) return;
 
@@ -76,13 +92,13 @@ const handleResetMap = () => {
 
   if (mapRef.current) {
     mapRef.current.flyTo(
-      currentCounty.center,
-      isMobile ? currentCounty.mobileZoom : currentCounty.zoom,
-      {
-        duration: 0.45,
-        easeLinearity: 0.35,
-      }
-    );
+  getCurrentMapCenter(),
+  getCurrentMapZoom(),
+  {
+    duration: 0.45,
+    easeLinearity: 0.35,
+  }
+);
   }
 };
 
@@ -265,13 +281,9 @@ setHoveredCity(null);
       {readyToRender && geoData && (
         <MapContainer
   ref={mapRef}
-  key={selectedCounty}
-  center={currentCounty.center}
-  zoom={
-    isMobile
-      ? currentCounty.mobileZoom
-      : currentCounty.zoom
-  }
+  key={`${selectedCounty}-${isMobile ? "mobile" : "desktop"}`}
+  center={getCurrentMapCenter()}
+  zoom={getCurrentMapZoom()}
   minZoom={9.8}
   maxZoom={14}
   zoomSnap={0.1}
