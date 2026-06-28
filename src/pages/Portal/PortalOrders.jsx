@@ -49,6 +49,80 @@ const formatCustomerTimelineDate = (value) => {
   return new Date(value).toLocaleString();
 };
 
+const getLatestCustomerOrderUpdate = (order) => {
+  const savedTimeline = Array.isArray(order.order_timeline)
+    ? order.order_timeline
+    : [];
+
+  const latestEvent = [...savedTimeline]
+    .filter((event) => event?.at)
+    .sort((a, b) => new Date(b.at) - new Date(a.at))[0];
+
+  if (!latestEvent) {
+    return {
+      tone: "neutral",
+      title: "Order Received",
+      message: "Your order was submitted and is waiting for review.",
+      at: order.created_at,
+    };
+  }
+
+  const label = String(latestEvent.label || "");
+  const type = String(latestEvent.type || "");
+
+  if (label.includes("Cancelled") || type === "cancelled") {
+    return {
+      tone: "danger",
+      title: "Order Cancelled",
+      message: "This order was cancelled. Contact us if you believe this was a mistake.",
+      at: latestEvent.at,
+    };
+  }
+
+  if (label.includes("Completed") || type === "completed") {
+    return {
+      tone: "success",
+      title: "Order Completed",
+      message: "Your order has been completed.",
+      at: latestEvent.at,
+    };
+  }
+
+  if (label.includes("Out For Delivery") || type === "out_for_delivery") {
+    return {
+      tone: "success",
+      title: "Out For Delivery",
+      message: "Your order is on the way. Please keep your phone nearby.",
+      at: latestEvent.at,
+    };
+  }
+
+  if (label.includes("Payment Received")) {
+    return {
+      tone: "success",
+      title: "Payment Received",
+      message: "Your payment was received and your order is being processed.",
+      at: latestEvent.at,
+    };
+  }
+
+  if (label.includes("Confirmed") || type === "confirmed") {
+    return {
+      tone: "success",
+      title: "Order Confirmed",
+      message: "Your order has been confirmed.",
+      at: latestEvent.at,
+    };
+  }
+
+  return {
+    tone: "neutral",
+    title: label || "Order Updated",
+    message: "Your order was updated.",
+    at: latestEvent.at,
+  };
+};
+
 const getCustomerTrackerSteps = (order) => {
   const orderStatus = normalizeOrderStatus(order.order_status);
   const paymentStatus = normalizeOrderStatus(order.payment_status);
@@ -292,6 +366,7 @@ const getCustomerTrackerSteps = (order) => {
               const items = Array.isArray(order.items) ? order.items : [];
               const statusMessage = getCustomerStatusMessage(order);
               const trackerSteps = getCustomerTrackerSteps(order);
+              const latestUpdate = getLatestCustomerOrderUpdate(order);
 
               return (
                 <article key={order.id} className="customer-order-card">
@@ -317,6 +392,18 @@ const getCustomerTrackerSteps = (order) => {
   <strong className={`status-pill status-${order.order_status}`}>
     {formatStatusLabel(order.order_status)}
   </strong>
+</div>
+
+<div className={`customer-latest-update customer-latest-${latestUpdate.tone}`}>
+  <span>Latest Update</span>
+
+  <strong>{latestUpdate.title}</strong>
+
+  <p>{latestUpdate.message}</p>
+
+  {latestUpdate.at && (
+    <small>{formatCustomerTimelineDate(latestUpdate.at)}</small>
+  )}
 </div>
 
 <div className={`customer-status-message customer-status-${statusMessage.tone}`}>

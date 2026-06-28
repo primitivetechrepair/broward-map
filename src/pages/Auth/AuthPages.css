@@ -1904,3 +1904,98 @@
   font-size: 0.7rem;
   font-weight: 800;
 }
+
+/* =============================== */
+/* CUSTOMER LATEST ORDER UPDATE     */
+/* =============================== */
+
+.customer-latest-update {
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: 18px;
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.055);
+
+  font-family: "Chalet", sans-serif;
+}
+
+.customer-latest-update span {
+  display: block;
+
+  color: rgba(255, 255, 255, 0.5);
+
+  font-size: 0.66rem;
+  font-weight: 1000;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.customer-latest-update strong {
+  display: block;
+  margin-top: 6px;
+
+  color: #ffffff;
+
+  font-size: 0.9rem;
+  font-weight: 1000;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.customer-latest-update p {
+  margin: 7px 0 0;
+
+  color: rgba(255, 255, 255, 0.68);
+
+  font-size: 0.82rem;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.customer-latest-update small {
+  display: block;
+  margin-top: 8px;
+
+  color: rgba(255, 255, 255, 0.42);
+
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.customer-latest-success {
+  border-color: rgba(78, 255, 154, 0.3);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(78, 255, 154, 0.13), transparent 36%),
+    rgba(78, 255, 154, 0.065);
+}
+
+.customer-latest-success strong {
+  color: #4eff9a;
+}
+
+.customer-latest-warning {
+  border-color: rgba(255, 199, 87, 0.34);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255, 199, 87, 0.14), transparent 35%),
+    rgba(255, 199, 87, 0.07);
+}
+
+.customer-latest-warning strong {
+  color: #ffc757;
+}
+
+.customer-latest-danger {
+  border-color: rgba(255, 82, 82, 0.34);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255, 82, 82, 0.13), transparent 35%),
+    rgba(255, 82, 82, 0.07);
+}
+
+.customer-latest-danger strong {
+  color: #ff7373;
+}
+
+.customer-latest-neutral {
+  border-color: rgba(255, 255, 255, 0.14);
+}
