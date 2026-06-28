@@ -1231,3 +1231,22 @@
     width: 100%;
   }
 }
+
+/* =============================== */
+/* EMPTY QUICK ACTION STATE         */
+/* =============================== */
+
+.admin-quick-actions-empty {
+  display: inline-flex;
+  align-items: center;
+
+  min-height: 40px;
+
+  color: rgba(255, 255, 255, 0.58);
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}

@@ -350,86 +350,104 @@ const copyToClipboard = async (text) => {
 </div>
 
 <div className="admin-quick-actions">
-  <button
-    type="button"
-    onClick={() =>
-      updateOrderFields({
-        orderId: order.id,
-        updates: {
-          payment_status: "received",
-          order_status: "confirmed",
-        },
-        message: "Payment marked received and order confirmed.",
-      })
-    }
-  >
-    Mark Paid
-  </button>
+  {order.payment_status !== "received" &&
+    order.order_status !== "cancelled" && (
+      <button
+        type="button"
+        onClick={() =>
+          updateOrderFields({
+            orderId: order.id,
+            updates: {
+              payment_status: "received",
+              order_status: "confirmed",
+            },
+            message: "Payment marked received and order confirmed.",
+          })
+        }
+      >
+        Mark Paid
+      </button>
+    )}
 
-  <button
-    type="button"
-    onClick={() =>
-      updateOrderFields({
-        orderId: order.id,
-        updates: {
-          order_status: "confirmed",
-        },
-        message: "Order confirmed.",
-      })
-    }
-  >
-    Confirm Order
-  </button>
+  {order.order_status === "pending" && (
+    <button
+      type="button"
+      onClick={() =>
+        updateOrderFields({
+          orderId: order.id,
+          updates: {
+            order_status: "confirmed",
+          },
+          message: "Order confirmed.",
+        })
+      }
+    >
+      Confirm Order
+    </button>
+  )}
 
-  <button
-    type="button"
-    onClick={() =>
-      updateOrderFields({
-        orderId: order.id,
-        updates: {
-          order_status: "out_for_delivery",
-        },
-        message: "Order marked out for delivery.",
-      })
-    }
-  >
-    Out For Delivery
-  </button>
+  {(order.order_status === "pending" ||
+    order.order_status === "confirmed") && (
+    <button
+      type="button"
+      onClick={() =>
+        updateOrderFields({
+          orderId: order.id,
+          updates: {
+            order_status: "out_for_delivery",
+          },
+          message: "Order marked out for delivery.",
+        })
+      }
+    >
+      Out For Delivery
+    </button>
+  )}
 
-  <button
-    type="button"
-    onClick={() =>
-      updateOrderFields({
-        orderId: order.id,
-        updates: {
-          order_status: "completed",
-          payment_status:
-            order.payment_status === "received"
-              ? "received"
-              : order.payment_status,
-        },
-        message: "Order completed.",
-      })
-    }
-  >
-    Complete Order
-  </button>
+  {order.order_status !== "completed" &&
+    order.order_status !== "cancelled" && (
+      <button
+        type="button"
+        onClick={() =>
+          updateOrderFields({
+            orderId: order.id,
+            updates: {
+              order_status: "completed",
+              payment_status: "received",
+            },
+            message: "Order completed and payment marked received.",
+          })
+        }
+      >
+        Complete Order
+      </button>
+    )}
 
-  <button
-    type="button"
-    className="danger-action"
-    onClick={() =>
-      updateOrderFields({
-        orderId: order.id,
-        updates: {
-          order_status: "cancelled",
-        },
-        message: "Order cancelled.",
-      })
-    }
-  >
-    Cancel Order
-  </button>
+  {order.order_status !== "cancelled" &&
+    order.order_status !== "completed" && (
+      <button
+        type="button"
+        className="danger-action"
+        onClick={() =>
+          updateOrderFields({
+            orderId: order.id,
+            updates: {
+              order_status: "cancelled",
+            },
+            message: "Order cancelled.",
+          })
+        }
+      >
+        Cancel Order
+      </button>
+    )}
+
+  {(order.order_status === "completed" ||
+    order.order_status === "cancelled") && (
+    <span className="admin-quick-actions-empty">
+      No active quick actions for this order.
+    </span>
+  )}
 </div>
 
 <div className="admin-internal-notes">
