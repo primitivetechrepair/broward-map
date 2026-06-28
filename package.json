@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "concurrently \"npm run frontend\" \"npm run backend\"",
     "frontend": "vite",
-    "backend": "nodemon server/sendOrder.js",
+    "backend": "nodemon --watch server --ext js,mjs,cjs,json server/sendOrder.js",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
