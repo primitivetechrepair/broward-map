@@ -278,6 +278,38 @@ const sendCustomerUpdate = async (orderId) => {
   );
 };
 
+const hideCustomerUpdate = async (orderId, updateId) => {
+  if (!orderId || !updateId) return;
+
+  setActionMessage("");
+  setActionError("");
+
+  const { error } = await supabase
+    .from("orders")
+    .update({
+      admin_hidden_customer_update_id: updateId,
+    })
+    .eq("id", orderId);
+
+  if (error) {
+    setActionError(error.message);
+    return;
+  }
+
+  setActionMessage("Customer update hidden from admin view.");
+
+  setOrders((prev) =>
+    prev.map((order) =>
+      order.id === orderId
+        ? {
+            ...order,
+            admin_hidden_customer_update_id: updateId,
+          }
+        : order
+    )
+  );
+};
+
 const formatStatusLabel = (value) => {
   return String(value || "")
     .replaceAll("_", " ")
@@ -353,6 +385,18 @@ const getCustomerUpdateEvents = (order) => {
 
 const getLatestCustomerUpdate = (order) => {
   return getCustomerUpdateEvents(order)[0] || null;
+};
+
+const getVisibleLatestCustomerUpdate = (order) => {
+  const latestUpdate = getLatestCustomerUpdate(order);
+
+  if (!latestUpdate) return null;
+
+  if (order.admin_hidden_customer_update_id === latestUpdate.id) {
+    return null;
+  }
+
+  return latestUpdate;
 };
 
 const formatTimelineDate = (value) => {
@@ -449,8 +493,8 @@ const orderSummary = {
   ).length,
 
     customerUpdates: orders.filter(
-    (order) => getCustomerUpdateEvents(order).length > 0
-  ).length,
+  (order) => getVisibleLatestCustomerUpdate(order)
+).length,
 
   todayRevenue: orders
   .filter((order) => {
@@ -608,7 +652,7 @@ const orderSummary = {
   const items = Array.isArray(order.items) ? order.items : [];
   const orderStatus = normalizeOrderStatus(order.order_status);
   const paymentStatus = normalizeOrderStatus(order.payment_status);
-  const latestCustomerUpdate = getLatestCustomerUpdate(order);
+  const latestCustomerUpdate = getVisibleLatestCustomerUpdate(order);
 
               return (
                 <article key={order.id} className="admin-order-card">
@@ -643,6 +687,14 @@ const orderSummary = {
     <strong>{latestCustomerUpdate.message || "Customer update sent."}</strong>
 
     <small>{formatTimelineDate(latestCustomerUpdate.at)}</small>
+
+    <button
+      type="button"
+      className="hide-customer-update-btn"
+      onClick={() => hideCustomerUpdate(order.id, latestCustomerUpdate.id)}
+    >
+      Hide Update
+    </button>
   </div>
 )}
 

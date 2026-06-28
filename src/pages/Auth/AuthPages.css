@@ -2263,3 +2263,45 @@
   font-size: 0.7rem;
   font-weight: 800;
 }
+
+/* =============================== */
+/* HIDE CUSTOMER UPDATE BUTTON      */
+/* =============================== */
+
+.hide-customer-update-btn {
+  width: fit-content;
+
+  margin-top: 4px;
+  padding: 7px 11px;
+  border-radius: 999px;
+
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.68);
+  background: rgba(255, 255, 255, 0.07);
+
+  cursor: pointer;
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.64rem;
+  font-weight: 1000;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  transition:
+    transform 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease,
+    background 0.16s ease;
+}
+
+.hide-customer-update-btn:hover {
+  transform: translateY(-1px);
+
+  border-color: rgba(255, 199, 87, 0.34);
+  color: #ffc757;
+  background: rgba(255, 199, 87, 0.08);
+}
+
+.hide-customer-update-btn:active {
+  transform: translateY(1px) scale(0.98);
+}
