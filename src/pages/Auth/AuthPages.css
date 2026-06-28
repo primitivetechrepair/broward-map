@@ -860,3 +860,231 @@
     gap: 5px;
   }
 }
+
+/* =============================== */
+/* CUSTOMER ORDER HISTORY           */
+/* =============================== */
+
+.customer-orders-list {
+  display: grid;
+  gap: 16px;
+}
+
+.customer-order-card {
+  padding: 18px;
+  border-radius: 26px;
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  background:
+    radial-gradient(circle at 12% 0%, rgba(78, 255, 154, 0.1), transparent 34%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.025)),
+    rgba(7, 7, 18, 0.6);
+
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.customer-order-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.customer-order-top h2 {
+  margin: 4px 0 6px;
+
+  color: #ffffff;
+
+  font-family: "Chalet", sans-serif;
+  font-size: 1.1rem;
+  font-weight: 1000;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.customer-order-top p {
+  margin: 0;
+
+  color: rgba(255, 255, 255, 0.62);
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.84rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.customer-order-meta {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+
+  margin: 16px 0;
+}
+
+.customer-order-meta div,
+.customer-order-address,
+.customer-order-items {
+  padding: 12px;
+  border-radius: 18px;
+
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.customer-order-meta span,
+.customer-order-address span,
+.customer-order-items > span {
+  display: block;
+
+  color: rgba(255, 255, 255, 0.5);
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.customer-order-meta strong,
+.customer-order-address strong {
+  display: block;
+  margin-top: 6px;
+
+  color: #ffffff;
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 1000;
+  word-break: break-word;
+}
+
+.customer-order-address {
+  margin-bottom: 12px;
+}
+
+.customer-order-address p {
+  margin: 10px 0 0;
+
+  color: rgba(255, 255, 255, 0.66);
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.customer-order-items {
+  display: grid;
+  gap: 10px;
+}
+
+.customer-order-items div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 12px;
+  align-items: center;
+
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.customer-order-items strong {
+  color: #ffffff;
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.84rem;
+  font-weight: 1000;
+}
+
+.customer-order-items small {
+  color: rgba(255, 255, 255, 0.58);
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.customer-order-items b {
+  color: #4eff9a;
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.84rem;
+  font-weight: 1000;
+}
+
+@media (max-width: 720px) {
+  .customer-order-top {
+    display: grid;
+  }
+
+  .customer-order-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .customer-order-items div {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+}
+
+/* =============================== */
+/* PAYMENT MEMO / PAYMENT WARNING   */
+/* =============================== */
+
+.copy-memo-btn {
+  width: fit-content;
+  min-height: 36px;
+
+  margin-top: 10px;
+  padding: 0 14px;
+  border-radius: 999px;
+
+  border: 1px solid rgba(78, 255, 154, 0.32);
+  color: #4eff9a;
+  background: rgba(78, 255, 154, 0.08);
+
+  cursor: pointer;
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 1000;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.copy-memo-btn:hover {
+  border-color: rgba(78, 255, 154, 0.55);
+  background: rgba(78, 255, 154, 0.13);
+}
+
+.payment-warning {
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: 18px;
+
+  border: 1px solid rgba(255, 199, 87, 0.34);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255, 199, 87, 0.14), transparent 35%),
+    rgba(255, 199, 87, 0.07);
+
+  color: rgba(255, 255, 255, 0.78);
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.payment-warning strong {
+  display: block;
+  margin-top: 6px;
+
+  color: #ffc757;
+
+  font-size: 0.92rem;
+  font-weight: 1000;
+  letter-spacing: 0.06em;
+}
