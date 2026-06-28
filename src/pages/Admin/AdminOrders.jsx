@@ -133,6 +133,21 @@ const copyToClipboard = async (text) => {
   }
 };
 
+const cleanPhoneNumber = (phone) => {
+  return String(phone || "").replace(/[^\d+]/g, "");
+};
+
+const buildSmsMessage = (order) => {
+  return encodeURIComponent(
+    `Hi ${order.customer_name}, your order ${order.payment_memo} is currently ${formatStatusLabel(order.order_status)}.`
+  );
+};
+
+const buildMapsUrl = (order) => {
+  const fullAddress = `${order.address || ""} ${order.apt || ""} ${order.city || ""}`;
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`;
+};
+
   return (
     <div className="auth-page">
       <div className="auth-orb auth-orb-one"></div>
@@ -223,6 +238,26 @@ const copyToClipboard = async (text) => {
     <strong>{order.payment_memo}</strong>
   </div>
 )}
+
+<div className="admin-contact-actions">
+  <a href={`tel:${cleanPhoneNumber(order.phone)}`}>
+    Call Customer
+  </a>
+
+  <a
+    href={`sms:${cleanPhoneNumber(order.phone)}?&body=${buildSmsMessage(order)}`}
+  >
+    Text Customer
+  </a>
+
+  <a
+    href={buildMapsUrl(order)}
+    target="_blank"
+    rel="noreferrer"
+  >
+    Open Address
+  </a>
+</div>
 
                   <div className="admin-order-meta">
                     <div>
