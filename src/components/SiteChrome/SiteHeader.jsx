@@ -32,12 +32,12 @@ export default function SiteHeader({ compact = false }) {
           }}
           aria-label="Go to delivery map"
         >
-          <span className="site-brand-mark">GM</span>
+          <span className="site-brand-mark">THC</span>
 
-          <span>
-            <strong>Gas Map</strong>
-            <small>Premium delivery coverage</small>
-          </span>
+<span>
+  <strong>The High Council</strong>
+  <small>Not Everyone Gets In.</small>
+</span>
         </button>
 
         <button
@@ -76,6 +76,9 @@ export default function SiteHeader({ compact = false }) {
           <a href={`mailto:${SUPPORT_EMAIL}`} onClick={closeMenu}>
             Support
           </a>
+
+          <a href="/terms">Terms</a>
+          <a href="/privacy">Privacy Policy</a>
 
           {!user ? (
             <NavLink className="site-nav-cta" to="/login" onClick={closeMenu}>

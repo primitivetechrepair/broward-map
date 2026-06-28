@@ -16,8 +16,7 @@ export default function SiteFooter() {
           <div>
             <strong>The High Council</strong>
             <p>
-              Premium delivery coverage, product ordering, account verification,
-              and order tracking in one secure customer portal.
+              Not Everyone Gets In. Member access, product ordering, account verification,
             </p>
           </div>
         </div>
