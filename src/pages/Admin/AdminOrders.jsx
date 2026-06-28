@@ -503,7 +503,9 @@ const orderSummary = {
 </div>
 ) : (
   filteredOrders.map((order) => {
-              const items = Array.isArray(order.items) ? order.items : [];
+  const items = Array.isArray(order.items) ? order.items : [];
+  const orderStatus = normalizeOrderStatus(order.order_status);
+  const paymentStatus = normalizeOrderStatus(order.payment_status);
 
               return (
                 <article key={order.id} className="admin-order-card">
@@ -526,9 +528,9 @@ const orderSummary = {
     </button>
   </div>
 
-  <strong className={`status-pill status-${order.order_status}`}>
-    {formatStatusLabel(order.order_status)}
-  </strong>
+  <strong className={`status-pill status-${normalizeOrderStatus(order.order_status)}`}>
+  {formatStatusLabel(order.order_status)}
+</strong>
 </div>
 
 {order.payment_status === "pending" && (
@@ -643,9 +645,14 @@ const orderSummary = {
 
                   <div className="admin-order-controls">
   <label>
-    Payment Status
-    <select
-      value={order.payment_status}
+  Payment Status
+
+  <strong className={`mini-status-pill payment-${normalizeOrderStatus(order.payment_status)}`}>
+    {formatStatusLabel(order.payment_status)}
+  </strong>
+
+  <select
+    value={order.payment_status}
       onChange={(e) =>
         updateOrderField({
           orderId: order.id,
@@ -684,7 +691,7 @@ const orderSummary = {
 </div>
 
 <div className="admin-quick-actions">
-  {order.payment_status !== "received" &&
+  {paymentStatus !== "received" &&
     order.order_status !== "cancelled" && (
       <button
         type="button"
@@ -703,7 +710,7 @@ const orderSummary = {
       </button>
     )}
 
-  {order.order_status === "pending" && (
+  {orderStatus === "pending" && (
     <button
       type="button"
       onClick={() =>

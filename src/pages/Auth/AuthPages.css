@@ -1999,3 +1999,129 @@
 .customer-latest-neutral {
   border-color: rgba(255, 255, 255, 0.14);
 }
+
+/* =============================== */
+/* ORDER STATUS BADGES              */
+/* =============================== */
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: fit-content;
+  min-height: 34px;
+
+  padding: 0 12px;
+  border-radius: 999px;
+
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.78);
+  background: rgba(255, 255, 255, 0.08);
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.68rem;
+  font-weight: 1000;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.status-pending {
+  border-color: rgba(255, 199, 87, 0.42);
+  color: #ffc757;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 199, 87, 0.18), transparent 38%),
+    rgba(255, 199, 87, 0.08);
+
+  box-shadow: 0 0 18px rgba(255, 199, 87, 0.12);
+}
+
+.status-confirmed {
+  border-color: rgba(78, 255, 154, 0.42);
+  color: #4eff9a;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(78, 255, 154, 0.16), transparent 38%),
+    rgba(78, 255, 154, 0.08);
+
+  box-shadow: 0 0 18px rgba(78, 255, 154, 0.12);
+}
+
+.status-out_for_delivery {
+  border-color: rgba(87, 209, 255, 0.42);
+  color: #57d1ff;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(87, 209, 255, 0.16), transparent 38%),
+    rgba(87, 209, 255, 0.08);
+
+  box-shadow: 0 0 18px rgba(87, 209, 255, 0.12);
+}
+
+.status-completed {
+  border-color: rgba(78, 255, 154, 0.5);
+  color: #4eff9a;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(78, 255, 154, 0.18), transparent 38%),
+    rgba(78, 255, 154, 0.1);
+
+  box-shadow: 0 0 20px rgba(78, 255, 154, 0.14);
+}
+
+.status-cancelled {
+  border-color: rgba(255, 82, 82, 0.48);
+  color: #ff7373;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 82, 82, 0.18), transparent 38%),
+    rgba(255, 82, 82, 0.08);
+
+  box-shadow: 0 0 18px rgba(255, 82, 82, 0.12);
+}
+
+/* =============================== */
+/* MINI PAYMENT STATUS BADGES       */
+/* =============================== */
+
+.mini-status-pill {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+
+  width: fit-content;
+
+  margin-top: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+
+  border: 1px solid rgba(255, 255, 255, 0.14);
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.68rem !important;
+  font-weight: 1000 !important;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.payment-pending {
+  border-color: rgba(255, 199, 87, 0.38);
+  color: #ffc757 !important;
+  background: rgba(255, 199, 87, 0.08);
+}
+
+.payment-received {
+  border-color: rgba(78, 255, 154, 0.42);
+  color: #4eff9a !important;
+  background: rgba(78, 255, 154, 0.08);
+}
+
+.payment-failed {
+  border-color: rgba(255, 82, 82, 0.42);
+  color: #ff7373 !important;
+  background: rgba(255, 82, 82, 0.08);
+}
+
+.payment-refunded {
+  border-color: rgba(87, 209, 255, 0.38);
+  color: #57d1ff !important;
+  background: rgba(87, 209, 255, 0.08);
+}

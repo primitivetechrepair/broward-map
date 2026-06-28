@@ -389,9 +389,9 @@ const getCustomerTrackerSteps = (order) => {
     </button>
   </div>
 
-  <strong className={`status-pill status-${order.order_status}`}>
-    {formatStatusLabel(order.order_status)}
-  </strong>
+  <strong className={`status-pill status-${normalizeOrderStatus(order.order_status)}`}>
+  {formatStatusLabel(order.order_status)}
+</strong>
 </div>
 
 <div className={`customer-latest-update customer-latest-${latestUpdate.tone}`}>
@@ -460,9 +460,11 @@ const getCustomerTrackerSteps = (order) => {
                     </div>
 
                     <div>
-                      <span>Payment Status</span>
-                      <strong>{formatStatusLabel(order.payment_status)}</strong>
-                    </div>
+  <span>Payment Status</span>
+  <strong className={`mini-status-pill payment-${normalizeOrderStatus(order.payment_status)}`}>
+    {formatStatusLabel(order.payment_status)}
+  </strong>
+</div>
 
                     <div>
                       <span>Delivery</span>
