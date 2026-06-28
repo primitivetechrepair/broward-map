@@ -1302,3 +1302,84 @@
     width: 100%;
   }
 }
+
+/* =============================== */
+/* ADMIN ORDER FILTERS              */
+/* =============================== */
+
+.admin-order-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  margin: 16px 0;
+  padding: 12px;
+  border-radius: 20px;
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.admin-order-filters button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  min-height: 38px;
+
+  padding: 0 12px;
+  border-radius: 999px;
+
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  color: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.055);
+
+  cursor: pointer;
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.7rem;
+  font-weight: 1000;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.admin-order-filters button.active {
+  border-color: rgba(78, 255, 154, 0.46);
+  color: #4eff9a;
+  background: rgba(78, 255, 154, 0.12);
+
+  box-shadow: 0 0 18px rgba(78, 255, 154, 0.12);
+}
+
+.admin-order-filters button span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 22px;
+  height: 22px;
+
+  border-radius: 999px;
+
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
+
+  font-size: 0.68rem;
+}
+
+.admin-order-filters button.active span {
+  color: #07120c;
+  background: #4eff9a;
+}
+
+@media (max-width: 720px) {
+  .admin-order-filters {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .admin-order-filters button {
+    justify-content: space-between;
+    width: 100%;
+  }
+}

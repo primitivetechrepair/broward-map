@@ -19,6 +19,15 @@ const PAYMENT_STATUS_OPTIONS = [
   "refunded",
 ];
 
+const ORDER_FILTER_OPTIONS = [
+  "all",
+  "pending",
+  "confirmed",
+  "out_for_delivery",
+  "completed",
+  "cancelled",
+];
+
 export default function AdminOrders() {
   const navigate = useNavigate();
   const { signOut } = useAuth();
@@ -27,6 +36,7 @@ export default function AdminOrders() {
   const [loading, setLoading] = useState(true);
   const [actionMessage, setActionMessage] = useState("");
   const [actionError, setActionError] = useState("");
+  const [activeFilter, setActiveFilter] = useState("all");
 
   const loadOrders = async () => {
     setLoading(true);
@@ -148,6 +158,11 @@ const buildMapsUrl = (order) => {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`;
 };
 
+const filteredOrders =
+  activeFilter === "all"
+    ? orders
+    : orders.filter((order) => order.order_status === activeFilter);
+
   return (
     <div className="auth-page">
       <div className="auth-orb auth-orb-one"></div>
@@ -193,17 +208,40 @@ const buildMapsUrl = (order) => {
           </button>
         </div>
 
+        <div className="admin-order-filters">
+  {ORDER_FILTER_OPTIONS.map((filter) => (
+    <button
+      type="button"
+      key={filter}
+      className={activeFilter === filter ? "active" : ""}
+      onClick={() => setActiveFilter(filter)}
+    >
+      {filter === "all" ? "All" : formatStatusLabel(filter)}
+
+      <span>
+        {filter === "all"
+          ? orders.length
+          : orders.filter((order) => order.order_status === filter).length}
+      </span>
+    </button>
+  ))}
+</div>
+
         <div className="admin-orders-list">
           {loading ? (
-            <div className="portal-alert">
-              Loading orders...
-            </div>
-          ) : orders.length === 0 ? (
-            <div className="portal-alert">
-              No orders have been submitted yet.
-            </div>
-          ) : (
-            orders.map((order) => {
+  <div className="portal-alert">
+    Loading orders...
+  </div>
+) : orders.length === 0 ? (
+  <div className="portal-alert">
+    No orders have been submitted yet.
+  </div>
+) : filteredOrders.length === 0 ? (
+  <div className="portal-alert">
+    No orders match this filter.
+  </div>
+) : (
+  filteredOrders.map((order) => {
               const items = Array.isArray(order.items) ? order.items : [];
 
               return (
