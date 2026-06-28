@@ -1,6 +1,8 @@
 // src/pages/CheckoutPage.jsx
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { supabase } from "../../lib/supabaseClient.js";
+import { useAuth } from "../../context/AuthContext.jsx";
 import { useCart } from "../../context/CartContext.jsx";
 import "./CheckoutPage.css";
 
@@ -8,7 +10,7 @@ const PAYMENT_INSTRUCTIONS = {
   zelle: {
     label: "Zelle",
     recipientLabel: "Send Zelle To",
-    recipient: "YOUR_ZELLE_EMAIL_OR_PHONE",
+    recipient: "hollywoodexotics@icloud.com",
     noteLabel: "Zelle Memo",
     instructions:
       "Open your banking app, choose Zelle, send the exact total, and include the order memo below before delivery confirmation.",
@@ -27,6 +29,7 @@ export default function CheckoutPage() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const { user, profileLoading, isApproved } = useAuth();
   const { cartItems, totalItems, totalPrice, clearCart } = useCart();
 
   const fallbackItems = location.state?.cartItems || [];
@@ -60,6 +63,8 @@ export default function CheckoutPage() {
   const [idFileName, setIdFileName] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [submittedOrder, setSubmittedOrder] = useState(null);
+  const [orderError, setOrderError] = useState("");
+  const [isSubmittingOrder, setIsSubmittingOrder] = useState(false);
 
   const updateForm = (key, value) => {
     setForm((prev) => ({
@@ -75,15 +80,70 @@ export default function CheckoutPage() {
     form.address.trim() &&
     idFileName;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
   e.preventDefault();
 
-  if (!isReady) return;
+  setOrderError("");
+
+  if (!isReady || isSubmittingOrder) return;
+
+  if (!user?.id) {
+    navigate("/login", {
+      replace: true,
+      state: { from: location },
+    });
+    return;
+  }
+
+  if (!isApproved) {
+    navigate("/portal", { replace: true });
+    return;
+  }
+
+  setIsSubmittingOrder(true);
 
   const orderMemo = `ORDER-${Date.now().toString().slice(-6)}`;
   const paymentInfo = PAYMENT_INSTRUCTIONS[form.payment];
 
+  const normalizedItems = orderItems.map((item) => ({
+    id: item.id,
+    name: item.name,
+    gram: item.gram || null,
+    quantity: Number(item.quantity) || 0,
+    price: Number(item.price) || 0,
+  }));
+
+  const { data, error } = await supabase
+    .from("orders")
+    .insert({
+      user_id: user.id,
+      customer_name: form.fullName.trim(),
+      phone: form.phone.trim(),
+      address: form.address.trim(),
+      apt: form.apt.trim() || null,
+      city: selectedCity,
+      notes: form.notes.trim() || null,
+      items: normalizedItems,
+      subtotal,
+      delivery_fee: deliveryFee,
+      total: grandTotal,
+      payment_method: form.payment,
+      payment_status: "pending",
+      order_status: "pending",
+      payment_memo: orderMemo,
+    })
+    .select("id")
+    .single();
+
+  setIsSubmittingOrder(false);
+
+  if (error) {
+    setOrderError(error.message);
+    return;
+  }
+
   setSubmittedOrder({
+    orderId: data?.id,
     memo: orderMemo,
     payment: form.payment,
     paymentLabel: paymentInfo.label,
@@ -99,6 +159,45 @@ export default function CheckoutPage() {
   setSubmitted(true);
   clearCart();
 };
+
+if (profileLoading) {
+  return (
+    <div className="checkout-page checkout-success-page">
+      <div className="checkout-success-card">
+        <span className="checkout-eyebrow">Checking Account</span>
+
+        <h1>Please Wait</h1>
+
+        <p>
+          We are checking your account approval before checkout.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+if (!isApproved) {
+  return (
+    <div className="checkout-page checkout-success-page">
+      <div className="checkout-success-card">
+        <div className="success-icon">!</div>
+
+        <span className="checkout-eyebrow">Approval Required</span>
+
+        <h1>ID Required</h1>
+
+        <p>
+          Your account must be ID approved before final order confirmation.
+          Upload your ID in the customer portal.
+        </p>
+
+        <button onClick={() => navigate("/portal")}>
+          Go To Portal
+        </button>
+      </div>
+    </div>
+  );
+}
 
   if (submitted) {
   const payment = submittedOrder || {
@@ -150,6 +249,13 @@ export default function CheckoutPage() {
             <span>{payment.noteLabel}</span>
             <strong>{payment.memo}</strong>
           </div>
+
+          {payment.orderId && (
+  <div className="manual-payment-row">
+    <span>Order ID</span>
+    <strong>{payment.orderId}</strong>
+  </div>
+)}
 
           <div className="manual-payment-instructions">
             {payment.instructions}
@@ -288,13 +394,21 @@ export default function CheckoutPage() {
               />
             </div>
 
-            <button
-              type="submit"
-              className="place-order-btn"
-              disabled={!isReady}
-            >
-              Place Order · ${grandTotal.toFixed(2)}
-            </button>
+            {orderError && (
+  <div className="auth-error">
+    {orderError}
+  </div>
+)}
+
+<button
+  type="submit"
+  className="place-order-btn"
+  disabled={!isReady || isSubmittingOrder}
+>
+  {isSubmittingOrder
+    ? "Placing Order..."
+    : `Place Order · $${grandTotal.toFixed(2)}`}
+</button>
           </form>
         </section>
 
