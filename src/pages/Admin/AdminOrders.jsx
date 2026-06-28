@@ -87,6 +87,34 @@ export default function AdminOrders() {
     );
   };
 
+  const updateOrderFields = async ({ orderId, updates, message }) => {
+  setActionMessage("");
+  setActionError("");
+
+  const { error } = await supabase
+    .from("orders")
+    .update(updates)
+    .eq("id", orderId);
+
+  if (error) {
+    setActionError(error.message);
+    return;
+  }
+
+  setActionMessage(message || "Order updated.");
+
+  setOrders((prev) =>
+    prev.map((order) =>
+      order.id === orderId
+        ? {
+            ...order,
+            ...updates,
+          }
+        : order
+    )
+  );
+};
+
   const formatStatusLabel = (value) => {
   return String(value || "")
     .replaceAll("_", " ")
@@ -319,6 +347,89 @@ const copyToClipboard = async (text) => {
       ))}
     </select>
   </label>
+</div>
+
+<div className="admin-quick-actions">
+  <button
+    type="button"
+    onClick={() =>
+      updateOrderFields({
+        orderId: order.id,
+        updates: {
+          payment_status: "received",
+          order_status: "confirmed",
+        },
+        message: "Payment marked received and order confirmed.",
+      })
+    }
+  >
+    Mark Paid
+  </button>
+
+  <button
+    type="button"
+    onClick={() =>
+      updateOrderFields({
+        orderId: order.id,
+        updates: {
+          order_status: "confirmed",
+        },
+        message: "Order confirmed.",
+      })
+    }
+  >
+    Confirm Order
+  </button>
+
+  <button
+    type="button"
+    onClick={() =>
+      updateOrderFields({
+        orderId: order.id,
+        updates: {
+          order_status: "out_for_delivery",
+        },
+        message: "Order marked out for delivery.",
+      })
+    }
+  >
+    Out For Delivery
+  </button>
+
+  <button
+    type="button"
+    onClick={() =>
+      updateOrderFields({
+        orderId: order.id,
+        updates: {
+          order_status: "completed",
+          payment_status:
+            order.payment_status === "received"
+              ? "received"
+              : order.payment_status,
+        },
+        message: "Order completed.",
+      })
+    }
+  >
+    Complete Order
+  </button>
+
+  <button
+    type="button"
+    className="danger-action"
+    onClick={() =>
+      updateOrderFields({
+        orderId: order.id,
+        updates: {
+          order_status: "cancelled",
+        },
+        message: "Order cancelled.",
+      })
+    }
+  >
+    Cancel Order
+  </button>
 </div>
 
 <div className="admin-internal-notes">

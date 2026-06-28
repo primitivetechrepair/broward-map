@@ -1166,3 +1166,68 @@
   border-color: rgba(78, 255, 154, 0.55);
   background: rgba(78, 255, 154, 0.13);
 }
+
+/* =============================== */
+/* ADMIN ORDER QUICK ACTIONS        */
+/* =============================== */
+
+.admin-quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: 20px;
+
+  border: 1px solid rgba(78, 255, 154, 0.16);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(78, 255, 154, 0.1), transparent 36%),
+    rgba(255, 255, 255, 0.04);
+}
+
+.admin-quick-actions button {
+  min-height: 40px;
+
+  padding: 0 14px;
+  border-radius: 999px;
+
+  border: 1px solid rgba(78, 255, 154, 0.28);
+  color: #4eff9a;
+  background: rgba(78, 255, 154, 0.08);
+
+  cursor: pointer;
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.7rem;
+  font-weight: 1000;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.admin-quick-actions button:hover {
+  border-color: rgba(78, 255, 154, 0.52);
+  background: rgba(78, 255, 154, 0.14);
+}
+
+.admin-quick-actions .danger-action {
+  border-color: rgba(255, 82, 82, 0.35);
+  color: #ff7373;
+  background: rgba(255, 82, 82, 0.08);
+}
+
+.admin-quick-actions .danger-action:hover {
+  border-color: rgba(255, 82, 82, 0.6);
+  background: rgba(255, 82, 82, 0.14);
+}
+
+@media (max-width: 720px) {
+  .admin-quick-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .admin-quick-actions button {
+    width: 100%;
+  }
+}
