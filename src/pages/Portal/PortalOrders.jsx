@@ -309,9 +309,9 @@ const getCustomerTrackerSteps = (order) => {
         <h1>My Orders</h1>
 
         <p className="portal-copy">
-          Track your delivery requests, payment status, order memo, and current
-          order status.
-        </p>
+  Track your order status, payment confirmation, delivery progress, and
+  latest updates from our team.
+</p>
 
         {orderError && (
           <div className="auth-error">
