@@ -154,18 +154,22 @@ export default function AdminDashboard() {
         )}
 
         <div className="admin-toolbar">
-          <button type="button" onClick={loadVerifications}>
-            Refresh Reviews
-          </button>
+  <button type="button" onClick={loadVerifications}>
+    Refresh Reviews
+  </button>
 
-          <button type="button" onClick={() => navigate("/")}>
-            Back To Map
-          </button>
+  <button type="button" onClick={() => navigate("/admin/orders")}>
+    View Orders
+  </button>
 
-          <button type="button" onClick={handleSignOut}>
-            Sign Out
-          </button>
-        </div>
+  <button type="button" onClick={() => navigate("/")}>
+    Back To Map
+  </button>
+
+  <button type="button" onClick={handleSignOut}>
+    Sign Out
+  </button>
+</div>
 
         <div className="admin-review-list">
           {loading ? (

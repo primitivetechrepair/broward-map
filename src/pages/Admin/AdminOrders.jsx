@@ -1,0 +1,304 @@
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "../../lib/supabaseClient.js";
+import { useAuth } from "../../context/AuthContext.jsx";
+import "../Auth/AuthPages.css";
+
+const ORDER_STATUS_OPTIONS = [
+  "pending",
+  "confirmed",
+  "out_for_delivery",
+  "completed",
+  "cancelled",
+];
+
+const PAYMENT_STATUS_OPTIONS = [
+  "pending",
+  "received",
+  "failed",
+  "refunded",
+];
+
+export default function AdminOrders() {
+  const navigate = useNavigate();
+  const { signOut } = useAuth();
+
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [actionMessage, setActionMessage] = useState("");
+  const [actionError, setActionError] = useState("");
+
+  const loadOrders = async () => {
+    setLoading(true);
+    setActionMessage("");
+    setActionError("");
+
+    const { data, error } = await supabase
+      .from("orders")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      setActionError(error.message);
+      setLoading(false);
+      return;
+    }
+
+    setOrders(data || []);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    loadOrders();
+  }, []);
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/", { replace: true });
+  };
+
+  const updateOrderField = async ({ orderId, field, value }) => {
+    setActionMessage("");
+    setActionError("");
+
+    const { error } = await supabase
+      .from("orders")
+      .update({
+        [field]: value,
+      })
+      .eq("id", orderId);
+
+    if (error) {
+      setActionError(error.message);
+      return;
+    }
+
+    setActionMessage("Order updated.");
+
+    setOrders((prev) =>
+      prev.map((order) =>
+        order.id === orderId
+          ? {
+              ...order,
+              [field]: value,
+            }
+          : order
+      )
+    );
+  };
+
+  const formatStatusLabel = (value) => {
+    return value
+      .replaceAll("_", " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+  };
+
+  return (
+    <div className="auth-page">
+      <div className="auth-orb auth-orb-one"></div>
+      <div className="auth-orb auth-orb-two"></div>
+
+      <section className="portal-card admin-card">
+        <span className="auth-eyebrow">Admin Orders</span>
+
+        <h1>Orders</h1>
+
+        <p className="portal-copy">
+          Review customer orders, payment method, payment memo, delivery
+          details, and update order status.
+        </p>
+
+        {actionMessage && (
+          <div className="auth-success">
+            {actionMessage}
+          </div>
+        )}
+
+        {actionError && (
+          <div className="auth-error">
+            {actionError}
+          </div>
+        )}
+
+        <div className="admin-toolbar">
+          <button type="button" onClick={loadOrders}>
+            Refresh Orders
+          </button>
+
+          <button type="button" onClick={() => navigate("/admin")}>
+            ID Reviews
+          </button>
+
+          <button type="button" onClick={() => navigate("/")}>
+            Back To Map
+          </button>
+
+          <button type="button" onClick={handleSignOut}>
+            Sign Out
+          </button>
+        </div>
+
+        <div className="admin-orders-list">
+          {loading ? (
+            <div className="portal-alert">
+              Loading orders...
+            </div>
+          ) : orders.length === 0 ? (
+            <div className="portal-alert">
+              No orders have been submitted yet.
+            </div>
+          ) : (
+            orders.map((order) => {
+              const items = Array.isArray(order.items) ? order.items : [];
+
+              return (
+                <article key={order.id} className="admin-order-card">
+                  <div className="admin-order-top">
+                    <div>
+                      <span className="auth-eyebrow">Order</span>
+
+                      <h2>{order.customer_name}</h2>
+
+                      <p>
+                        {order.phone} · {order.city}
+                      </p>
+                    </div>
+
+                    <strong className={`status-pill status-${order.order_status}`}>
+                      {formatStatusLabel(order.order_status)}
+                    </strong>
+                  </div>
+
+                  <div className="admin-order-meta">
+                    <div>
+                      <span>Order ID</span>
+                      <strong>{order.id}</strong>
+                    </div>
+
+                    <div>
+                      <span>Submitted</span>
+                      <strong>
+                        {new Date(order.created_at).toLocaleString()}
+                      </strong>
+                    </div>
+
+                    <div>
+                      <span>Payment Method</span>
+                      <strong>
+                        {formatStatusLabel(order.payment_method)}
+                      </strong>
+                    </div>
+
+                    <div>
+                      <span>Payment Memo</span>
+                      <strong>{order.payment_memo}</strong>
+                    </div>
+
+                    <div>
+                      <span>Total</span>
+                      <strong>${Number(order.total || 0).toFixed(2)}</strong>
+                    </div>
+
+                    <div>
+                      <span>Delivery Fee</span>
+                      <strong>
+                        ${Number(order.delivery_fee || 0).toFixed(2)}
+                      </strong>
+                    </div>
+                  </div>
+
+                  <div className="admin-order-address">
+                    <span>Delivery Address</span>
+
+                    <strong>
+                      {order.address}
+                      {order.apt ? `, ${order.apt}` : ""}, {order.city}
+                    </strong>
+
+                    {order.notes && (
+                      <p>
+                        <b>Notes:</b> {order.notes}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="admin-order-items">
+                    <span>Items</span>
+
+                    {items.length === 0 ? (
+                      <p>No items found.</p>
+                    ) : (
+                      items.map((item, index) => (
+                        <div key={`${item.id || item.name}-${index}`}>
+                          <strong>
+                            {item.name}
+                            {item.gram ? ` (${item.gram}g)` : ""}
+                          </strong>
+
+                          <small>
+                            Qty {item.quantity} × $
+                            {Number(item.price || 0).toFixed(2)}
+                          </small>
+
+                          <b>
+                            $
+                            {(
+                              Number(item.quantity || 0) *
+                              Number(item.price || 0)
+                            ).toFixed(2)}
+                          </b>
+                        </div>
+                      ))
+                    )}
+                  </div>
+
+                  <div className="admin-order-controls">
+                    <label>
+                      Payment Status
+                      <select
+                        value={order.payment_status}
+                        onChange={(e) =>
+                          updateOrderField({
+                            orderId: order.id,
+                            field: "payment_status",
+                            value: e.target.value,
+                          })
+                        }
+                      >
+                        {PAYMENT_STATUS_OPTIONS.map((status) => (
+                          <option key={status} value={status}>
+                            {formatStatusLabel(status)}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+
+                    <label>
+                      Order Status
+                      <select
+                        value={order.order_status}
+                        onChange={(e) =>
+                          updateOrderField({
+                            orderId: order.id,
+                            field: "order_status",
+                            value: e.target.value,
+                          })
+                        }
+                      >
+                        {ORDER_STATUS_OPTIONS.map((status) => (
+                          <option key={status} value={status}>
+                            {formatStatusLabel(status)}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
+                </article>
+              );
+            })
+          )}
+        </div>
+      </section>
+    </div>
+  );
+}

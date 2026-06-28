@@ -12,6 +12,7 @@ import LoginPage from "./pages/Auth/LoginPage";
 import RegisterPage from "./pages/Auth/RegisterPage";
 import PortalDashboard from "./pages/Portal/PortalDashboard";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
+import AdminOrders from "./pages/Admin/AdminOrders";
 
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import AdminRoute from "./components/auth/AdminRoute";
@@ -86,6 +87,15 @@ function AppWrapper() {
               </AdminRoute>
             }
           />
+
+          <Route
+  path="/admin/orders"
+  element={
+    <AdminRoute>
+      <AdminOrders />
+    </AdminRoute>
+  }
+/>
         </Routes>
       </main>
     </>
