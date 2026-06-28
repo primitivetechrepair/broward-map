@@ -15,8 +15,10 @@ export default function LoginPage() {
     password: "",
   });
 
-  const [errorMessage, setErrorMessage] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+    const confirmed = new URLSearchParams(location.search).get("confirmed");
+
+    const [errorMessage, setErrorMessage] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
   const updateForm = (key, value) => {
     setForm((prev) => ({
@@ -86,11 +88,17 @@ export default function LoginPage() {
             />
           </label>
 
-          {errorMessage && (
-            <div className="auth-error">
-              {errorMessage}
-            </div>
-          )}
+          {confirmed === "true" && (
+  <div className="auth-success">
+    Email confirmed. You can now sign in.
+  </div>
+)}
+
+{errorMessage && (
+  <div className="auth-error">
+    {errorMessage}
+  </div>
+)}
 
           <button type="submit" disabled={isSubmitting}>
             {isSubmitting ? "Signing In..." : "Sign In"}

@@ -102,19 +102,22 @@ export function AuthProvider({ children }) {
   };
 
   const signUp = async ({ email, password, fullName, phone }) => {
-    const result = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: fullName,
-          phone,
-        },
-      },
-    });
+  const emailRedirectTo = `${window.location.origin}/login?confirmed=true`;
 
-    return result;
-  };
+  const result = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      emailRedirectTo,
+      data: {
+        full_name: fullName,
+        phone,
+      },
+    },
+  });
+
+  return result;
+};
 
   const signOut = async () => {
     await supabase.auth.signOut();
