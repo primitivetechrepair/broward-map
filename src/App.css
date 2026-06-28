@@ -1,5 +1,9 @@
 /* ================= APP LAYOUT ================= */
 
+:root {
+  --site-page-header-gap: 34px;
+  --site-page-header-gap-mobile: 22px;
+}
 .app-shell {
   position: relative;
   isolation: isolate;
@@ -52,6 +56,19 @@
   min-height: calc(100dvh - 78px);
 }
 
+/* Standard spacing for normal pages under the universal header */
+.page-content:not(.home-main-content) {
+  padding-top: 0;
+  box-sizing: border-box;
+}
+
+/* Force every page's first wrapper to start like the map heading */
+.page-content:not(.home-main-content) > *:first-child {
+  margin-top: 0 !important;
+  padding-top: var(--site-page-header-gap) !important;
+  box-sizing: border-box;
+}
+
 /* ================= MAP PAGE SCROLL SUPPORT ================= */
 
 .leaflet-container {
@@ -73,6 +90,16 @@
     min-height: auto;
   }
 
+  .page-content:not(.home-main-content) {
+    padding-top: 0;
+  }
+
+  .page-content:not(.home-main-content) > *:first-child {
+    margin-top: 0 !important;
+    padding-top: var(--site-page-header-gap-mobile) !important;
+    box-sizing: border-box;
+  }
+
   .leaflet-container,
   .leaflet-pane,
   .leaflet-map-pane,
@@ -82,25 +109,5 @@
   .leaflet-interactive {
     pointer-events: auto;
     touch-action: pan-y !important;
-  }
-}
-
-/* ================= HOME PAGE TIGHTENING ================= */
-
-.home-main-content {
-  margin-top: 0;
-}
-
-.home-main-content + .site-footer {
-  margin-top: 0;
-}
-
-@media (max-width: 768px) {
-  .home-main-content {
-    margin-top: 0;
-  }
-
-  .home-main-content + .site-footer {
-    margin-top: 0;
   }
 }
