@@ -233,58 +233,6 @@ const getCustomerTrackerSteps = (order) => {
   }));
 };
 
-  const getCustomerStatusMessage = (order) => {
-  if (order.order_status === "cancelled") {
-    return {
-      tone: "danger",
-      title: "Order Cancelled",
-      message:
-        "This order has been cancelled. Contact us if you believe this was a mistake.",
-    };
-  }
-
-  if (order.order_status === "completed") {
-    return {
-      tone: "success",
-      title: "Order Completed",
-      message:
-        "Your order has been completed. Thank you for shopping with us.",
-    };
-  }
-
-  if (order.order_status === "out_for_delivery") {
-    return {
-      tone: "success",
-      title: "Your Order Is On The Way",
-      message:
-        "Your order is out for delivery. Please keep your phone nearby for driver updates.",
-    };
-  }
-
-  if (order.payment_status === "pending") {
-    return {
-      tone: "warning",
-      title: "Payment Pending",
-      message: `Send the exact total and include memo ${order.payment_memo}.`,
-    };
-  }
-
-  if (order.order_status === "confirmed") {
-    return {
-      tone: "success",
-      title: "Order Confirmed",
-      message:
-        "Your payment was received and your order has been confirmed.",
-    };
-  }
-
-  return {
-    tone: "neutral",
-    title: "Order Received",
-    message:
-      "Your order has been received and is waiting for review.",
-  };
-};
 
   const copyToClipboard = async (text) => {
   if (!text) return;
@@ -399,7 +347,6 @@ const getCustomerTrackerSteps = (order) => {
           ) : (
             orders.map((order) => {
               const items = Array.isArray(order.items) ? order.items : [];
-              const statusMessage = getCustomerStatusMessage(order);
               const trackerSteps = getCustomerTrackerSteps(order);
               const latestUpdate = getLatestCustomerOrderUpdate(order);
 
@@ -441,10 +388,7 @@ const getCustomerTrackerSteps = (order) => {
   )}
 </div>
 
-<div className={`customer-status-message customer-status-${statusMessage.tone}`}>
-  <strong>{statusMessage.title}</strong>
-  <p>{statusMessage.message}</p>
-</div>
+
 
 <div className="customer-order-tracker">
   <span>Order Progress</span>
