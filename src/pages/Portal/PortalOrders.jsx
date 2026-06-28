@@ -211,15 +211,18 @@ const getCustomerTrackerSteps = (order) => {
       }),
     },
     {
-      key: "completed",
-      label: "Completed",
-      description: "Your order has been completed.",
-      done: orderStatus === "completed",
-      at: getCustomerTimelineDate(order, {
-        labels: ["Order Completed"],
-        types: ["completed"],
-      }),
-    },
+  key: "completed",
+  label: "Completed",
+  description:
+    orderStatus === "completed"
+      ? "Your order has been completed."
+      : "Your order will be marked completed after delivery.",
+  done: orderStatus === "completed",
+  at: getCustomerTimelineDate(order, {
+    labels: ["Order Completed"],
+    types: ["completed"],
+  }),
+},
   ];
 
   const firstIncompleteIndex = steps.findIndex((step) => !step.done);
