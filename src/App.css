@@ -1,9 +1,13 @@
 /* ================= APP LAYOUT ================= */
 
 :root {
+  --site-header-height: 72px;
+  --site-header-height-mobile: 66px;
+
   --site-page-header-gap: 34px;
   --site-page-header-gap-mobile: 22px;
 }
+
 .app-shell {
   position: relative;
   isolation: isolate;
@@ -11,6 +15,9 @@
   width: 100%;
   min-height: 100vh;
   min-height: 100dvh;
+
+  padding-top: var(--site-header-height);
+  box-sizing: border-box;
 
   overflow-x: hidden;
   background: #000;
@@ -52,8 +59,8 @@
   z-index: 2;
 
   width: 100%;
-  min-height: calc(100vh - 78px);
-  min-height: calc(100dvh - 78px);
+  min-height: calc(100vh - var(--site-header-height));
+  min-height: calc(100dvh - var(--site-header-height));
 }
 
 /* Standard spacing for normal pages under the universal header */
@@ -85,7 +92,13 @@
   touch-action: pan-y !important;
 }
 
+/* ================= MOBILE ================= */
+
 @media (max-width: 768px) {
+  .app-shell {
+    padding-top: var(--site-header-height-mobile);
+  }
+
   .page-content {
     min-height: auto;
   }
