@@ -8,6 +8,9 @@ import COUNTY_CONFIG from "../../data/counties";
 import MAP_INTRO from "../../data/mapIntro";
 import SHORT_LABELS from "../../data/mapLabels";
 import HoverInfoPanel from "./HoverInfoPanel";
+import PageHeader from "../PageHeader/PageHeader.jsx";
+
+const FLAT_DELIVERY_FEE = 20;
 
 export default function Map() {
   const [geoData, setGeoData] = useState(null);
@@ -35,10 +38,8 @@ const [selectedCounty, setSelectedCounty] = useState(defaultCountyKey);
 const currentCounty =
   COUNTY_CONFIG[selectedCounty] || COUNTY_CONFIG[defaultCountyKey];
 
-const getCityDeliveryFee = (cityName) => {
-  const fee = currentCounty.deliveryFees?.[cityName];
-
-  return fee ?? currentCounty.defaultDeliveryFee ?? 0;
+const getCityDeliveryFee = () => {
+  return FLAT_DELIVERY_FEE;
 };
 
 const getCityDeliveryEta = (cityName) => {
@@ -259,12 +260,11 @@ setHoveredCity(null);
   }`}
 >
 
-  <div className="map-heading-container">
-  <h1 className="map-heading">{currentCounty.displayName}</h1>
-
-  <div className="map-zone">
-    {MAP_INTRO.zoneLabel}
-  </div>
+  <div className="map-page-header">
+  <PageHeader
+    title={currentCounty.displayName}
+    eyebrow={MAP_INTRO.zoneLabel}
+  />
 </div>
 
   <div className="county-selector">
@@ -366,7 +366,7 @@ const pos = [c.lat + offset.lat, c.lng + offset.lng];
 <div className="selection-fee-label">DELIVERY FEE</div>
 
 <div className="selection-fee">
-  ${selectedFee}
+  ${Number(selectedFee || FLAT_DELIVERY_FEE).toFixed(2)}
 </div>
           <div className="selection-actions">
             <button
@@ -375,10 +375,10 @@ const pos = [c.lat + offset.lat, c.lng + offset.lng];
   onClick={() =>
     navigate("/products", {
       state: {
-        city: selectedCity,
-        fee: selectedFee,
-        deliveryFee: selectedFee,
-      },
+  city: selectedCity,
+  fee: Number(selectedFee || FLAT_DELIVERY_FEE),
+  deliveryFee: Number(selectedFee || FLAT_DELIVERY_FEE),
+},
     })
   }
 >
