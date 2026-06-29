@@ -15,13 +15,16 @@ html, body {
 
 .products-page {
   position: relative;
-  min-height: 100svh;
 
   width: 100%;
   max-width: none;
+  min-height: calc(100svh - var(--site-header-height, 72px));
   margin: 0;
 
-  padding: 0 22px 120px;
+  display: flex;
+  flex-direction: column;
+
+  padding: 0 22px 0;
 
   color: #fff;
 }
@@ -699,6 +702,328 @@ p, span, a, li {
 }
 
 /* ============================ */
+/* Product Request Strip        */
+/* ============================ */
+
+.product-request-strip {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  width: calc(100vw - 16px);
+  margin: auto calc(50% - 50vw + 8px) 0;
+  padding: 18px 22px;
+
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 18px;
+
+  border-radius: 28px 28px 0 0;
+  border: 1px solid rgba(255, 199, 87, 0.28);
+  border-bottom: 0;
+  border-top-color: rgba(255, 255, 255, 0.22);
+
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255, 199, 87, 0.13), transparent 34%),
+    radial-gradient(circle at 92% 16%, rgba(0, 229, 255, 0.1), transparent 30%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.035)),
+    rgba(7, 7, 18, 0.78);
+
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  box-shadow:
+    0 20px 46px rgba(0, 0, 0, 0.38),
+    0 0 24px rgba(255, 199, 87, 0.08),
+    0 0 28px rgba(0, 229, 255, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.product-request-strip::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.11), transparent 26%),
+    linear-gradient(90deg, rgba(255, 199, 87, 0.06), transparent 50%);
+
+  pointer-events: none;
+}
+
+.product-request-strip > * {
+  position: relative;
+  z-index: 2;
+}
+
+.product-request-strip-copy {
+  display: grid;
+  gap: 5px;
+}
+
+.product-request-strip-copy span {
+  color: #ffc757;
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.58rem;
+  font-weight: 1000;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.product-request-strip-copy strong {
+  color: #ffffff;
+
+  font-family: "PricedownBl", sans-serif;
+  font-size: clamp(1.9rem, 4vw, 2.6rem);
+  font-weight: normal;
+  line-height: 0.86;
+  letter-spacing: 0.35px;
+  text-transform: uppercase;
+
+  text-shadow:
+    2.5px 2.5px 0 rgba(0, 0, 0, 0.72),
+    0 0 14px rgba(255, 199, 87, 0.14),
+    0 0 18px rgba(0, 229, 255, 0.1);
+}
+
+.product-request-strip-copy p {
+  color: rgba(255, 255, 255, 0.62);
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.product-request-strip button {
+  min-height: 44px;
+  padding: 12px 16px;
+
+  border-radius: 999px;
+  border: 1px solid rgba(255, 199, 87, 0.44);
+
+  background:
+    linear-gradient(135deg, rgba(255, 199, 87, 0.18), rgba(255, 78, 196, 0.08)),
+    rgba(0, 0, 0, 0.34);
+
+  color: #ffc757;
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.68rem;
+  font-weight: 1000;
+  line-height: 1;
+  letter-spacing: 0.095em;
+  text-transform: uppercase;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 12px 26px rgba(0, 0, 0, 0.28),
+    0 0 18px rgba(255, 199, 87, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+  transition:
+    transform 0.18s ease,
+    filter 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.product-request-strip button:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+
+  border-color: rgba(0, 229, 255, 0.38);
+
+  box-shadow:
+    0 16px 34px rgba(0, 0, 0, 0.34),
+    0 0 20px rgba(0, 229, 255, 0.13),
+    0 0 20px rgba(255, 199, 87, 0.16);
+}
+
+/* ============================ */
+/* Product Request Modal        */
+/* ============================ */
+
+.product-request-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+
+  width: 100vw;
+  height: 100dvh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 18px;
+
+  overflow-y: auto;
+  overscroll-behavior: contain;
+
+  background:
+    radial-gradient(circle at 50% 20%, rgba(0, 229, 255, 0.12), transparent 34%),
+    rgba(0, 0, 0, 0.78);
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.product-request-card.product-request-modal {
+  width: min(720px, 100%);
+  max-height: calc(100dvh - 36px);
+  margin: auto;
+
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+
+  animation: productRequestModalIn 0.2s ease both;
+}
+
+.product-request-close {
+  position: fixed;
+  top: calc(18px + env(safe-area-inset-top));
+  right: calc(18px + env(safe-area-inset-right));
+  left: auto;
+  bottom: auto;
+  z-index: 1000001;
+
+  width: 46px;
+  height: 46px;
+  padding: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 16px;
+  border: 1px solid rgba(0, 229, 255, 0.34);
+  outline: none;
+
+  background:
+    radial-gradient(circle at 25% 15%, rgba(0, 229, 255, 0.22), transparent 34%),
+    radial-gradient(circle at 80% 85%, rgba(255, 78, 196, 0.2), transparent 34%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.04)),
+    rgba(7, 7, 18, 0.82);
+
+  color: #ffffff;
+
+  font-family: "Chalet", sans-serif;
+  font-size: 1.65rem;
+  font-weight: 900;
+  line-height: 1;
+
+  cursor: pointer;
+
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  box-shadow:
+    0 14px 30px rgba(0, 0, 0, 0.38),
+    0 0 18px rgba(0, 229, 255, 0.16),
+    0 0 26px rgba(255, 78, 196, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+
+  transition:
+    transform 0.18s ease,
+    filter 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.product-request-close::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  pointer-events: none;
+}
+
+.product-request-close:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+
+  border-color: rgba(255, 78, 196, 0.42);
+
+  box-shadow:
+    0 18px 36px rgba(0, 0, 0, 0.44),
+    0 0 22px rgba(255, 78, 196, 0.18),
+    0 0 28px rgba(0, 229, 255, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.product-request-close:active {
+  transform: scale(0.96);
+}
+
+@keyframes productRequestModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 680px) {
+  .product-request-strip {
+    width: calc(100vw - 8px);
+    margin: auto calc(50% - 50vw + 4px) 0;
+    padding: 16px 14px;
+
+    grid-template-columns: 1fr;
+    gap: 14px;
+
+    border-radius: 24px 24px 0 0;
+
+    text-align: center;
+  }
+
+  .product-request-strip button {
+    width: 100%;
+    min-height: 46px;
+  }
+
+  .product-request-modal-overlay {
+    padding: 14px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .product-request-card.product-request-modal {
+    width: 100%;
+    max-height: calc(100dvh - 28px);
+    margin: auto;
+    border-radius: 24px;
+  }
+
+  .product-request-close {
+  top: calc(12px + env(safe-area-inset-top));
+  right: calc(12px + env(safe-area-inset-right));
+  left: auto;
+  bottom: auto;
+
+  width: 46px;
+  height: 46px;
+
+  border-radius: 16px;
+  font-size: 1.65rem;
+}
+}
+
+/* ============================ */
 /* Product Request Form         */
 /* ============================ */
 
@@ -744,7 +1069,7 @@ p, span, a, li {
   pointer-events: none;
 }
 
-.product-request-card > * {
+.product-request-card > *:not(.product-request-close) {
   position: relative;
   z-index: 2;
 }
