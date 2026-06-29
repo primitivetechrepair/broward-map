@@ -19,7 +19,12 @@ import AdminOrders from "./pages/Admin/AdminOrders";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import AdminRoute from "./components/auth/AdminRoute";
 
+import AgeGate from "./components/AgeGate/AgeGate.jsx";
+import TermsPage from "./pages/Legal/TermsPage.jsx";
+import PrivacyPage from "./pages/Legal/PrivacyPage.jsx";
+
 import "./App.css";
+import "./components/PageHeader/PageHeader.css";
 
 function AppWrapper() {
   const location = useLocation();
@@ -37,21 +42,35 @@ function AppWrapper() {
     location.pathname.startsWith(route)
   );
 
+  const isHomePage = location.pathname === "/";
+
+  const isLegalPage =
+    location.pathname === "/terms" || location.pathname === "/privacy";
+
   return (
-    <>
-      {showBackground && (
-        <div className="app-background-wrapper">
-          <div className="app-background"></div>
-        </div>
-      )}
+  <div className={`app-shell ${showBackground ? "has-app-background" : ""}`}>
+    {showBackground && (
+      <div className="app-background-wrapper">
+        <div className="app-background"></div>
+      </div>
+    )}
 
-      <SiteHeader />
+    {!isLegalPage && <AgeGate />}
 
-      <main className="page-content site-main-content">
-        <Routes>
-          <Route path="/" element={<Map />} />
+    <SiteHeader />
 
-          <Route path="/products" element={<ProductsPage />} />
+    <main
+  className={`page-content site-main-content ${
+    isHomePage ? "home-main-content" : ""
+  }`}
+>
+      <Routes>
+  <Route path="/" element={<Map />} />
+
+  <Route path="/terms" element={<TermsPage />} />
+  <Route path="/privacy" element={<PrivacyPage />} />
+
+  <Route path="/products" element={<ProductsPage />} />
 
           <Route
             path="/checkout"
@@ -104,9 +123,9 @@ function AppWrapper() {
         </Routes>
       </main>
 
-      <SiteFooter />
-    </>
-  );
+          <SiteFooter />
+  </div>
+);
 }
 
 export default function App() {

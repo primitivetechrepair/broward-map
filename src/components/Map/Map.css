@@ -38,10 +38,12 @@ body {
   overflow: hidden;
 
   width: 100%;
-  height: 100svh;
+
+  height: calc(100svh - 72px);
+  min-height: calc(100svh - 72px);
 
   color: #ffffff;
-  background: #0b0d12;
+  background: transparent;
 }
 
 .map-wrapper::before {
@@ -50,16 +52,7 @@ body {
   inset: 0;
   z-index: 0;
 
-  background:
-    linear-gradient(
-      rgba(0, 0, 0, 0.78),
-      rgba(0, 0, 0, 0.72)
-    ),
-    url("/backgroundmain.webp");
-
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background: rgba(0, 0, 0, 0.12);
 }
 
 .map-wrapper::after {
@@ -77,275 +70,28 @@ body {
 }
 
 .map-wrapper .leaflet-container {
-  position: relative;
+  position: absolute;
+  inset: 0;
   z-index: 1;
+
+  width: 100% !important;
+  height: 100% !important;
+
   background: transparent !important;
+}
+
+@media (max-width: 860px) {
+  .map-wrapper {
+    height: calc(100svh - 66px);
+    min-height: calc(100svh - 66px);
+  }
 }
 
 /* =============================== */
 /* GTA MAP HEADER                  */
 /* =============================== */
 
-.map-heading-container {
-  position: absolute;
-  top: 218px;
-  left: 0;
-  right: 0;
-  z-index: 1000;
 
-  width: max-content;
-  max-width: calc(100vw - 28px);
-
-  margin: 0 auto;
-  padding: 14px 24px 18px;
-
-  transform: none;
-
-  border-radius: 28px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-top-color: rgba(255, 255, 255, 0.22);
-
-  background:
-    radial-gradient(circle at 18% 0%, rgba(0, 229, 255, 0.14), transparent 36%),
-    radial-gradient(circle at 88% 18%, rgba(255, 78, 196, 0.12), transparent 34%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.085), rgba(255, 255, 255, 0.025)),
-    rgba(7, 7, 18, 0.5);
-
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-
-  box-shadow:
-    0 22px 48px rgba(0, 0, 0, 0.34),
-    0 0 26px rgba(0, 229, 255, 0.12),
-    0 0 34px rgba(255, 78, 196, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-
-  user-select: none;
-  pointer-events: none;
-
-  animation:
-    gtaHeaderIn 0.45s ease-out,
-    gtaHeaderSettle 0.55s ease-out 0.45s both;
-}
-
-.map-heading-container::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: 8px;
-
-  width: min(220px, 62vw);
-  height: 3px;
-
-  transform: translateX(-50%);
-
-  border-radius: 999px;
-
-  background: linear-gradient(90deg, #00e5ff, #ff4ec4);
-
-  box-shadow:
-    0 0 16px rgba(0, 229, 255, 0.24),
-    0 0 22px rgba(255, 78, 196, 0.18);
-}
-
-.map-heading-container::after {
-  display: none;
-}
-
-.map-heading {
-  position: relative;
-
-  margin: 0 0 5px;
-
-  overflow: hidden;
-
-  font-family: "PricedownBl", sans-serif;
-  font-size: clamp(4.2rem, 9vw, 6.3rem);
-  font-weight: normal;
-  line-height: 0.82;
-  letter-spacing: 0.8px;
-
-  text-align: center;
-  text-transform: uppercase;
-
-  background: linear-gradient(90deg, #00e5ff, #ff4ec4);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  color: transparent;
-
-  text-shadow:
-    5px 5px 0 rgba(0, 0, 0, 0.58);
-}
-
-.map-heading::after {
-  content: "";
-
-  position: absolute;
-  inset: 0;
-
-  left: -140%;
-
-  width: 55%;
-
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.3),
-    transparent
-  );
-
-  transform: skewX(-18deg);
-
-  animation: gtaHeaderScan 10s ease-in-out infinite;
-
-  opacity: 0.45;
-}
-
-.map-zone {
-  width: max-content;
-
-  margin: 0 auto;
-  padding: 5px 10px;
-
-  border-radius: 999px;
-  border: 1px solid rgba(0, 229, 255, 0.2);
-
-  background:
-    linear-gradient(135deg, rgba(0, 229, 255, 0.08), rgba(255, 78, 196, 0.05)),
-    rgba(0, 0, 0, 0.22);
-
-  color: rgba(255, 255, 255, 0.76);
-
-  font-family: "Chalet", sans-serif;
-  font-size: 0.62rem;
-  font-weight: 1000;
-  line-height: 1;
-  letter-spacing: 0.22em;
-
-  text-align: center;
-  text-transform: uppercase;
-
-  text-shadow:
-    0 0 12px rgba(0, 229, 255, 0.18);
-}
-
-@keyframes gtaHeaderIn {
-  from {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes gtaHeaderSettle {
-  0% {
-    transform: translateY(-6px);
-  }
-
-  60% {
-    transform: translateY(2px);
-  }
-
-  100% {
-    transform: translateY(0);
-  }
-}
-
-@keyframes gtaHeaderInMobile {
-  from {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes gtaHeaderSettleMobile {
-  0% {
-    transform: translateY(-4px);
-  }
-
-  60% {
-    transform: translateY(1px);
-  }
-
-  100% {
-    transform: translateY(0);
-  }
-}
-
-@keyframes gtaHeaderScan {
-  0%,
-  72% {
-    left: -140%;
-  }
-
-  100% {
-    left: 150%;
-  }
-}
-
-/* =============================== */
-/* MOBILE GTA MAP HEADER           */
-/* =============================== */
-
-@media (max-width: 768px) {
-  .map-heading-container {
-    top: 86px;
-    left: 0;
-    right: 0;
-
-    width: max-content;
-    max-width: calc(100vw - 24px);
-
-    margin: 0 auto;
-    padding: 10px 14px 14px;
-
-    border-radius: 22px;
-
-    transform: none;
-
-    animation:
-      gtaHeaderInMobile 0.45s ease-out,
-      gtaHeaderSettleMobile 0.55s ease-out 0.45s both;
-  }
-
-  .map-heading {
-  margin: 0 0 5px;
-
-  font-size: clamp(2.45rem, 13vw, 3.65rem);
-  line-height: 0.84;
-  letter-spacing: 0.3px;
-
-  text-shadow:
-    2.5px 2.5px 0 rgba(0, 0, 0, 0.58);
-}
-
-  .map-zone {
-    padding: 4px 8px;
-
-    font-size: 0.48rem;
-    letter-spacing: 0.16em;
-  }
-
-  .map-heading-container::before {
-    width: min(150px, 54vw);
-    height: 2px;
-    bottom: 7px;
-  }
-
-  .map-heading-container::after {
-    display: none;
-  }
-}
 
 /* =============================== */
 /* LEAFLET MAP STYLES              */
@@ -1163,5 +909,32 @@ body {
 
   .county-selector-btn.active {
     text-shadow: none;
+  }
+}
+
+/* =============================== */
+/* SHARED MAP PAGE HEADER POSITION  */
+/* =============================== */
+
+.map-page-header {
+  position: absolute;
+  top: var(--site-page-header-gap, 34px);
+  left: 0;
+  right: 0;
+  z-index: 1000;
+
+  display: flex;
+  justify-content: center;
+
+  pointer-events: none;
+}
+
+.map-page-header .page-header-card {
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .map-page-header {
+    top: var(--site-page-header-gap-mobile, 22px);
   }
 }
