@@ -1,6 +1,7 @@
 // src/pages/ProductsPage.jsx
 import React, { useState, useEffect, useRef } from "react";
 import PageHeader from "../components/PageHeader/PageHeader.jsx";
+import { supabase } from "../lib/supabaseClient.js";
 import { createPortal } from "react-dom";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext.jsx";
@@ -70,6 +71,16 @@ export default function ProductsPage() {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const reorderLoadedRef = useRef(false);
   const [reorderMessage, setReorderMessage] = useState("");
+
+  const [requestForm, setRequestForm] = useState({
+  customerName: "",
+  contact: "",
+  productName: "",
+  notes: "",
+});
+
+const [requestStatus, setRequestStatus] = useState("");
+const [isSubmittingRequest, setIsSubmittingRequest] = useState(false);
 
   const [quantities, setQuantities] = useState(
     PRODUCTS.reduce((acc, p) => ({ ...acc, [p.id]: 0 }), {})
@@ -272,6 +283,54 @@ useEffect(() => {
 
     setQuantities((prev) => ({ ...prev, [product.id]: 0 }));
   };
+
+  const updateRequestForm = (key, value) => {
+  setRequestForm((prev) => ({
+    ...prev,
+    [key]: value,
+  }));
+};
+
+const handleProductRequestSubmit = async (e) => {
+  e.preventDefault();
+
+  setRequestStatus("");
+
+  const customerName = requestForm.customerName.trim();
+  const contact = requestForm.contact.trim();
+  const productName = requestForm.productName.trim();
+  const notes = requestForm.notes.trim();
+
+  if (!customerName || !contact || !productName) {
+    setRequestStatus("Please fill out your name, contact, and product request.");
+    return;
+  }
+
+  setIsSubmittingRequest(true);
+
+  const { error } = await supabase.from("product_requests").insert({
+    customer_name: customerName,
+    contact,
+    product_name: productName,
+    notes: notes || null,
+  });
+
+  setIsSubmittingRequest(false);
+
+  if (error) {
+    setRequestStatus("Something went wrong. Please try again.");
+    return;
+  }
+
+  setRequestForm({
+    customerName: "",
+    contact: "",
+    productName: "",
+    notes: "",
+  });
+
+  setRequestStatus("Request sent. We’ll review it and reach out if available.");
+};
 
   const handleCheckout = () => {
     if (!totalItems) return;
@@ -538,6 +597,77 @@ useEffect(() => {
   );
 })}
           </div>
+
+<section className="product-request-card">
+  <div className="product-request-header">
+    <span>Looking for something?</span>
+    <h2>Product Request</h2>
+    <p>
+      Request a product or category and we’ll let you know if it becomes available.
+    </p>
+  </div>
+
+  <form
+    className="product-request-form"
+    onSubmit={handleProductRequestSubmit}
+  >
+    <div className="product-request-grid">
+      <label>
+        Name
+        <input
+          type="text"
+          value={requestForm.customerName}
+          onChange={(e) => updateRequestForm("customerName", e.target.value)}
+          placeholder="Your name"
+        />
+      </label>
+
+      <label>
+        Phone / Contact
+        <input
+          type="text"
+          value={requestForm.contact}
+          onChange={(e) => updateRequestForm("contact", e.target.value)}
+          placeholder="Phone, email, or preferred contact"
+        />
+      </label>
+    </div>
+
+    <label>
+      Product Requested
+      <input
+        type="text"
+        value={requestForm.productName}
+        onChange={(e) => updateRequestForm("productName", e.target.value)}
+        placeholder="What are you looking for?"
+      />
+    </label>
+
+    <label>
+      Notes
+      <textarea
+        value={requestForm.notes}
+        onChange={(e) => updateRequestForm("notes", e.target.value)}
+        placeholder="Flavor, strength, brand, quantity, or any details..."
+      />
+    </label>
+
+    {requestStatus && (
+      <div className="product-request-status">
+        {requestStatus}
+      </div>
+    )}
+
+    <button
+      type="submit"
+      className="product-request-submit"
+      disabled={isSubmittingRequest}
+    >
+      {isSubmittingRequest ? "Sending..." : "Send Request"}
+    </button>
+  </form>
+</section>
+
         </>
       )}
 
