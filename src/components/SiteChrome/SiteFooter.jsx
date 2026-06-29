@@ -16,7 +16,7 @@ export default function SiteFooter() {
           <div>
             <strong>The High Council</strong>
             <p>
-              Not Everyone Gets In. Member access, product ordering, account verification,
+              A Higher Order. Member access, product ordering, account verification,
             </p>
           </div>
         </div>

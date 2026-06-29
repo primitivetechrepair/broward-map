@@ -36,7 +36,7 @@ export default function SiteHeader({ compact = false }) {
 
 <span>
   <strong>The High Council</strong>
-  <small>Not Everyone Gets In.</small>
+  <small>A Higher Order.</small>
 </span>
         </button>
 
