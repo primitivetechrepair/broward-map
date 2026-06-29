@@ -1,5 +1,6 @@
 // src/pages/ProductsPage.jsx
 import React, { useState, useEffect, useRef } from "react";
+import PageHeader from "../components/PageHeader/PageHeader.jsx";
 import { createPortal } from "react-dom";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext.jsx";
@@ -32,6 +33,13 @@ const CATEGORY_IMAGES = {
   Syringes: "/categories/syringes.png",
   Concentrates: "/categories/concentrates.png",
   Peptides: "/categories/peptides.png",
+};
+
+const CATEGORY_STATUS = {
+  Disposables: {
+    disabled: true,
+    label: "Out of Stock",
+  },
 };
 
 export default function ProductsPage() {
@@ -285,16 +293,6 @@ useEffect(() => {
 
   if (!selectedCity) return null;
 
-  const renderProductHeading = (title, zoneText = "Premium Menu") => (
-  <div className="product-heading-container">
-    <h1 className="product-heading">{title}</h1>
-
-    <div className="product-zone">
-      {zoneText}
-    </div>
-  </div>
-);
-
   const bagModal = isBagOpen
     ? createPortal(
         <div
@@ -452,7 +450,7 @@ useEffect(() => {
         </div>
       )}
 
-      {renderProductHeading("The Stash", "Delivery Menu")}
+      <PageHeader title="The Stash" eyebrow="Delivery Menu" />
 
       {reorderMessage && (
   <div className="reorder-loaded-banner">
@@ -507,19 +505,38 @@ useEffect(() => {
       {/* CATEGORY SELECT */}
       {!activeCategory && (
         <>
-          {renderProductHeading("Select a Category", "Choose Your Stash")}
+          <PageHeader title="Select a Category" eyebrow="Choose Your Stash" />
 
           <div className="category-grid">
-            {CATEGORIES.map((cat) => (
-              <button
-                key={cat}
-                className="category-card"
-                onClick={() => setActiveCategory(cat)}
-              >
-                <img src={CATEGORY_IMAGES[cat]} alt={cat} />
-                <span>{cat}</span>
-              </button>
-            ))}
+            {CATEGORIES.map((cat) => {
+  const categoryStatus = CATEGORY_STATUS[cat];
+  const isCategoryDisabled = categoryStatus?.disabled === true;
+
+  return (
+    <button
+      key={cat}
+      className={`category-card ${
+        isCategoryDisabled ? "is-disabled is-out-of-stock" : ""
+      }`}
+      disabled={isCategoryDisabled}
+      aria-disabled={isCategoryDisabled}
+      onClick={() => {
+        if (isCategoryDisabled) return;
+        setActiveCategory(cat);
+      }}
+    >
+      <img src={CATEGORY_IMAGES[cat]} alt={cat} />
+
+      <span>{cat}</span>
+
+      {isCategoryDisabled && (
+        <div className="category-status-pill">
+          {categoryStatus.label}
+        </div>
+      )}
+    </button>
+  );
+})}
           </div>
         </>
       )}
@@ -555,7 +572,7 @@ useEffect(() => {
       {/* PRODUCTS */}
       {activeCategory && (
         <>
-          {renderProductHeading(activeCategory, "Product Menu")}
+          <PageHeader title={activeCategory} eyebrow="Product Menu" />
 
           <button
             onClick={() => setActiveCategory(null)}

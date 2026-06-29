@@ -17,10 +17,11 @@ html, body {
   position: relative;
   min-height: 100svh;
 
-  padding: 90px 22px 120px;
+  width: 100%;
+  max-width: none;
+  margin: 0;
 
-  max-width: 1320px;
-  margin: 0 auto;
+  padding: 0 22px 120px;
 
   color: #fff;
 }
@@ -533,6 +534,72 @@ p, span, a, li {
   display: none;
 }
 
+.category-card.is-disabled,
+.category-card.is-disabled:hover {
+  cursor: not-allowed;
+
+  transform: none;
+  filter: grayscale(0.2);
+
+  border-color: rgba(255, 199, 87, 0.34);
+
+  box-shadow:
+    0 20px 48px rgba(0, 0, 0, 0.44),
+    0 0 24px rgba(255, 199, 87, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.category-card.is-disabled img {
+  filter:
+    brightness(0.34)
+    saturate(0.55)
+    contrast(1.05);
+}
+
+.category-card.is-disabled::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+
+  background:
+    radial-gradient(circle at 50% 45%, rgba(255, 199, 87, 0.14), transparent 34%),
+    rgba(0, 0, 0, 0.22);
+
+  pointer-events: none;
+}
+
+.category-status-pill {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 6;
+
+  padding: 7px 10px;
+
+  border-radius: 999px;
+  border: 1px solid rgba(255, 199, 87, 0.44);
+
+  background:
+    linear-gradient(135deg, rgba(255, 199, 87, 0.16), rgba(255, 78, 196, 0.08)),
+    rgba(0, 0, 0, 0.72);
+
+  color: #ffc757;
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.58rem;
+  font-weight: 1000;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+
+  box-shadow:
+    0 0 18px rgba(255, 199, 87, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
+  pointer-events: none;
+}
+
 @media (hover: hover) {
   .category-card:hover {
     transform: translateY(-6px) scale(1.012);
@@ -557,6 +624,18 @@ p, span, a, li {
       brightness(0.68)
       saturate(1.18)
       contrast(1.1);
+  }
+}
+
+@media (max-width: 760px) {
+  .category-status-pill {
+    top: 10px;
+    right: 10px;
+
+    padding: 6px 8px;
+
+    font-size: 0.5rem;
+    letter-spacing: 0.075em;
   }
 }
 
@@ -1131,210 +1210,6 @@ p, span, a, li {
   }
 }
 
-/* ============================ */
-/* Product Page Headings        */
-/* Exact Map Heading Structure  */
-/* ============================ */
-
-.product-heading-container {
-  position: relative;
-  isolation: isolate;
-
-  width: max-content;
-  max-width: calc(100vw - 28px);
-
-  margin: 0 auto 30px;
-  padding: 14px 24px 18px;
-
-  transform: none;
-
-  border-radius: 28px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-top-color: rgba(255, 255, 255, 0.22);
-
-  background:
-    radial-gradient(circle at 18% 0%, rgba(0, 229, 255, 0.14), transparent 36%),
-    radial-gradient(circle at 88% 18%, rgba(255, 78, 196, 0.12), transparent 34%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.085), rgba(255, 255, 255, 0.025)),
-    rgba(7, 7, 18, 0.5);
-
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-
-  box-shadow:
-    0 22px 48px rgba(0, 0, 0, 0.34),
-    0 0 26px rgba(0, 229, 255, 0.12),
-    0 0 34px rgba(255, 78, 196, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-
-  user-select: none;
-}
-
-.product-heading-container::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: 8px;
-
-  width: min(220px, 62vw);
-  height: 3px;
-
-  transform: translateX(-50%);
-
-  border-radius: 999px;
-
-  background: linear-gradient(90deg, #00e5ff, #ff4ec4);
-
-  box-shadow:
-    0 0 16px rgba(0, 229, 255, 0.24),
-    0 0 22px rgba(255, 78, 196, 0.18);
-}
-
-.product-heading {
-  position: relative;
-
-  margin: 0 0 5px;
-
-  overflow: hidden;
-
-  font-family: "PricedownBl", sans-serif;
-  font-size: clamp(4.2rem, 9vw, 6.3rem);
-  font-weight: normal;
-  line-height: 0.82;
-  letter-spacing: 0.8px;
-
-  text-align: center;
-  text-transform: uppercase;
-
-  background: linear-gradient(90deg, #00e5ff, #ff4ec4);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  color: transparent;
-
-  text-shadow:
-    5px 5px 0 rgba(0, 0, 0, 0.58);
-}
-
-.product-heading::after {
-  content: "";
-
-  position: absolute;
-  inset: 0;
-
-  left: -140%;
-
-  width: 55%;
-
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.3),
-    transparent
-  );
-
-  transform: skewX(-18deg);
-
-  animation: productHeadingScan 10s ease-in-out infinite;
-
-  opacity: 0.45;
-}
-
-.product-zone {
-  width: max-content;
-
-  margin: 0 auto;
-  padding: 5px 10px;
-
-  border-radius: 999px;
-  border: 1px solid rgba(0, 229, 255, 0.2);
-
-  background:
-    linear-gradient(135deg, rgba(0, 229, 255, 0.08), rgba(255, 78, 196, 0.05)),
-    rgba(0, 0, 0, 0.22);
-
-  color: rgba(255, 255, 255, 0.76);
-
-  font-family: "Chalet", sans-serif;
-  font-size: 0.62rem;
-  font-weight: 1000;
-  line-height: 1;
-  letter-spacing: 0.22em;
-
-  text-align: center;
-  text-transform: uppercase;
-
-  text-shadow:
-    0 0 12px rgba(0, 229, 255, 0.18);
-}
-
-@keyframes productHeadingScan {
-  0%,
-  72% {
-    left: -140%;
-  }
-
-  100% {
-    left: 150%;
-  }
-}
-
-@media (max-width: 768px) {
-  .product-heading-container {
-    width: calc(100vw - 24px);
-    max-width: 390px;
-
-    margin: 8px auto 24px;
-    padding: 10px 14px 14px;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 22px;
-
-    text-align: center;
-  }
-
-  .product-heading {
-    width: 100%;
-    max-width: 100%;
-
-    display: block;
-
-    margin: 0 0 5px;
-
-    font-size: clamp(2.25rem, 11.5vw, 3.25rem);
-    line-height: 0.86;
-    letter-spacing: 0.25px;
-
-    text-align: center;
-    text-wrap: balance;
-    white-space: normal;
-
-    text-shadow:
-      2.5px 2.5px 0 rgba(0, 0, 0, 0.58);
-  }
-
-  .product-zone {
-    width: max-content;
-    max-width: 100%;
-
-    padding: 4px 8px;
-
-    font-size: 0.48rem;
-    letter-spacing: 0.16em;
-
-    text-align: center;
-  }
-
-  .product-heading-container::before {
-    width: min(150px, 54vw);
-    height: 2px;
-    bottom: 7px;
-  }
-}
 .back-to-categories-btn {
   width: min(420px, 100%);
   min-height: 50px;
