@@ -1,5 +1,6 @@
 // src/pages/CheckoutPage.jsx
 import React, { useState } from "react";
+import PageHeader from "../../components/PageHeader/PageHeader.jsx";
 import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient.js";
 import { useAuth } from "../../context/AuthContext.jsx";
@@ -278,18 +279,15 @@ if (!isApproved) {
       <div className="checkout-bg-orb orb-one"></div>
       <div className="checkout-bg-orb orb-two"></div>
 
-      <div className="checkout-shell">
-        <section className="checkout-main-card">
-          <span className="checkout-eyebrow">Secure Checkout</span>
+      <PageHeader
+  title="Confirm Delivery"
+  eyebrow="Secure Checkout"
+  subtitle="Enter your delivery details, upload ID verification, and choose how you’d like to pay."
+/>
 
-          <h1>Confirm Delivery</h1>
-
-          <p className="checkout-subtitle">
-            Enter your delivery details, upload ID verification, and choose how
-            you’d like to pay.
-          </p>
-
-          <form onSubmit={handleSubmit} className="checkout-form">
+<div className="checkout-shell">
+  <section className="checkout-main-card">
+    <form onSubmit={handleSubmit} className="checkout-form">
             <div className="checkout-section">
               <h2>Customer Info</h2>
 
@@ -371,19 +369,23 @@ if (!isApproved) {
               <h2>Payment</h2>
 
               <div className="payment-options">
-  {[
-    ["zelle", "Zelle"],
-    ["apple_pay", "Apple Pay"],
-  ].map(([value, label]) => (
-    <button
-      type="button"
-      key={value}
-      className={form.payment === value ? "active" : ""}
-      onClick={() => updateForm("payment", value)}
-    >
-      {label}
-    </button>
-  ))}
+  <button
+    type="button"
+    className={form.payment === "zelle" ? "active" : ""}
+    onClick={() => updateForm("payment", "zelle")}
+  >
+    Zelle
+  </button>
+
+  <button
+    type="button"
+    className="is-disabled"
+    disabled
+    title="Apple Pay coming soon"
+  >
+    Apple Pay
+    <span className="coming-soon-pill">Coming Soon</span>
+  </button>
 </div>
 
 <div className="selected-payment-preview">

@@ -10,7 +10,7 @@
   overflow-y: auto;
 
   padding:
-    calc(96px + env(safe-area-inset-top))
+    0
     28px
     calc(42px + env(safe-area-inset-bottom));
 
@@ -102,38 +102,6 @@
   letter-spacing: 0.18em;
   text-transform: uppercase;
   text-shadow: 0 0 18px rgba(0, 229, 255, 0.32);
-}
-
-.checkout-main-card h1 {
-  margin: 12px 0 16px;
-
-  font-family: "PricedownBl", sans-serif;
-  font-size: clamp(3rem, 7vw, 5rem);
-  font-weight: normal;
-  line-height: 0.86;
-  letter-spacing: 0.6px;
-
-  color: #ffffff;
-  text-transform: uppercase;
-
-  text-shadow:
-    4px 4px 0 rgba(0, 0, 0, 0.72),
-    0 0 18px rgba(0, 229, 255, 0.22),
-    0 0 26px rgba(255, 78, 196, 0.14);
-}
-
-.checkout-subtitle {
-  max-width: 560px;
-
-  margin: 0 0 28px;
-
-  color: rgba(255, 255, 255, 0.68);
-
-  font-family: "Chalet", sans-serif;
-  font-size: 0.96rem;
-  font-weight: 700;
-  line-height: 1.55;
-  letter-spacing: 0.015em;
 }
 
 .checkout-form {
@@ -282,6 +250,36 @@
   box-shadow:
     0 0 20px rgba(78, 255, 154, 0.26),
     0 0 30px rgba(0, 229, 255, 0.16);
+}
+
+.payment-options button.is-disabled,
+.payment-options button.is-disabled:hover {
+  opacity: 0.48;
+  cursor: not-allowed;
+  transform: none;
+  filter: grayscale(0.25);
+
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.54);
+
+  box-shadow: none;
+}
+
+.coming-soon-pill {
+  margin-left: 8px;
+  padding: 4px 7px;
+
+  border-radius: 999px;
+  border: 1px solid rgba(255, 199, 87, 0.3);
+
+  background: rgba(255, 199, 87, 0.08);
+  color: #ffc757;
+
+  font-size: 0.52rem;
+  font-weight: 1000;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .place-order-btn {
@@ -522,7 +520,7 @@
 @media (max-width: 880px) {
   .checkout-page {
     padding:
-      calc(86px + env(safe-area-inset-top))
+      0
       18px
       calc(34px + env(safe-area-inset-bottom));
   }
@@ -541,7 +539,7 @@
 @media (max-width: 560px) {
   .checkout-page {
     padding:
-      calc(78px + env(safe-area-inset-top))
+      0
       14px
       calc(28px + env(safe-area-inset-bottom));
   }
@@ -555,10 +553,6 @@
   .checkout-field-grid,
   .payment-options {
     grid-template-columns: 1fr;
-  }
-
-  .checkout-main-card h1 {
-    font-size: 3.1rem;
   }
 }
 
