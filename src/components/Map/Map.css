@@ -1,21 +1,3 @@
-/* =============================== */
-/* GLOBAL / FONT / BACKGROUND      */
-/* =============================== */
-
-@font-face {
-  font-family: "Chalet";
-  src: url("./assets/fonts/Chalet.otf") format("opentype");
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "PricedownBl";
-  src: url("./assets/fonts/PricedownBl.otf") format("opentype");
-  font-weight: normal;
-  font-style: normal;
-}
-
 html,
 body {
   margin: 0;
