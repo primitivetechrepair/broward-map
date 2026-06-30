@@ -1,6 +1,7 @@
 // src/pages/ProductsPage.jsx
 import React, { useState, useEffect, useRef } from "react";
 import PageHeader from "../components/PageHeader/PageHeader.jsx";
+import PromoPopups from "../components/PromoPopups/PromoPopups.jsx";
 import { supabase } from "../lib/supabaseClient.js";
 import { createPortal } from "react-dom";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -73,14 +74,15 @@ export default function ProductsPage() {
   const [reorderMessage, setReorderMessage] = useState("");
 
   const [requestForm, setRequestForm] = useState({
-  customerName: "",
-  contact: "",
-  productName: "",
-  notes: "",
-});
+    customerName: "",
+    contact: "",
+    productName: "",
+    notes: "",
+  });
 
-const [requestStatus, setRequestStatus] = useState("");
-const [isSubmittingRequest, setIsSubmittingRequest] = useState(false);
+  const [requestStatus, setRequestStatus] = useState("");
+  const [isSubmittingRequest, setIsSubmittingRequest] = useState(false);
+  const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
 
   const [quantities, setQuantities] = useState(
     PRODUCTS.reduce((acc, p) => ({ ...acc, [p.id]: 0 }), {})
@@ -232,6 +234,21 @@ useEffect(() => {
     return () => window.clearTimeout(timer);
   }, [flyingProduct]);
 
+  useEffect(() => {
+  if (!isRequestModalOpen) return;
+
+  const originalBodyOverflow = document.body.style.overflow;
+  const originalHtmlOverflow = document.documentElement.style.overflow;
+
+  document.body.style.overflow = "hidden";
+  document.documentElement.style.overflow = "hidden";
+
+  return () => {
+    document.body.style.overflow = originalBodyOverflow;
+    document.documentElement.style.overflow = originalHtmlOverflow;
+  };
+}, [isRequestModalOpen]);
+
   const handleQuantityChange = (id, delta) => {
     setQuantities((prev) => ({
       ...prev,
@@ -330,6 +347,11 @@ const handleProductRequestSubmit = async (e) => {
   });
 
   setRequestStatus("Request sent. We’ll review it and reach out if available.");
+
+window.setTimeout(() => {
+  setIsRequestModalOpen(false);
+  setRequestStatus("");
+}, 1200);
 };
 
   const handleCheckout = () => {
@@ -493,6 +515,104 @@ const handleProductRequestSubmit = async (e) => {
       )
     : null;
 
+    const productRequestModal = isRequestModalOpen
+  ? createPortal(
+      <div
+        className="product-request-modal-overlay"
+        onClick={() => setIsRequestModalOpen(false)}
+      >
+        <section
+          className="product-request-card product-request-modal"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+  type="button"
+  className="product-request-close"
+  onClick={() => setIsRequestModalOpen(false)}
+  aria-label="Close product request form"
+>
+  ×
+</button>
+
+          <div className="product-request-header">
+            <span>Looking for something?</span>
+            <h2>Product Request</h2>
+            <p>
+              Request a product or category and we’ll let you know if it becomes available.
+            </p>
+          </div>
+
+          <form
+            className="product-request-form"
+            onSubmit={handleProductRequestSubmit}
+          >
+            <div className="product-request-grid">
+              <label>
+                Name
+                <input
+                  type="text"
+                  value={requestForm.customerName}
+                  onChange={(e) =>
+                    updateRequestForm("customerName", e.target.value)
+                  }
+                  placeholder="Your name"
+                />
+              </label>
+
+              <label>
+                Phone / Contact
+                <input
+                  type="text"
+                  value={requestForm.contact}
+                  onChange={(e) =>
+                    updateRequestForm("contact", e.target.value)
+                  }
+                  placeholder="Phone, email, or preferred contact"
+                />
+              </label>
+            </div>
+
+            <label>
+              Product Requested
+              <input
+                type="text"
+                value={requestForm.productName}
+                onChange={(e) =>
+                  updateRequestForm("productName", e.target.value)
+                }
+                placeholder="What are you looking for?"
+              />
+            </label>
+
+            <label>
+              Notes
+              <textarea
+                value={requestForm.notes}
+                onChange={(e) => updateRequestForm("notes", e.target.value)}
+                placeholder="Flavor, strength, brand, quantity, or any details..."
+              />
+            </label>
+
+            {requestStatus && (
+              <div className="product-request-status">
+                {requestStatus}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              className="product-request-submit"
+              disabled={isSubmittingRequest}
+            >
+              {isSubmittingRequest ? "Sending..." : "Send Request"}
+            </button>
+          </form>
+        </section>
+      </div>,
+      document.body
+    )
+  : null;
+
   return (
     <div
       className={`products-page page-enter ${
@@ -598,74 +718,19 @@ const handleProductRequestSubmit = async (e) => {
 })}
           </div>
 
-<section className="product-request-card">
-  <div className="product-request-header">
-    <span>Looking for something?</span>
-    <h2>Product Request</h2>
-    <p>
-      Request a product or category and we’ll let you know if it becomes available.
-    </p>
+<section className="product-request-strip">
+  <div className="product-request-strip-copy">
+    <span>Can’t find it?</span>
+    <strong>Request a product</strong>
+    <p>Tell us what you’re looking for and we’ll check availability.</p>
   </div>
 
-  <form
-    className="product-request-form"
-    onSubmit={handleProductRequestSubmit}
+  <button
+    type="button"
+    onClick={() => setIsRequestModalOpen(true)}
   >
-    <div className="product-request-grid">
-      <label>
-        Name
-        <input
-          type="text"
-          value={requestForm.customerName}
-          onChange={(e) => updateRequestForm("customerName", e.target.value)}
-          placeholder="Your name"
-        />
-      </label>
-
-      <label>
-        Phone / Contact
-        <input
-          type="text"
-          value={requestForm.contact}
-          onChange={(e) => updateRequestForm("contact", e.target.value)}
-          placeholder="Phone, email, or preferred contact"
-        />
-      </label>
-    </div>
-
-    <label>
-      Product Requested
-      <input
-        type="text"
-        value={requestForm.productName}
-        onChange={(e) => updateRequestForm("productName", e.target.value)}
-        placeholder="What are you looking for?"
-      />
-    </label>
-
-    <label>
-      Notes
-      <textarea
-        value={requestForm.notes}
-        onChange={(e) => updateRequestForm("notes", e.target.value)}
-        placeholder="Flavor, strength, brand, quantity, or any details..."
-      />
-    </label>
-
-    {requestStatus && (
-      <div className="product-request-status">
-        {requestStatus}
-      </div>
-    )}
-
-    <button
-      type="submit"
-      className="product-request-submit"
-      disabled={isSubmittingRequest}
-    >
-      {isSubmittingRequest ? "Sending..." : "Send Request"}
-    </button>
-  </form>
+    Request Product
+  </button>
 </section>
 
         </>
@@ -834,7 +899,10 @@ const handleProductRequestSubmit = async (e) => {
   </button>
 )}
 
+<PromoPopups city={selectedCity} />
+
 {bagModal}
+{productRequestModal}
     </div>
   );
 }
