@@ -2413,3 +2413,342 @@
   margin-top: 16px;
   margin-bottom: 16px;
 }
+
+/* ============================ */
+/* Admin Marketing Panel        */
+/* ============================ */
+
+.admin-toolbar-link {
+  min-height: 44px;
+  padding: 12px 16px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 999px;
+  border: 1px solid rgba(255, 199, 87, 0.42);
+
+  background:
+    linear-gradient(135deg, rgba(255, 199, 87, 0.15), rgba(255, 78, 196, 0.08)),
+    rgba(0, 0, 0, 0.28);
+
+  color: #ffc757;
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 1000;
+  line-height: 1;
+  letter-spacing: 0.09em;
+  text-decoration: none;
+  text-transform: uppercase;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 12px 26px rgba(0, 0, 0, 0.28),
+    0 0 18px rgba(255, 199, 87, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+  transition:
+    transform 0.18s ease,
+    filter 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.admin-toolbar-link:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+
+  border-color: rgba(0, 229, 255, 0.38);
+
+  box-shadow:
+    0 16px 34px rgba(0, 0, 0, 0.34),
+    0 0 20px rgba(0, 229, 255, 0.13),
+    0 0 20px rgba(255, 199, 87, 0.16);
+}
+
+.admin-marketing-panel {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  margin: 26px 0;
+  padding: 22px;
+
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-top-color: rgba(255, 255, 255, 0.26);
+
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 199, 87, 0.13), transparent 34%),
+    radial-gradient(circle at 88% 12%, rgba(0, 229, 255, 0.1), transparent 32%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.095), rgba(255, 255, 255, 0.035)),
+    rgba(7, 7, 18, 0.78);
+
+  box-shadow:
+    0 22px 52px rgba(0, 0, 0, 0.38),
+    0 0 24px rgba(255, 199, 87, 0.08),
+    0 0 28px rgba(0, 229, 255, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.admin-marketing-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+
+  margin-bottom: 18px;
+}
+
+.admin-marketing-header h2 {
+  margin: 8px 0 6px;
+
+  color: #ffffff;
+
+  font-family: "PricedownBl", sans-serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: normal;
+  line-height: 0.9;
+  text-transform: uppercase;
+
+  text-shadow:
+    3px 3px 0 rgba(0, 0, 0, 0.62),
+    0 0 16px rgba(255, 199, 87, 0.12);
+}
+
+.admin-marketing-header p {
+  color: rgba(255, 255, 255, 0.64);
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.admin-marketing-form {
+  display: grid;
+  gap: 14px;
+}
+
+.admin-marketing-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.admin-marketing-form label {
+  display: grid;
+  gap: 8px;
+
+  color: rgba(255, 255, 255, 0.72);
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.68rem;
+  font-weight: 1000;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.admin-marketing-form input,
+.admin-marketing-form textarea {
+  width: 100%;
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  outline: none;
+
+  background: rgba(0, 0, 0, 0.34);
+  color: #ffffff;
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.84rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 0 0 rgba(0, 229, 255, 0);
+
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease;
+}
+
+.admin-marketing-form input {
+  min-height: 48px;
+  padding: 0 14px;
+}
+
+.admin-marketing-form textarea {
+  min-height: 98px;
+  padding: 14px;
+  resize: vertical;
+}
+
+.admin-marketing-form input:focus,
+.admin-marketing-form textarea:focus {
+  border-color: rgba(0, 229, 255, 0.42);
+  background: rgba(0, 0, 0, 0.42);
+
+  box-shadow:
+    0 0 18px rgba(0, 229, 255, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.09);
+}
+
+.admin-marketing-form input[type="file"] {
+  min-height: auto;
+  padding: 12px;
+
+  cursor: pointer;
+}
+
+.admin-marketing-form input[type="file"]::file-selector-button {
+  margin-right: 12px;
+  padding: 10px 12px;
+
+  border: 1px solid rgba(0, 229, 255, 0.34);
+  border-radius: 12px;
+
+  background:
+    linear-gradient(135deg, rgba(0, 229, 255, 0.14), rgba(255, 78, 196, 0.08)),
+    rgba(0, 0, 0, 0.38);
+
+  color: #00e5ff;
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.68rem;
+  font-weight: 1000;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  cursor: pointer;
+}
+
+.admin-toggle-row {
+  display: flex !important;
+  grid-template-columns: none !important;
+  align-items: center;
+  gap: 10px;
+
+  width: fit-content;
+}
+
+.admin-toggle-row input {
+  width: 18px;
+  height: 18px;
+  min-height: 0;
+  padding: 0;
+
+  accent-color: #4eff9a;
+}
+
+.admin-toggle-row span {
+  color: rgba(255, 255, 255, 0.78);
+
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+.admin-marketing-preview {
+  display: grid;
+  gap: 10px;
+
+  padding: 14px;
+
+  border-radius: 18px;
+  border: 1px solid rgba(0, 229, 255, 0.18);
+
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.admin-marketing-preview span {
+  color: rgba(255, 255, 255, 0.62);
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.68rem;
+  font-weight: 1000;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.admin-marketing-preview img {
+  width: 140px;
+  aspect-ratio: 1;
+  object-fit: cover;
+
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+
+  box-shadow:
+    0 18px 38px rgba(0, 0, 0, 0.34),
+    0 0 20px rgba(0, 229, 255, 0.12);
+}
+
+.admin-marketing-form button[type="submit"] {
+  min-height: 50px;
+  padding: 12px 18px;
+
+  border: 1px solid rgba(78, 255, 154, 0.5);
+  border-radius: 16px;
+
+  background:
+    linear-gradient(135deg, #4eff9a, #00e5ff);
+
+  color: #06130c;
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 1000;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 18px 38px rgba(0, 0, 0, 0.34),
+    0 0 24px rgba(78, 255, 154, 0.24),
+    0 0 30px rgba(0, 229, 255, 0.14);
+
+  transition:
+    transform 0.18s ease,
+    filter 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.admin-marketing-form button[type="submit"]:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+
+.admin-marketing-form button[type="submit"]:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  filter: grayscale(0.2);
+}
+
+@media (max-width: 680px) {
+  .admin-marketing-panel {
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .admin-marketing-header {
+    flex-direction: column;
+  }
+
+  .admin-marketing-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-marketing-preview img {
+    width: 120px;
+  }
+}
