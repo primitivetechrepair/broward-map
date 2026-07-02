@@ -193,7 +193,7 @@ const uploadHotItemImage = async (file) => {
   }
 
   updateHotItemForm("image_url", data.publicUrl);
-  setActionMessage("Image uploaded. Click Save Hot Item to publish it.");
+  setActionMessage("Image uploaded. Click Save Council Pick to publish it.");
 };
 
 const saveHotItemPromo = async (e) => {
@@ -410,6 +410,11 @@ const saveNewsletterPromo = async (e) => {
   }
 );
 
+const activeMarketingCount = [
+  hotItemForm.is_active,
+  newsletterForm.is_active,
+].filter(Boolean).length;
+
 const filteredVerifications =
   verificationStatusFilter === "all"
     ? verifications
@@ -450,7 +455,11 @@ const filteredVerifications =
     className={activeAdminTab === "idReviews" ? "is-active" : ""}
     onClick={() => setActiveAdminTab("idReviews")}
   >
-    ID / Email Verifications
+    <span>ID / Email Verifications</span>
+
+    <strong className="admin-main-tab-badge">
+      {verificationCounts.pending}
+    </strong>
   </button>
 
   <button
@@ -458,7 +467,11 @@ const filteredVerifications =
     className={activeAdminTab === "marketing" ? "is-active" : ""}
     onClick={() => setActiveAdminTab("marketing")}
   >
-    Council Marketing
+    <span>Council Marketing</span>
+
+    <strong className="admin-main-tab-badge">
+      {activeMarketingCount}
+    </strong>
   </button>
 </div>
 
@@ -488,10 +501,10 @@ const filteredVerifications =
   <div className="admin-marketing-header">
     <div>
       <span className="auth-eyebrow">Marketing</span>
-      <h2>Hot Item Popup</h2>
-      <p>
-        Update the monthly featured item popup without editing code.
-      </p>
+      <h2>Council Pick Popup</h2>
+<p>
+  Update the monthly Council Pick promotion without editing code.
+</p>
     </div>
 
     <strong className={`status-pill ${hotItemForm.is_active ? "status-approved" : "status-rejected"}`}>
@@ -501,7 +514,7 @@ const filteredVerifications =
 
   {hotItemLoading ? (
     <div className="portal-alert">
-      Loading marketing settings...
+      Loading Council Pick settings...
     </div>
   ) : (
     <form className="admin-marketing-form" onSubmit={saveHotItemPromo}>
@@ -511,7 +524,7 @@ const filteredVerifications =
           type="text"
           value={hotItemForm.eyebrow}
           onChange={(e) => updateHotItemForm("eyebrow", e.target.value)}
-          placeholder="Hot Item of the Month"
+          placeholder="Council Pick"
         />
       </label>
 
@@ -592,8 +605,8 @@ const filteredVerifications =
         />
 
         <span>
-          Show Hot Item popup to customers
-        </span>
+  Show Council Pick popup to customers
+</span>
       </label>
 
       {hotItemForm.image_url && (
@@ -604,7 +617,7 @@ const filteredVerifications =
       )}
 
       <button type="submit" disabled={hotItemSaving}>
-        {hotItemSaving ? "Saving..." : "Save Hot Item"}
+        {hotItemSaving ? "Saving..." : "Save Council Pick"}
       </button>
     </form>
   )}
