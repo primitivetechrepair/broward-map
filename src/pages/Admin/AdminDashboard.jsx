@@ -24,9 +24,22 @@ const [hotItemForm, setHotItemForm] = useState({
   is_active: false,
 });
 
+const [newsletterForm, setNewsletterForm] = useState({
+  eyebrow: "",
+  title: "",
+  description: "",
+  cta_label: "",
+  cta_path: "",
+  is_active: false,
+});
+
 const [hotItemLoading, setHotItemLoading] = useState(true);
 const [hotItemSaving, setHotItemSaving] = useState(false);
+const [newsletterLoading, setNewsletterLoading] = useState(true);
+const [newsletterSaving, setNewsletterSaving] = useState(false);
 const [hotItemUploading, setHotItemUploading] = useState(false);
+const [activeAdminTab, setActiveAdminTab] = useState("idReviews");
+const [verificationStatusFilter, setVerificationStatusFilter] = useState("pending");
 
   const handleSignOut = async () => {
     await signOut();
@@ -35,6 +48,13 @@ const [hotItemUploading, setHotItemUploading] = useState(false);
 
   const updateHotItemForm = (key, value) => {
   setHotItemForm((prev) => ({
+    ...prev,
+    [key]: value,
+  }));
+};
+
+const updateNewsletterForm = (key, value) => {
+  setNewsletterForm((prev) => ({
     ...prev,
     [key]: value,
   }));
@@ -61,14 +81,14 @@ const loadHotItemPromo = async () => {
 
   if (!data) {
     setHotItemForm({
-      eyebrow: "Hot Item of the Month",
-      title: "Featured Drop",
-      description: "This month’s highlighted item is available while supplies last.",
-      image_url: "/products/hot-item.png",
-      cta_label: "Shop Now",
-      cta_path: "/products",
-      is_active: true,
-    });
+  eyebrow: "Council Pick",
+  title: "Featured Drop",
+  description: "This month’s selected drop from The High Council.",
+  image_url: "/products/hot-item.png",
+  cta_label: "Shop Now",
+  cta_path: "/products",
+  is_active: true,
+});
 
     return;
   }
@@ -78,6 +98,46 @@ const loadHotItemPromo = async () => {
     title: data.title || "",
     description: data.description || "",
     image_url: data.image_url || "",
+    cta_label: data.cta_label || "",
+    cta_path: data.cta_path || "",
+    is_active: data.is_active === true,
+  });
+};
+
+const loadNewsletterPromo = async () => {
+  setNewsletterLoading(true);
+  setActionError("");
+
+  const { data, error } = await supabase
+    .from("site_promos")
+    .select("eyebrow, title, description, cta_label, cta_path, is_active")
+    .eq("promo_key", "newsletter_popup")
+    .maybeSingle();
+
+  setNewsletterLoading(false);
+
+  if (error) {
+    setActionError(error.message);
+    return;
+  }
+
+  if (!data) {
+    setNewsletterForm({
+      eyebrow: "Members Get First Access",
+      title: "Join The List",
+      description: "Get drop alerts, menu updates, and 10% off your first order.",
+      cta_label: "Get 10% Off",
+      cta_path: "FIRST10",
+      is_active: true,
+    });
+
+    return;
+  }
+
+  setNewsletterForm({
+    eyebrow: data.eyebrow || "",
+    title: data.title || "",
+    description: data.description || "",
     cta_label: data.cta_label || "",
     cta_path: data.cta_path || "",
     is_active: data.is_active === true,
@@ -105,8 +165,8 @@ const uploadHotItemImage = async (file) => {
   setHotItemUploading(true);
 
   const extension = file.name.split(".").pop() || "jpg";
-  const safeFileName = `hot-item-${Date.now()}.${extension}`;
-  const filePath = `hot-items/${safeFileName}`;
+  const safeFileName = `council-pick-${Date.now()}.${extension}`;
+  const filePath = `council-picks/${safeFileName}`;
 
   const { error: uploadError } = await supabase.storage
     .from("promo-images")
@@ -145,7 +205,7 @@ const saveHotItemPromo = async (e) => {
   const title = hotItemForm.title.trim();
 
   if (!title) {
-    setActionError("Hot item title is required.");
+    setActionError("Council Pick title is required.");
     return;
   }
 
@@ -154,7 +214,7 @@ const saveHotItemPromo = async (e) => {
   const { error } = await supabase.from("site_promos").upsert(
     {
       promo_key: "hot_item_month",
-      eyebrow: hotItemForm.eyebrow.trim() || "Hot Item of the Month",
+      eyebrow: hotItemForm.eyebrow.trim() || "Council Pick",
       title,
       description: hotItemForm.description.trim() || null,
       image_url: hotItemForm.image_url.trim() || null,
@@ -176,8 +236,52 @@ const saveHotItemPromo = async (e) => {
     return;
   }
 
-  setActionMessage("Hot Item popup updated.");
+  setActionMessage("Council Pick popup updated.");
   await loadHotItemPromo();
+};
+
+const saveNewsletterPromo = async (e) => {
+  e.preventDefault();
+
+  setActionMessage("");
+  setActionError("");
+
+  const title = newsletterForm.title.trim();
+
+  if (!title) {
+    setActionError("Newsletter title is required.");
+    return;
+  }
+
+  setNewsletterSaving(true);
+
+  const { error } = await supabase.from("site_promos").upsert(
+    {
+      promo_key: "newsletter_popup",
+      eyebrow: newsletterForm.eyebrow.trim() || "Members Get First Access",
+      title,
+      description: newsletterForm.description.trim() || null,
+      image_url: null,
+      cta_label: newsletterForm.cta_label.trim() || "Get 10% Off",
+      cta_path: newsletterForm.cta_path.trim() || "FIRST10",
+      is_active: newsletterForm.is_active,
+      display_order: 2,
+      updated_at: new Date().toISOString(),
+    },
+    {
+      onConflict: "promo_key",
+    }
+  );
+
+  setNewsletterSaving(false);
+
+  if (error) {
+    setActionError(error.message);
+    return;
+  }
+
+  setActionMessage("Newsletter popup updated.");
+  await loadNewsletterPromo();
 };
 
   const loadVerifications = async () => {
@@ -228,6 +332,7 @@ const saveHotItemPromo = async (e) => {
   useEffect(() => {
   loadVerifications();
   loadHotItemPromo();
+  loadNewsletterPromo();
 }, []);
 
   const openIdFile = async (filePath) => {
@@ -288,20 +393,44 @@ const saveHotItemPromo = async (e) => {
     await loadVerifications();
   };
 
+  const verificationCounts = verifications.reduce(
+  (counts, verification) => {
+    const status = verification.status || "pending";
+
+    counts.all += 1;
+    counts[status] = (counts[status] || 0) + 1;
+
+    return counts;
+  },
+  {
+    all: 0,
+    pending: 0,
+    approved: 0,
+    rejected: 0,
+  }
+);
+
+const filteredVerifications =
+  verificationStatusFilter === "all"
+    ? verifications
+    : verifications.filter(
+        (verification) =>
+          (verification.status || "pending") === verificationStatusFilter
+      );
+
   return (
     <div className="auth-page">
       <div className="auth-orb auth-orb-one"></div>
       <div className="auth-orb auth-orb-two"></div>
 
       <section className="portal-card admin-card">
-        <span className="auth-eyebrow">Admin Portal</span>
+        <span className="auth-eyebrow">The High Council</span>
 
-        <h1>Admin</h1>
+<h1>Admin Portal</h1>
 
-        <p className="portal-copy">
-          Review uploaded ID files, approve verified customers, or reject
-          submissions that need to be uploaded again.
-        </p>
+<p className="portal-copy">
+  Manage customer verifications, order access, newsletter offers, and Council Pick promotions from one control room.
+</p>
 
         {actionMessage && (
           <div className="auth-success">
@@ -315,7 +444,25 @@ const saveHotItemPromo = async (e) => {
           </div>
         )}
 
-        <div className="admin-toolbar">
+        <div className="admin-tab-bar">
+  <button
+    type="button"
+    className={activeAdminTab === "idReviews" ? "is-active" : ""}
+    onClick={() => setActiveAdminTab("idReviews")}
+  >
+    ID / Email Verifications
+  </button>
+
+  <button
+    type="button"
+    className={activeAdminTab === "marketing" ? "is-active" : ""}
+    onClick={() => setActiveAdminTab("marketing")}
+  >
+    Council Marketing
+  </button>
+</div>
+
+<div className="admin-toolbar">
   <button type="button" onClick={loadVerifications}>
     Refresh Reviews
   </button>
@@ -323,10 +470,6 @@ const saveHotItemPromo = async (e) => {
   <button type="button" onClick={() => navigate("/admin/orders")}>
     View Orders
   </button>
-
-  <a href="#admin-marketing" className="admin-toolbar-link">
-    Marketing
-  </a>
 
   <button type="button" onClick={() => navigate("/")}>
     Back To Map
@@ -337,7 +480,11 @@ const saveHotItemPromo = async (e) => {
   </button>
 </div>
 
-<div id="admin-marketing" className="admin-marketing-panel">
+
+
+{activeAdminTab === "marketing" && (
+  <>
+    <div id="admin-marketing" className="admin-marketing-panel">
   <div className="admin-marketing-header">
     <div>
       <span className="auth-eyebrow">Marketing</span>
@@ -391,10 +538,13 @@ const saveHotItemPromo = async (e) => {
   <label>
     Upload Image
     <input
-      type="file"
-      accept="image/*"
-      onChange={(e) => uploadHotItemImage(e.target.files?.[0])}
-    />
+  type="file"
+  accept="image/*"
+  onChange={(e) => {
+    uploadHotItemImage(e.target.files?.[0]);
+    e.target.value = "";
+  }}
+/>
   </label>
 
   <label>
@@ -449,7 +599,7 @@ const saveHotItemPromo = async (e) => {
       {hotItemForm.image_url && (
         <div className="admin-marketing-preview">
           <span>Image Preview</span>
-          <img src={hotItemForm.image_url} alt="Hot item preview" />
+          <img src={hotItemForm.image_url} alt="Council Pick preview" />
         </div>
       )}
 
@@ -460,17 +610,149 @@ const saveHotItemPromo = async (e) => {
   )}
 </div>
 
-        <div className="admin-review-list">
+<div className="admin-marketing-panel">
+  <div className="admin-marketing-header">
+    <div>
+      <span className="auth-eyebrow">Marketing</span>
+      <h2>Newsletter Popup</h2>
+      <p>
+        Control the newsletter popup, offer text, and discount code.
+      </p>
+    </div>
+
+    <strong className={`status-pill ${newsletterForm.is_active ? "status-approved" : "status-rejected"}`}>
+      {newsletterForm.is_active ? "Active" : "Inactive"}
+    </strong>
+  </div>
+
+  {newsletterLoading ? (
+    <div className="portal-alert">
+      Loading newsletter settings...
+    </div>
+  ) : (
+    <form className="admin-marketing-form" onSubmit={saveNewsletterPromo}>
+      <label>
+        Eyebrow
+        <input
+          type="text"
+          value={newsletterForm.eyebrow}
+          onChange={(e) => updateNewsletterForm("eyebrow", e.target.value)}
+          placeholder="Members Get First Access"
+        />
+      </label>
+
+      <label>
+        Title
+        <input
+          type="text"
+          value={newsletterForm.title}
+          onChange={(e) => updateNewsletterForm("title", e.target.value)}
+          placeholder="Join The List"
+        />
+      </label>
+
+      <label>
+        Description
+        <textarea
+          value={newsletterForm.description}
+          onChange={(e) => updateNewsletterForm("description", e.target.value)}
+          placeholder="Get drop alerts, menu updates, and 10% off your first order."
+        />
+      </label>
+
+      <div className="admin-marketing-grid">
+        <label>
+          Button Text
+          <input
+            type="text"
+            value={newsletterForm.cta_label}
+            onChange={(e) => updateNewsletterForm("cta_label", e.target.value)}
+            placeholder="Get 10% Off"
+          />
+        </label>
+
+        <label>
+          Offer Code
+          <input
+            type="text"
+            value={newsletterForm.cta_path}
+            onChange={(e) => updateNewsletterForm("cta_path", e.target.value)}
+            placeholder="FIRST10"
+          />
+        </label>
+      </div>
+
+      <label className="admin-toggle-row">
+        <input
+          type="checkbox"
+          checked={newsletterForm.is_active}
+          onChange={(e) => updateNewsletterForm("is_active", e.target.checked)}
+        />
+
+        <span>
+          Show Newsletter popup to customers
+        </span>
+      </label>
+
+      <button type="submit" disabled={newsletterSaving}>
+        {newsletterSaving ? "Saving..." : "Save Newsletter Popup"}
+      </button>
+    </form>
+  )}
+</div>
+  </>
+)}
+        {activeAdminTab === "idReviews" && (
+  <>
+    <div className="admin-status-tabs">
+      <button
+        type="button"
+        className={verificationStatusFilter === "pending" ? "is-active" : ""}
+        onClick={() => setVerificationStatusFilter("pending")}
+      >
+        Pending
+        <span>{verificationCounts.pending}</span>
+      </button>
+
+      <button
+        type="button"
+        className={verificationStatusFilter === "approved" ? "is-active" : ""}
+        onClick={() => setVerificationStatusFilter("approved")}
+      >
+        Approved
+        <span>{verificationCounts.approved}</span>
+      </button>
+
+      <button
+        type="button"
+        className={verificationStatusFilter === "rejected" ? "is-active" : ""}
+        onClick={() => setVerificationStatusFilter("rejected")}
+      >
+        Rejected
+        <span>{verificationCounts.rejected}</span>
+      </button>
+
+      <button
+        type="button"
+        className={verificationStatusFilter === "all" ? "is-active" : ""}
+        onClick={() => setVerificationStatusFilter("all")}
+      >
+        All
+        <span>{verificationCounts.all}</span>
+      </button>
+    </div>
+
+    <div className="admin-review-list">
           {loading ? (
             <div className="portal-alert">
               Loading ID reviews...
             </div>
-          ) : verifications.length === 0 ? (
-            <div className="portal-alert">
-              No ID submissions yet.
-            </div>
-          ) : (
-            verifications.map((verification) => {
+          ) : filteredVerifications.length === 0 ? (
+  <div className="portal-alert">
+    No {verificationStatusFilter === "all" ? "ID" : verificationStatusFilter} submissions found.
+  </div>
+) : (
+  filteredVerifications.map((verification) => {
               const profile = profilesById[verification.user_id];
               const status = verification.status;
 
@@ -559,7 +841,9 @@ const saveHotItemPromo = async (e) => {
               );
             })
           )}
-        </div>
+                </div>
+      </>
+      )}
       </section>
     </div>
   );
