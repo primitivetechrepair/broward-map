@@ -669,7 +669,7 @@ window.setTimeout(() => {
         </div>
       )}
 
-      <PageHeader title="The Stash" eyebrow="Delivery Menu" />
+      <PageHeader title="The Menu" eyebrow="Curated Delivery" />
 
       {reorderMessage && (
   <div className="reorder-loaded-banner">
@@ -678,53 +678,69 @@ window.setTimeout(() => {
   </div>
 )}
 
-      {/* DELIVERY */}
-      <div className="delivery-card">
-        <div className="delivery-row city-row">
-          <span className="label">City</span>
-          <span className="value">{selectedCity}</span>
+      {!activeCategory && (
+  <section className="menu-intro-card">
+    <div className="menu-intro-copy">
+      <span>Tonight’s Menu</span>
 
-          <button className="change-city-btn" onClick={() => navigate("/")}>
-            Change
-          </button>
+      <h2>Curated for your delivery zone.</h2>
+
+      <p>
+        Choose a collection below, build your bag, and submit your order when ready.
+      </p>
+    </div>
+
+    <div className="menu-intro-panel">
+      <div className="menu-intro-stats">
+        <div>
+          <span>City</span>
+          <strong>{selectedCity}</strong>
         </div>
 
-        <div className="delivery-row">
-          <span className="label">Delivery Fee</span>
-          <span>${deliveryFee.toFixed(2)}</span>
+        <div>
+          <span>Delivery</span>
+          <strong>${deliveryFee.toFixed(2)}</strong>
         </div>
 
-        <div className="delivery-row total-row">
+        <div>
           <span>Total</span>
-          <span>${(totalPrice + deliveryFee).toFixed(2)}</span>
+          <strong>${(totalPrice + deliveryFee).toFixed(2)}</strong>
         </div>
-
-        <div ref={bagDockRef} className="bag-dock">
-  <div className="bag-row">
-    <span className={`bag-hint ${totalItems === 0 ? "is-empty" : ""}`}>
-      {totalItems > 0
-        ? `${totalItems} item${totalItems !== 1 ? "s" : ""} in bag`
-        : "Bag is empty"}
-    </span>
-
-    <button
-      key={bagPulseKey}
-      className={`bag-btn ${totalItems > 0 ? "has-items" : "is-empty"}`}
-      onClick={() => setIsBagOpen(true)}
-      aria-label="Open bag"
-    >
-      <span className="bag-icon">👜</span>
-
-      {totalItems > 0 && <span className="bag-count">{totalItems}</span>}
-    </button>
-  </div>
-</div>
       </div>
+
+      <div ref={bagDockRef} className="menu-bag-dock">
+        <span className={`bag-hint ${totalItems === 0 ? "is-empty" : ""}`}>
+          {totalItems > 0
+            ? `${totalItems} item${totalItems !== 1 ? "s" : ""} in bag`
+            : "Bag is empty"}
+        </span>
+
+        <button
+          key={bagPulseKey}
+          className={`bag-btn ${totalItems > 0 ? "has-items" : "is-empty"}`}
+          onClick={() => setIsBagOpen(true)}
+          aria-label="Open bag"
+        >
+          <span className="bag-icon">👜</span>
+
+          {totalItems > 0 && <span className="bag-count">{totalItems}</span>}
+        </button>
+      </div>
+
+      <button
+        className="change-city-btn menu-change-city-btn"
+        onClick={() => navigate("/")}
+      >
+        Change City
+      </button>
+    </div>
+  </section>
+)}
 
       {/* CATEGORY SELECT */}
       {!activeCategory && (
         <>
-          <PageHeader title="Select a Category" eyebrow="Choose Your Stash" />
+          <PageHeader title="Choose a Collection" eyebrow="Select Your Lane" />
 
           <div className="category-grid">
             {CATEGORIES.map((cat) => {
@@ -807,7 +823,7 @@ window.setTimeout(() => {
       {/* PRODUCTS */}
       {activeCategory && (
         <>
-          <PageHeader title={activeCategory} eyebrow="Product Menu" />
+          <PageHeader title={activeCategory} eyebrow="Collection Menu" />
 
           <button
             onClick={() => setActiveCategory(null)}
