@@ -40,8 +40,48 @@ const CATEGORY_IMAGES = {
 const CATEGORY_STATUS = {
   Disposables: {
     disabled: true,
-    label: "Out of Stock",
+    label: "Off Menu",
   },
+};
+
+const getProductBadge = (product, index) => {
+  if (index === 0) return "Council Pick";
+  if (index === 1) return "High Demand";
+  if (index === 2) return "Limited Drop";
+
+  return product.category || "Menu Item";
+};
+
+const getProductTypeLabel = (product) => {
+  if (product.category === "Flowers") return "Premium Flower";
+  if (product.category === "Edibles") return "Infused Edible";
+  if (product.category === "Vapes") return "Vape Selection";
+  if (product.category === "Disposables") return "Disposable";
+  if (product.category === "Concentrates") return "Concentrate";
+  if (product.category === "Syringes") return "Syringe";
+  if (product.category === "Peptides") return "Peptide";
+
+  return product.category || "Menu Item";
+};
+
+const getProductDetailChips = ({ product, thc, selectedGram }) => {
+  const chips = [];
+
+  if (thc) chips.push(thc);
+
+  if (product.category === "Flowers") {
+    chips.push(`${selectedGram || "3.5"}g`);
+  }
+
+  if (product.dose) {
+    chips.push(product.dose);
+  }
+
+  if (product.category) {
+    chips.push(product.category);
+  }
+
+  return chips.slice(0, 3);
 };
 
 export default function ProductsPage() {
@@ -777,96 +817,135 @@ window.setTimeout(() => {
           </button>
 
           <div className="product-grid">
-            {visibleProducts.map((product) => {
-              const thc = getTHCLabel(product);
-              const isAdded = addedProductId === product.id;
-              const isReady = quantities[product.id] > 0;
+            {visibleProducts.map((product, index) => {
+  const thc = getTHCLabel(product);
+  const isAdded = addedProductId === product.id;
+  const isReady = quantities[product.id] > 0;
+  const selectedGram = selectedGrams[product.id] || "3.5";
+  const productPrice =
+    product.category === "Flowers"
+      ? getFlowerPrice(product.id, selectedGram)
+      : product.price;
 
-              return (
-                <div
-                  key={product.id}
-                  className={`product-card ${isAdded ? "is-added" : ""}`}
-                >
-                  {thc && <div className="thc-badge">{thc}</div>}
+  const productBadge = getProductBadge(product, index);
+  const productTypeLabel = getProductTypeLabel(product);
+  const detailChips = getProductDetailChips({
+    product,
+    thc,
+    selectedGram,
+  });
 
-                  <button
-                    className="product-info-btn"
-                    onClick={() => setActiveProductId(product.id)}
-                  >
-                    i
-                  </button>
+  return (
+    <article
+      key={product.id}
+      className={`product-card ${isAdded ? "is-added" : ""}`}
+    >
+      <div className="product-card-topline">
+        <span className="product-status-badge">
+          {productBadge}
+        </span>
 
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="product-image"
-                  />
+        <span className="product-availability-pill">
+          Available
+        </span>
+      </div>
 
-                  <p className="product-name">{product.name}</p>
+      <button
+        className="product-info-btn"
+        onClick={() => setActiveProductId(product.id)}
+        aria-label={`View details for ${product.name}`}
+      >
+        i
+      </button>
 
-                  {product.dose && (
-                    <div className="product-dose-badge">{product.dose}</div>
-                  )}
+      <div className="product-image-stage">
+        <img
+          src={product.image}
+          alt={product.name}
+          className="product-image"
+        />
+      </div>
 
-                  <p className="product-price">
-                    $
-                    {product.category === "Flowers"
-                      ? getFlowerPrice(
-                          product.id,
-                          selectedGrams[product.id] || "3.5"
-                        )
-                      : product.price.toFixed(2)}
-                  </p>
+      <div className="product-card-body">
+        <span className="product-type-label">
+          {productTypeLabel}
+        </span>
 
-                  <div className="product-card-actions">
-                    {product.category === "Flowers" && (
-                      <div className="gram-selector">
-                        {["3.5", "7", "14"].map((g) => (
-                          <button
-                            key={g}
-                            className={`gram-btn ${
-                              selectedGrams[product.id] === g ? "active" : ""
-                            }`}
-                            onClick={() =>
-                              setSelectedGrams((prev) => ({
-                                ...prev,
-                                [product.id]: g,
-                              }))
-                            }
-                          >
-                            {g}g
-                          </button>
-                        ))}
-                      </div>
-                    )}
+        <p className="product-name">{product.name}</p>
 
-                    <div className="quantity-counter">
-                      <button
-                        onClick={() => handleQuantityChange(product.id, -1)}
-                      >
-                        -
-                      </button>
+        <p className="product-short-description">
+          {product.description ||
+            "Selected for the menu with quality, consistency, and availability in mind."}
+        </p>
 
-                      <span>{quantities[product.id]}</span>
+        {detailChips.length > 0 && (
+          <div className="product-detail-chips">
+            {detailChips.map((chip) => (
+              <span key={chip}>{chip}</span>
+            ))}
+          </div>
+        )}
+      </div>
 
-                      <button
-                        onClick={() => handleQuantityChange(product.id, 1)}
-                      >
-                        +
-                      </button>
-                    </div>
+      <div className="product-price-row">
+        <span>Price</span>
 
-                    <button
-                      className={`add-to-bag ${isReady ? "is-ready" : ""}`}
-                      disabled={!isReady}
-                      onClick={() => handleAddToBag(product)}
-                    >
-                      <span>Add To Bag</span>
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
+        <strong>
+          ${Number(productPrice || 0).toFixed(2)}
+        </strong>
+      </div>
+
+      <div className="product-card-actions">
+        {product.category === "Flowers" && (
+          <div className="gram-selector">
+            {["3.5", "7", "14"].map((g) => (
+              <button
+                key={g}
+                className={`gram-btn ${
+                  selectedGrams[product.id] === g ? "active" : ""
+                }`}
+                onClick={() =>
+                  setSelectedGrams((prev) => ({
+                    ...prev,
+                    [product.id]: g,
+                  }))
+                }
+              >
+                {g}g
+              </button>
+            ))}
+          </div>
+        )}
+
+        <div className="quantity-counter">
+          <button
+            onClick={() => handleQuantityChange(product.id, -1)}
+            aria-label={`Decrease quantity for ${product.name}`}
+          >
+            -
+          </button>
+
+          <span>{quantities[product.id]}</span>
+
+          <button
+            onClick={() => handleQuantityChange(product.id, 1)}
+            aria-label={`Increase quantity for ${product.name}`}
+          >
+            +
+          </button>
+        </div>
+
+        <button
+          className={`add-to-bag ${isReady ? "is-ready" : ""}`}
+          disabled={!isReady}
+          onClick={() => handleAddToBag(product)}
+        >
+          <span>{isReady ? "Add To Bag" : "Select Quantity"}</span>
+        </button>
+      </div>
+    </article>
+  );
+})}
           </div>
         </>
       )}
