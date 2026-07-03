@@ -669,80 +669,82 @@ window.setTimeout(() => {
         </div>
       )}
 
-      <PageHeader title="The Menu" eyebrow="Curated Delivery" />
-
-      {reorderMessage && (
-  <div className="reorder-loaded-banner">
-    <strong>Reorder Ready</strong>
-    <p>{reorderMessage}</p>
-  </div>
-)}
-
       {!activeCategory && (
-  <section className="menu-intro-card">
-    <div className="menu-intro-copy">
-      <span>Tonight’s Menu</span>
+  <section className="products-zone products-zone-menu">
+    <PageHeader title="The Menu" eyebrow="Curated Delivery" />
 
-      <h2>Curated for your delivery zone.</h2>
+    {reorderMessage && (
+      <div className="reorder-loaded-banner">
+        <strong>Reorder Ready</strong>
+        <p>{reorderMessage}</p>
+      </div>
+    )}
 
-      <p>
-        Choose a collection below, build your bag, and submit your order when ready.
-      </p>
-    </div>
+    <section className="menu-intro-card">
+      <div className="menu-intro-copy">
+        <span>Tonight’s Menu</span>
 
-    <div className="menu-intro-panel">
-      <div className="menu-intro-stats">
-        <div>
-          <span>City</span>
-          <strong>{selectedCity}</strong>
-        </div>
+        <h2>Curated for your delivery zone.</h2>
 
-        <div>
-          <span>Delivery</span>
-          <strong>${deliveryFee.toFixed(2)}</strong>
-        </div>
-
-        <div>
-          <span>Total</span>
-          <strong>${(totalPrice + deliveryFee).toFixed(2)}</strong>
-        </div>
+        <p>
+          Choose a collection below, build your bag, and submit your order when ready.
+        </p>
       </div>
 
-      <div ref={bagDockRef} className="menu-bag-dock">
-        <span className={`bag-hint ${totalItems === 0 ? "is-empty" : ""}`}>
-          {totalItems > 0
-            ? `${totalItems} item${totalItems !== 1 ? "s" : ""} in bag`
-            : "Bag is empty"}
-        </span>
+      <div className="menu-intro-panel">
+        <div className="menu-intro-stats">
+          <div>
+            <span>City</span>
+            <strong>{selectedCity}</strong>
+          </div>
+
+          <div>
+            <span>Delivery</span>
+            <strong>${deliveryFee.toFixed(2)}</strong>
+          </div>
+
+          <div>
+            <span>Total</span>
+            <strong>${(totalPrice + deliveryFee).toFixed(2)}</strong>
+          </div>
+        </div>
+
+        <div ref={bagDockRef} className="menu-bag-dock">
+          <span className={`bag-hint ${totalItems === 0 ? "is-empty" : ""}`}>
+            {totalItems > 0
+              ? `${totalItems} item${totalItems !== 1 ? "s" : ""} in bag`
+              : "Bag is empty"}
+          </span>
+
+          <button
+            key={bagPulseKey}
+            className={`bag-btn ${totalItems > 0 ? "has-items" : "is-empty"}`}
+            onClick={() => setIsBagOpen(true)}
+            aria-label="Open bag"
+          >
+            <span className="bag-icon">👜</span>
+
+            {totalItems > 0 && <span className="bag-count">{totalItems}</span>}
+          </button>
+        </div>
 
         <button
-          key={bagPulseKey}
-          className={`bag-btn ${totalItems > 0 ? "has-items" : "is-empty"}`}
-          onClick={() => setIsBagOpen(true)}
-          aria-label="Open bag"
+          className="change-city-btn menu-change-city-btn"
+          onClick={() => navigate("/")}
         >
-          <span className="bag-icon">👜</span>
-
-          {totalItems > 0 && <span className="bag-count">{totalItems}</span>}
+          Change City
         </button>
       </div>
-
-      <button
-        className="change-city-btn menu-change-city-btn"
-        onClick={() => navigate("/")}
-      >
-        Change City
-      </button>
-    </div>
+    </section>
   </section>
 )}
 
       {/* CATEGORY SELECT */}
-      {!activeCategory && (
-        <>
-          <PageHeader title="Choose a Collection" eyebrow="Select Your Lane" />
+{!activeCategory && (
+  <section className="products-zone products-zone-collections">
+    <PageHeader title="Choose a Collection" eyebrow="Select Your Lane" />
 
-          <div className="category-grid">
+    <div className="category-grid">
             {CATEGORIES.map((cat) => {
   const categoryStatus = CATEGORY_STATUS[cat];
   const isCategoryDisabled = categoryStatus?.disabled === true;
@@ -789,8 +791,8 @@ window.setTimeout(() => {
   </button>
 </section>
 
-        </>
-      )}
+  </section>
+)}
 
       {/* PRODUCT MODAL */}
       {selectedProduct && (
@@ -821,9 +823,9 @@ window.setTimeout(() => {
       )}
 
       {/* PRODUCTS */}
-      {activeCategory && (
-        <>
-          <PageHeader title={activeCategory} eyebrow="Collection Menu" />
+{activeCategory && (
+  <section className="products-zone products-zone-products">
+    <PageHeader title={activeCategory} eyebrow="Collection Menu" />
 
           <button
             onClick={() => setActiveCategory(null)}
@@ -963,8 +965,8 @@ window.setTimeout(() => {
   );
 })}
           </div>
-        </>
-      )}
+        </section>
+)}
 
       {/* FLOATING BAG CLONE */}
 {totalItems > 0 &&

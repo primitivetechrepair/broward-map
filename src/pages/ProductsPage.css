@@ -386,6 +386,115 @@ p, span, a, li {
 }
 
 /* ============================ */
+/* Product Page Zones           */
+/* ============================ */
+
+.products-zone {
+  position: relative;
+  isolation: isolate;
+
+  width: min(1180px, 100%);
+  margin: 0 auto 34px;
+  padding: 24px 22px;
+
+  border-radius: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.075);
+  border-top-color: rgba(255, 255, 255, 0.13);
+
+  background:
+    radial-gradient(circle at 12% 0%, rgba(0, 229, 255, 0.07), transparent 34%),
+    radial-gradient(circle at 88% 10%, rgba(255, 78, 196, 0.06), transparent 32%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.014)),
+    rgba(0, 0, 0, 0.16);
+
+  box-shadow:
+    0 22px 58px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.055);
+}
+
+.products-zone::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  z-index: 0;
+
+  border-radius: inherit;
+
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.07), transparent 24%),
+    linear-gradient(180deg, transparent 58%, rgba(0, 0, 0, 0.16));
+
+  pointer-events: none;
+}
+
+.products-zone > * {
+  position: relative;
+  z-index: 2;
+}
+
+.products-zone-menu {
+  width: min(1180px, 100%);
+}
+
+.products-zone-collections {
+  width: min(1180px, 100%);
+}
+
+.products-zone-products {
+  width: min(1540px, 100%);
+}
+
+.products-zone .page-header {
+  margin-bottom: 22px;
+}
+
+.products-zone .menu-intro-card {
+  margin-bottom: 0;
+}
+
+.products-zone .category-grid {
+  margin-bottom: 0;
+}
+
+.products-zone .product-grid {
+  margin-top: 22px;
+}
+
+.products-zone .product-request-strip {
+  width: 100%;
+  margin: 28px 0 0;
+
+  border-radius: 28px;
+  border-bottom: 1px solid rgba(255, 199, 87, 0.18);
+}
+
+@media (max-width: 760px) {
+  .products-zone {
+    width: 100%;
+    margin-bottom: 28px;
+    padding: 18px 14px;
+
+    border-radius: 28px;
+  }
+
+  .products-zone .page-header {
+    margin-bottom: 18px;
+  }
+
+  .products-zone .product-request-strip {
+    margin-top: 22px;
+    border-radius: 24px;
+  }
+}
+
+@media (max-width: 520px) {
+  .products-zone {
+    padding: 14px 10px;
+    border-radius: 24px;
+  }
+}
+
+/* ============================ */
 /* Menu Intro Card              */
 /* ============================ */
 
