@@ -414,6 +414,13 @@ window.setTimeout(() => {
 
   if (!selectedCity) return null;
 
+  const renderZoneHeading = (title, eyebrow) => (
+  <div className="products-zone-heading">
+    <span>{eyebrow}</span>
+    <h1>{title}</h1>
+  </div>
+);
+
   const bagModal = isBagOpen
     ? createPortal(
         <div
@@ -671,7 +678,7 @@ window.setTimeout(() => {
 
       {!activeCategory && (
   <section className="products-zone products-zone-menu">
-    <PageHeader title="The Menu" eyebrow="Curated Delivery" />
+    {renderZoneHeading("The Menu", "Curated Delivery")}
 
     {reorderMessage && (
       <div className="reorder-loaded-banner">
@@ -742,7 +749,7 @@ window.setTimeout(() => {
       {/* CATEGORY SELECT */}
 {!activeCategory && (
   <section className="products-zone products-zone-collections">
-    <PageHeader title="Choose a Collection" eyebrow="Select Your Lane" />
+    {renderZoneHeading("Choose a Collection", "Select Your Lane")}
 
     <div className="category-grid">
             {CATEGORIES.map((cat) => {
@@ -825,7 +832,7 @@ window.setTimeout(() => {
       {/* PRODUCTS */}
 {activeCategory && (
   <section className="products-zone products-zone-products">
-    <PageHeader title={activeCategory} eyebrow="Collection Menu" />
+    {renderZoneHeading(activeCategory, "Collection Menu")}
 
           <button
             onClick={() => setActiveCategory(null)}

@@ -495,6 +495,148 @@ p, span, a, li {
 }
 
 /* ============================ */
+/* Product Zone Headings        */
+/* ============================ */
+
+.products-zone-heading {
+  position: relative;
+  z-index: 3;
+
+  width: min(760px, 100%);
+  margin: 0 auto 26px;
+  padding: 14px 18px 18px;
+
+  display: grid;
+  place-items: center;
+  gap: 8px;
+
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-top-color: rgba(255, 255, 255, 0.22);
+
+  background:
+    radial-gradient(circle at 18% 0%, rgba(0, 229, 255, 0.14), transparent 36%),
+    radial-gradient(circle at 88% 18%, rgba(255, 78, 196, 0.12), transparent 34%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.085), rgba(255, 255, 255, 0.025)),
+    rgba(7, 7, 18, 0.5);
+
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  box-shadow:
+    0 22px 48px rgba(0, 0, 0, 0.34),
+    0 0 26px rgba(0, 229, 255, 0.12),
+    0 0 34px rgba(255, 78, 196, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
+  text-align: center;
+}
+
+.products-zone-heading::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+
+  width: min(220px, 62vw);
+  height: 2px;
+
+  transform: translateX(-50%);
+
+  border-radius: 999px;
+
+  background:
+    linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.72), rgba(255, 78, 196, 0.62), transparent);
+
+  opacity: 0.65;
+}
+
+.products-zone-heading span {
+  width: max-content;
+  max-width: 100%;
+
+  padding: 5px 10px;
+
+  border-radius: 999px;
+  border: 1px solid rgba(0, 229, 255, 0.2);
+
+  background:
+    linear-gradient(135deg, rgba(0, 229, 255, 0.08), rgba(255, 78, 196, 0.05)),
+    rgba(0, 0, 0, 0.22);
+
+  color: rgba(255, 255, 255, 0.76);
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.62rem;
+  font-weight: 1000;
+  line-height: 1;
+  letter-spacing: 0.22em;
+
+  text-align: center;
+  text-transform: uppercase;
+
+  text-shadow: 0 0 12px rgba(0, 229, 255, 0.18);
+}
+
+.products-zone-heading h1 {
+  width: 100%;
+  max-width: 100%;
+
+  margin: 0;
+
+  color: #ffffff;
+
+  font-family: "PricedownBl", sans-serif;
+  font-size: clamp(3rem, 7vw, 5.3rem);
+  font-weight: normal;
+  line-height: 0.84;
+  letter-spacing: 0.4px;
+
+  text-align: center;
+  text-transform: uppercase;
+  text-wrap: balance;
+
+  text-shadow:
+    4px 4px 0 rgba(0, 0, 0, 0.72),
+    0 0 20px rgba(0, 229, 255, 0.16),
+    0 0 26px rgba(255, 78, 196, 0.12);
+}
+
+@media (max-width: 760px) {
+  .products-zone-heading {
+    width: 100%;
+    margin-bottom: 22px;
+    padding: 12px 12px 16px;
+
+    border-radius: 22px;
+  }
+
+  .products-zone-heading h1 {
+    font-size: clamp(2.15rem, 10.5vw, 3.2rem);
+    line-height: 0.86;
+    letter-spacing: 0.25px;
+  }
+
+  .products-zone-heading span {
+    padding: 4px 8px;
+
+    font-size: 0.48rem;
+    letter-spacing: 0.16em;
+  }
+
+  .products-zone-heading::before {
+    width: min(150px, 54vw);
+    bottom: 7px;
+  }
+}
+
+@media (max-width: 390px) {
+  .products-zone-heading h1 {
+    font-size: clamp(1.95rem, 10vw, 2.75rem);
+  }
+}
+
+/* ============================ */
 /* Menu Intro Card              */
 /* ============================ */
 
