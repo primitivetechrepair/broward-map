@@ -58,10 +58,12 @@
   height: 44px;
   border-radius: 15px;
 
-  border: 1px solid rgba(255, 199, 87, 0.36);
-  color: #101014;
+  border: 1px solid rgba(0, 229, 255, 0.38);
+  color: #ffffff;
   background:
-    linear-gradient(135deg, #ffc757, #ffdd87);
+    radial-gradient(circle at 30% 18%, rgba(255, 255, 255, 0.22), transparent 28%),
+    linear-gradient(135deg, rgba(0, 229, 255, 0.28), rgba(255, 78, 196, 0.18)),
+    rgba(7, 7, 18, 0.86);
 
   font-family: "Chalet", sans-serif;
   font-size: 0.7rem;
@@ -69,8 +71,9 @@
   letter-spacing: 0.06em;
 
   box-shadow:
-    0 0 24px rgba(255, 199, 87, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    0 0 22px rgba(0, 229, 255, 0.18),
+    0 0 26px rgba(255, 78, 196, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
 .site-brand strong {
@@ -142,28 +145,35 @@
 .site-nav a.active {
   transform: translateY(-1px);
 
-  color: #ffc757;
-  border-color: rgba(255, 199, 87, 0.24);
-  background: rgba(255, 199, 87, 0.07);
+  color: #00e5ff;
+  border-color: rgba(0, 229, 255, 0.28);
+  background:
+    linear-gradient(135deg, rgba(0, 229, 255, 0.1), rgba(255, 78, 196, 0.06)),
+    rgba(0, 0, 0, 0.22);
+
+  box-shadow:
+    0 0 16px rgba(0, 229, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
 }
 
 .site-nav .site-nav-cta {
   margin-left: 5px;
 
-  color: #101014;
-  border-color: rgba(255, 199, 87, 0.42);
+  color: #06130c;
+  border-color: rgba(78, 255, 154, 0.46);
   background:
-    linear-gradient(135deg, #ffc757, #ffdd87);
+    linear-gradient(135deg, #4eff9a, #00e5ff);
 
   box-shadow:
-    0 0 20px rgba(255, 199, 87, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.34);
+    0 0 20px rgba(78, 255, 154, 0.16),
+    0 0 24px rgba(0, 229, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.26);
 }
 
 .site-nav .site-nav-cta:hover {
-  color: #101014;
+  color: #06130c;
   background:
-    linear-gradient(135deg, #ffce6b, #ffe39a);
+    linear-gradient(135deg, #62ffab, #18eaff);
 }
 
 .site-menu-toggle {
@@ -595,11 +605,11 @@
     padding: 12px;
     border-radius: 24px;
 
-    border: 1px solid rgba(255, 199, 87, 0.2);
-    background:
-      radial-gradient(circle at 14% 0%, rgba(255, 199, 87, 0.13), transparent 36%),
-      radial-gradient(circle at 92% 10%, rgba(87, 209, 255, 0.11), transparent 36%),
-      rgba(10, 10, 13, 0.97);
+      border: 1px solid rgba(0, 229, 255, 0.2);
+      background:
+    radial-gradient(circle at 14% 0%, rgba(0, 229, 255, 0.13), transparent 36%),
+    radial-gradient(circle at 92% 10%, rgba(255, 78, 196, 0.11), transparent 36%),
+    rgba(10, 10, 18, 0.97);
 
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
@@ -632,22 +642,25 @@
   }
 
   .site-nav a:hover,
-  .site-nav button:hover,
-  .site-nav a.active {
-    transform: none;
+.site-nav button:hover,
+.site-nav a.active {
+  transform: none;
 
-    border-color: rgba(255, 199, 87, 0.28);
-    background: rgba(255, 199, 87, 0.08);
-  }
+  color: #00e5ff;
+  border-color: rgba(0, 229, 255, 0.3);
+  background:
+    linear-gradient(135deg, rgba(0, 229, 255, 0.1), rgba(255, 78, 196, 0.06)),
+    rgba(255, 255, 255, 0.045);
+}
 
   .site-nav .site-nav-cta {
-    justify-content: center;
+  justify-content: center;
 
-    color: #101014;
-    border-color: rgba(255, 199, 87, 0.42);
-    background:
-      linear-gradient(135deg, #ffc757, #ffdd87);
-  }
+  color: #06130c;
+  border-color: rgba(78, 255, 154, 0.46);
+  background:
+    linear-gradient(135deg, #4eff9a, #00e5ff);
+}
 
   .site-footer {
   margin-top: 0;
