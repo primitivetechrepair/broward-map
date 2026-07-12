@@ -40,21 +40,25 @@ const esc = (value: unknown) => {
 };
 
 Deno.serve(async (req) => {
+  console.log("peptide-royalty-email invoked", {
+    method: req.method,
+    time: new Date().toISOString(),
+  });
+
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
 
   if (req.method !== "POST") {
-    return new Response(
-      JSON.stringify({ error: "Method not allowed" }),
-      {
-        status: 405,
-        headers: {
-          ...corsHeaders,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    console.log("Invalid method", req.method);
+
+    return new Response(JSON.stringify({ error: "Method not allowed" }), {
+      status: 405,
+      headers: {
+        ...corsHeaders,
+        "Content-Type": "application/json",
+      },
+    });
   }
 
   try {
@@ -64,7 +68,15 @@ Deno.serve(async (req) => {
       Deno.env.get("PEPTIDE_ROYALTY_EMAIL_FROM") ||
       "The High Council <onboarding@resend.dev>";
 
+    console.log("Secrets loaded", {
+      hasResendApiKey: Boolean(resendApiKey),
+      royaltyEmailTo,
+      royaltyEmailFrom,
+    });
+
     if (!resendApiKey || !royaltyEmailTo) {
+      console.log("Missing required secrets");
+
       return new Response(
         JSON.stringify({
           error: "Missing RESEND_API_KEY or PEPTIDE_ROYALTY_EMAIL_TO",
@@ -85,15 +97,28 @@ Deno.serve(async (req) => {
       ? payload.cartItems
       : [];
 
+    console.log("Payload received", {
+      orderId: payload.orderId,
+      city: payload.city,
+      totalItemsReceived: cartItems.length,
+      categories: cartItems.map((item) => item.category),
+    });
+
     const peptideItems = cartItems.filter(
       (item) => String(item.category || "").toLowerCase() === "peptides"
     );
+
+    console.log("Peptide items found", {
+      peptideCount: peptideItems.length,
+      peptideItems,
+    });
 
     if (peptideItems.length === 0) {
       return new Response(
         JSON.stringify({
           sent: false,
           reason: "No peptide items in order.",
+          receivedCategories: cartItems.map((item) => item.category || null),
         }),
         {
           status: 200,
@@ -126,6 +151,12 @@ Deno.serve(async (req) => {
 
     const royaltyRate = 0.2;
     const royaltyCut = peptideSubtotal * royaltyRate;
+
+    console.log("Royalty calculated", {
+      peptideSubtotal,
+      royaltyRate,
+      royaltyCut,
+    });
 
     const itemRows = lineItems
       .map(
@@ -220,6 +251,12 @@ Deno.serve(async (req) => {
       </div>
     `;
 
+    console.log("Sending email through Resend", {
+      to: royaltyEmailTo,
+      from: royaltyEmailFrom,
+      subject,
+    });
+
     const emailResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -235,6 +272,12 @@ Deno.serve(async (req) => {
     });
 
     const emailResult = await emailResponse.json();
+
+    console.log("Resend response", {
+      ok: emailResponse.ok,
+      status: emailResponse.status,
+      emailResult,
+    });
 
     if (!emailResponse.ok) {
       return new Response(
@@ -269,6 +312,8 @@ Deno.serve(async (req) => {
       }
     );
   } catch (error) {
+    console.log("Unexpected function error", String(error));
+
     return new Response(
       JSON.stringify({
         error: "Unexpected error",
