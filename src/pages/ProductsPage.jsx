@@ -970,10 +970,11 @@ const productPrice =
 
         <p className="product-name">{product.name}</p>
 
-        <p className="product-short-description">
-          {product.description ||
-            "Selected for the menu with quality, consistency, and availability in mind."}
-        </p>
+        {product.description && (
+  <p className="product-short-description">
+    {product.description}
+  </p>
+)}
 
         {detailChips.length > 0 && (
           <div className="product-detail-chips">
