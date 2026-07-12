@@ -2190,6 +2190,10 @@ p, span, a, li {
   width: 100%;
 }
 
+.peptide-mg-selector {
+  margin: 0 0 12px;
+}
+
 .quantity-counter {
   display: grid;
   grid-template-columns: 42px 1fr 42px;
