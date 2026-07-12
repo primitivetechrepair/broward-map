@@ -9,6 +9,7 @@ import MAP_INTRO from "../../data/mapIntro";
 import SHORT_LABELS from "../../data/mapLabels";
 import HoverInfoPanel from "./HoverInfoPanel";
 import PageHeader from "../PageHeader/PageHeader.jsx";
+import SEO from "../SEO/SEO.jsx";
 
 const FLAT_DELIVERY_FEE = 20;
 
@@ -254,11 +255,53 @@ setHoveredCity(null);
 
   /* ================= Render */
   return (
+  <>
+    <SEO
+      title="The High Council | Premium Delivery in South Florida"
+      description="Select your South Florida delivery area, view city-based delivery pricing, and browse The High Council's premium collections."
+      path="/"
+      structuredData={{
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": `${window.location.origin}/#organization`,
+            name: "The High Council",
+            url: `${window.location.origin}/`,
+            logo: `${window.location.origin}/apple-touch-icon.png`,
+          },
+          {
+            "@type": "WebSite",
+            "@id": `${window.location.origin}/#website`,
+            url: `${window.location.origin}/`,
+            name: "The High Council",
+            publisher: {
+              "@id": `${window.location.origin}/#organization`,
+            },
+          },
+          {
+            "@type": "WebPage",
+            "@id": `${window.location.origin}/#webpage`,
+            url: `${window.location.origin}/`,
+            name: "The High Council | Premium Delivery in South Florida",
+            description:
+              "Select your South Florida delivery area, view city-based delivery pricing, and browse The High Council's premium collections.",
+            isPartOf: {
+              "@id": `${window.location.origin}/#website`,
+            },
+            about: {
+              "@id": `${window.location.origin}/#organization`,
+            },
+          },
+        ],
+      }}
+    />
+
     <div
-  className={`map-wrapper ${
-    isCountyTransitioning ? "county-transitioning" : ""
-  }`}
->
+      className={`map-wrapper ${
+        isCountyTransitioning ? "county-transitioning" : ""
+      }`}
+    >
 
   <div className="map-page-header">
   <PageHeader
@@ -391,5 +434,6 @@ const pos = [c.lat + offset.lat, c.lng + offset.lng];
         </div>
       )}
     </div>
-  );
+  </>
+);
 }

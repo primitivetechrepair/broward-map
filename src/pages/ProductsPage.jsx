@@ -7,6 +7,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext.jsx";
 import "./ProductsPage.css";
 import "./ProductBag.css";
+import SEO from "../components/SEO/SEO.jsx";
 
 import {
   getFlowerPrice,
@@ -552,6 +553,9 @@ window.setTimeout(() => {
                           <strong>
                             {item.name}
                             {item.gram && <span> ({item.gram}g)</span>}
+                            {item.dose && !item.name.includes(item.dose) && (
+                              <span> ({item.dose})</span>
+                            )}
                           </strong>
 
                           <div className="modal-qty">
@@ -728,6 +732,37 @@ window.setTimeout(() => {
   : null;
 
   return (
+  <>
+    <SEO
+      title={
+        activeCategory
+          ? `${activeCategory} Collection | The High Council`
+          : "Premium Collections | The High Council"
+      }
+      description={
+        activeCategory
+          ? `Browse The High Council's ${activeCategory.toLowerCase()} collection with clear pricing, product details, and delivery throughout supported South Florida cities.`
+          : "Browse The High Council's curated product collections with clear pricing, product details, and delivery throughout supported South Florida cities."
+      }
+      path="/products"
+      structuredData={{
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        name: activeCategory
+          ? `${activeCategory} Collection | The High Council`
+          : "The High Council Premium Collections",
+        description: activeCategory
+          ? `Browse The High Council's ${activeCategory.toLowerCase()} collection.`
+          : "Browse The High Council's curated product collections and delivery menu.",
+        url: `${window.location.origin}/products`,
+        isPartOf: {
+          "@type": "WebSite",
+          name: "The High Council",
+          url: `${window.location.origin}/`,
+        },
+      }}
+    />
+
     <div
       className={`products-page page-enter ${
         isCheckingOut ? "page-leave" : ""
@@ -1101,8 +1136,9 @@ const productPrice =
 
 <PromoPopups city={selectedCity} />
 
-{bagModal}
-{productRequestModal}
+      {bagModal}
+      {productRequestModal}
     </div>
-  );
+  </>
+);
 }

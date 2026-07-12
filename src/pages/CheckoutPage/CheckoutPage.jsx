@@ -7,6 +7,7 @@ import { useAuth } from "../../context/AuthContext.jsx";
 import { useCart } from "../../context/CartContext.jsx";
 import { sendPeptideRoyaltyEmail } from "../../utils/sendPeptideRoyaltyEmail.js";
 import "./CheckoutPage.css";
+import SEO from "../../components/SEO/SEO.jsx";
 
 const PAYMENT_INSTRUCTIONS = {
   zelle: {
@@ -288,6 +289,24 @@ if (!isApproved) {
 }
 
   return (
+  <>
+    <SEO
+      title="Secure Checkout | The High Council"
+      description="Complete your order securely with delivery details, ID verification, payment instructions, and premium delivery throughout South Florida."
+      path="/checkout"
+      structuredData={{
+        "@context": "https://schema.org",
+        "@type": "CheckoutPage",
+        name: "The High Council Checkout",
+        url: `${window.location.origin}/checkout`,
+        isPartOf: {
+          "@type": "WebSite",
+          name: "The High Council",
+          url: `${window.location.origin}/`,
+        },
+      }}
+    />
+
     <div className="checkout-page">
       <div className="checkout-bg-orb orb-one"></div>
       <div className="checkout-bg-orb orb-two"></div>
@@ -500,5 +519,6 @@ if (!isApproved) {
         </aside>
       </div>
     </div>
-  );
+  </>
+);
 }
