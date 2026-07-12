@@ -984,40 +984,10 @@ const productPrice =
         )}
       </div>
 
-      <div className="product-price-row">
-        <span>Price</span>
-
-        <strong>
-          ${Number(productPrice || 0).toFixed(2)}
-        </strong>
-      </div>
-
-      <div className="product-card-actions">
-        {product.category === "Flowers" && (
-          <div className="gram-selector">
-            {["3.5", "7", "14"].map((g) => (
-              <button
-                key={g}
-                className={`gram-btn ${
-                  selectedGrams[product.id] === g ? "active" : ""
-                }`}
-                onClick={() =>
-                  setSelectedGrams((prev) => ({
-                    ...prev,
-                    [product.id]: g,
-                  }))
-                }
-              >
-                {g}g
-              </button>
-            ))}
-          </div>
-        )}
-
-        {product.category === "Peptides" &&
+{product.category === "Peptides" &&
   Array.isArray(product.mgOptions) &&
   product.mgOptions.length > 1 && (
-    <div className="gram-selector">
+    <div className="gram-selector peptide-mg-selector">
       {product.mgOptions.map((option) => (
         <button
           key={option.value}
@@ -1037,7 +1007,37 @@ const productPrice =
     </div>
   )}
 
-        <div className="quantity-counter">
+<div className="product-price-row">
+  <span>Price</span>
+
+  <strong>
+    ${Number(productPrice || 0).toFixed(2)}
+  </strong>
+</div>
+
+<div className="product-card-actions">
+  {product.category === "Flowers" && (
+    <div className="gram-selector">
+      {["3.5", "7", "14"].map((g) => (
+        <button
+          key={g}
+          className={`gram-btn ${
+            selectedGrams[product.id] === g ? "active" : ""
+          }`}
+          onClick={() =>
+            setSelectedGrams((prev) => ({
+              ...prev,
+              [product.id]: g,
+            }))
+          }
+        >
+          {g}g
+        </button>
+      ))}
+    </div>
+  )}
+
+  <div className="quantity-counter">
           <button
             onClick={() => handleQuantityChange(product.id, -1)}
             aria-label={`Decrease quantity for ${product.name}`}
