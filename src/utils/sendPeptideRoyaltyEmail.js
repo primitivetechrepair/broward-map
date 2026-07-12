@@ -6,6 +6,10 @@ export const sendPeptideRoyaltyEmail = async ({
   customerName,
   customerContact,
   city,
+  deliverySpeed,
+  deliverySpeedLabel,
+  baseDeliveryFee,
+  deliverySurcharge,
   deliveryFee,
   cartItems,
 }) => {
@@ -30,6 +34,10 @@ export const sendPeptideRoyaltyEmail = async ({
         customerName,
         customerContact,
         city,
+        deliverySpeed,
+        deliverySpeedLabel,
+        baseDeliveryFee,
+        deliverySurcharge,
         deliveryFee,
         cartItems,
       },
@@ -38,6 +46,7 @@ export const sendPeptideRoyaltyEmail = async ({
 
   if (error) {
     console.error("Peptide royalty email failed:", error);
+
     return {
       sent: false,
       error,

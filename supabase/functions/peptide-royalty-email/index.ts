@@ -15,6 +15,10 @@ type RoyaltyPayload = {
   customerName?: string;
   customerContact?: string;
   city?: string;
+  deliverySpeed?: string;
+  deliverySpeedLabel?: string;
+  baseDeliveryFee?: number;
+  deliverySurcharge?: number;
   deliveryFee?: number;
   cartItems?: CartItem[];
 };
@@ -93,16 +97,42 @@ Deno.serve(async (req) => {
 
     const payload = (await req.json()) as RoyaltyPayload;
 
-    const cartItems = Array.isArray(payload.cartItems)
-      ? payload.cartItems
-      : [];
+const cartItems = Array.isArray(payload.cartItems)
+  ? payload.cartItems
+  : [];
+
+const deliverySpeed =
+  payload.deliverySpeed === "expedited" ? "expedited" : "standard";
+
+const deliverySpeedLabel =
+  payload.deliverySpeedLabel ||
+  (deliverySpeed === "expedited" ? "Expedited" : "Standard");
+
+const toSafeAmount = (value: unknown) => {
+  const amount = Number(value);
+  return Number.isFinite(amount) && amount >= 0 ? amount : 0;
+};
+
+const baseDeliveryFee = toSafeAmount(payload.baseDeliveryFee);
+const deliverySurcharge = toSafeAmount(payload.deliverySurcharge);
+
+const suppliedDeliveryFee = Number(payload.deliveryFee);
+
+const deliveryFee =
+  Number.isFinite(suppliedDeliveryFee) && suppliedDeliveryFee >= 0
+    ? suppliedDeliveryFee
+    : baseDeliveryFee + deliverySurcharge;
 
     console.log("Payload received", {
-      orderId: payload.orderId,
-      city: payload.city,
-      totalItemsReceived: cartItems.length,
-      categories: cartItems.map((item) => item.category),
-    });
+  orderId: payload.orderId,
+  city: payload.city,
+  deliverySpeed,
+  baseDeliveryFee,
+  deliverySurcharge,
+  deliveryFee,
+  totalItemsReceived: cartItems.length,
+  categories: cartItems.map((item) => item.category),
+});
 
     const peptideItems = cartItems.filter(
       (item) => String(item.category || "").toLowerCase() === "peptides"
@@ -210,6 +240,27 @@ Deno.serve(async (req) => {
             <p style="margin:6px 0;color:#cbd5e1;"><strong>Customer:</strong> ${esc(payload.customerName || "N/A")}</p>
             <p style="margin:6px 0;color:#cbd5e1;"><strong>Contact:</strong> ${esc(payload.customerContact || "N/A")}</p>
             <p style="margin:6px 0;color:#cbd5e1;"><strong>City:</strong> ${esc(payload.city || "N/A")}</p>
+            <p style="margin:6px 0;color:#cbd5e1;">
+  <strong>Delivery Speed:</strong> ${esc(deliverySpeedLabel)}
+</p>
+
+<p style="margin:6px 0;color:#cbd5e1;">
+  <strong>Base Delivery:</strong> ${money(baseDeliveryFee)}
+</p>
+
+${
+  deliverySurcharge > 0
+    ? `
+      <p style="margin:6px 0;color:#cbd5e1;">
+        <strong>Expedited Surcharge:</strong> ${money(deliverySurcharge)}
+      </p>
+    `
+    : ""
+}
+
+<p style="margin:6px 0;color:#cbd5e1;">
+  <strong>Delivery Total:</strong> ${money(deliveryFee)}
+</p>
           </div>
 
           <div style="margin-top:18px;padding:18px;border-radius:18px;background:#0f1020;border:1px solid #1f2937;">
