@@ -1,6 +1,5 @@
 // src/pages/ProductsPage.jsx
 import React, { useState, useEffect, useRef } from "react";
-import PageHeader from "../components/PageHeader/PageHeader.jsx";
 import PromoPopups from "../components/PromoPopups/PromoPopups.jsx";
 import { supabase } from "../lib/supabaseClient.js";
 import { createPortal } from "react-dom";
@@ -64,7 +63,12 @@ const getProductTypeLabel = (product) => {
   return product.category || "Menu Item";
 };
 
-const getProductDetailChips = ({ product, thc, selectedGram }) => {
+const getProductDetailChips = ({
+  product,
+  thc,
+  selectedGram,
+  selectedMgOption,
+}) => {
   const chips = [];
 
   if (thc) chips.push(thc);
@@ -73,7 +77,9 @@ const getProductDetailChips = ({ product, thc, selectedGram }) => {
     chips.push(`${selectedGram || "3.5"}g`);
   }
 
-  if (product.dose) {
+  if (product.category === "Peptides" && selectedMgOption?.label) {
+    chips.push(selectedMgOption.label);
+  } else if (product.dose) {
     chips.push(product.dose);
   }
 
@@ -82,6 +88,27 @@ const getProductDetailChips = ({ product, thc, selectedGram }) => {
   }
 
   return chips.slice(0, 3);
+};
+
+const getSelectedMgOption = (product, selectedMgOptions) => {
+  if (
+    product.category !== "Peptides" ||
+    !Array.isArray(product.mgOptions) ||
+    product.mgOptions.length === 0
+  ) {
+    return null;
+  }
+
+  const selectedValue = selectedMgOptions[product.id];
+
+  return (
+    product.mgOptions.find((option) => option.value === selectedValue) ||
+    product.mgOptions[0]
+  );
+};
+
+const getBasePeptideName = (name) => {
+  return String(name || "").replace(/\s*\d+\s*mg$/i, "").trim();
 };
 
 export default function ProductsPage() {
@@ -129,6 +156,7 @@ export default function ProductsPage() {
   );
 
   const [selectedGrams, setSelectedGrams] = useState({});
+  const [selectedMgOptions, setSelectedMgOptions] = useState({});
 
   // Defaults for flowers
   useEffect(() => {
@@ -143,6 +171,23 @@ export default function ProductsPage() {
     setSelectedGrams(defaults);
   }, []);
 
+// Defaults for peptide MG options
+useEffect(() => {
+  const defaults = {};
+
+  PRODUCTS.forEach((p) => {
+    if (
+      p.category === "Peptides" &&
+      Array.isArray(p.mgOptions) &&
+      p.mgOptions.length > 0
+    ) {
+      defaults[p.id] = p.mgOptions[0].value;
+    }
+  });
+
+  setSelectedMgOptions(defaults);
+}, []);
+  
   // City guard
 useEffect(() => {
   const city = location.state?.city;
@@ -303,30 +348,52 @@ useEffect(() => {
     let didAdd = false;
 
     if (product.category === "Flowers") {
-      const gram = selectedGrams[product.id] || "3.5";
-      const price = getFlowerPrice(product.id, gram);
+  const gram = selectedGrams[product.id] || "3.5";
+  const price = getFlowerPrice(product.id, gram);
 
-      if (!price) return;
+  if (!price) return;
 
-      addItem({
-        id: `${product.id}-${gram}`,
-        baseId: product.id,
-        name: product.name,
-        gram,
-        price,
-        quantity: qty,
-        category: product.category,
-      });
+  addItem({
+    id: `${product.id}-${gram}`,
+    baseId: product.id,
+    name: product.name,
+    gram,
+    price,
+    quantity: qty,
+    category: product.category,
+  });
 
-      didAdd = true;
-    } else {
-      addItem({
-        ...product,
-        quantity: qty,
-      });
+  didAdd = true;
+} else if (
+  product.category === "Peptides" &&
+  Array.isArray(product.mgOptions) &&
+  product.mgOptions.length > 0
+) {
+  const selectedOption = getSelectedMgOption(product, selectedMgOptions);
 
-      didAdd = true;
-    }
+  if (!selectedOption?.price) return;
+
+  const baseName = getBasePeptideName(product.name);
+
+  addItem({
+    id: `${product.id}-${selectedOption.value}mg`,
+    baseId: product.id,
+    name: `${baseName} ${selectedOption.label}`,
+    dose: selectedOption.label,
+    price: selectedOption.price,
+    quantity: qty,
+    category: product.category,
+  });
+
+  didAdd = true;
+} else {
+  addItem({
+    ...product,
+    quantity: qty,
+  });
+
+  didAdd = true;
+}
 
     if (didAdd) {
       setAddedProductId(product.id);
@@ -843,22 +910,27 @@ window.setTimeout(() => {
 
           <div className="product-grid">
             {visibleProducts.map((product, index) => {
-  const thc = getTHCLabel(product);
-  const isAdded = addedProductId === product.id;
-  const isReady = quantities[product.id] > 0;
-  const selectedGram = selectedGrams[product.id] || "3.5";
-  const productPrice =
-    product.category === "Flowers"
-      ? getFlowerPrice(product.id, selectedGram)
+const thc = getTHCLabel(product);
+const isAdded = addedProductId === product.id;
+const isReady = quantities[product.id] > 0;
+const selectedGram = selectedGrams[product.id] || "3.5";
+const selectedMgOption = getSelectedMgOption(product, selectedMgOptions);
+
+const productPrice =
+  product.category === "Flowers"
+    ? getFlowerPrice(product.id, selectedGram)
+    : selectedMgOption
+      ? selectedMgOption.price
       : product.price;
 
   const productBadge = getProductBadge(product, index);
   const productTypeLabel = getProductTypeLabel(product);
   const detailChips = getProductDetailChips({
-    product,
-    thc,
-    selectedGram,
-  });
+  product,
+  thc,
+  selectedGram,
+  selectedMgOption,
+});
 
   return (
     <article
@@ -941,6 +1013,29 @@ window.setTimeout(() => {
             ))}
           </div>
         )}
+
+        {product.category === "Peptides" &&
+  Array.isArray(product.mgOptions) &&
+  product.mgOptions.length > 1 && (
+    <div className="gram-selector">
+      {product.mgOptions.map((option) => (
+        <button
+          key={option.value}
+          className={`gram-btn ${
+            selectedMgOptions[product.id] === option.value ? "active" : ""
+          }`}
+          onClick={() =>
+            setSelectedMgOptions((prev) => ({
+              ...prev,
+              [product.id]: option.value,
+            }))
+          }
+        >
+          {option.label}
+        </button>
+      ))}
+    </div>
+  )}
 
         <div className="quantity-counter">
           <button
