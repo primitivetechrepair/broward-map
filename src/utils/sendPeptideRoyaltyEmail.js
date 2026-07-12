@@ -15,7 +15,8 @@ export const sendPeptideRoyaltyEmail = async ({
 }) => {
   const peptideItems = Array.isArray(cartItems)
     ? cartItems.filter(
-        (item) => String(item.category || "").toLowerCase() === "peptides"
+        (item) =>
+          String(item.category || "").toLowerCase() === "peptides"
       )
     : [];
 
@@ -45,19 +46,20 @@ export const sendPeptideRoyaltyEmail = async ({
   );
 
   if (error) {
-    if (error) {
-  console.error("Peptide royalty email failed:", error);
-  throw error;
-}
+    console.error("Peptide royalty email failed:", error);
+    throw error;
+  }
 
-if (data?.sent === false || data?.error) {
-  const functionError = new Error(
-    data?.error || data?.reason || "Peptide royalty email was not sent."
-  );
+  if (data?.sent === false || data?.error) {
+    const functionError = new Error(
+      data?.error ||
+        data?.reason ||
+        "Peptide royalty email was not sent."
+    );
 
-  console.error("Peptide royalty email failed:", data);
-  throw functionError;
-}
+    console.error("Peptide royalty email failed:", data);
+    throw functionError;
+  }
 
   return data;
 };
