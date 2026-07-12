@@ -45,13 +45,19 @@ export const sendPeptideRoyaltyEmail = async ({
   );
 
   if (error) {
-    console.error("Peptide royalty email failed:", error);
+    if (error) {
+  console.error("Peptide royalty email failed:", error);
+  throw error;
+}
 
-    return {
-      sent: false,
-      error,
-    };
-  }
+if (data?.sent === false || data?.error) {
+  const functionError = new Error(
+    data?.error || data?.reason || "Peptide royalty email was not sent."
+  );
+
+  console.error("Peptide royalty email failed:", data);
+  throw functionError;
+}
 
   return data;
 };
