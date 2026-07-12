@@ -28,6 +28,21 @@ const PAYMENT_INSTRUCTIONS = {
   },
 };
 
+const DELIVERY_OPTIONS = {
+  standard: {
+    id: "standard",
+    label: "Standard",
+    description: "Delivered within the normal delivery window.",
+    surcharge: 0,
+  },
+  expedited: {
+    id: "expedited",
+    label: "Expedited",
+    description: "Priority handling and the earliest available delivery window.",
+    surcharge: 10,
+  },
+};
+
 export default function CheckoutPage() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -38,7 +53,7 @@ export default function CheckoutPage() {
   const fallbackItems = location.state?.cartItems || [];
   const orderItems = cartItems.length > 0 ? cartItems : fallbackItems;
 
-  const deliveryFee = Number(location.state?.deliveryFee || 0);
+  const baseDeliveryFee = Number(location.state?.deliveryFee || 0);
   const selectedCity = location.state?.city || "Selected City";
 
   const fallbackSubtotal = orderItems.reduce((sum, item) => {
@@ -47,23 +62,40 @@ export default function CheckoutPage() {
     return sum + price * qty;
   }, 0);
 
-  const subtotal = totalPrice || fallbackSubtotal;
-  const itemCount =
-    totalItems ||
-    orderItems.reduce((sum, item) => sum + (Number(item.quantity) || 0), 0);
+  const subtotal =
+  cartItems.length > 0
+    ? Number(totalPrice) || 0
+    : fallbackSubtotal;
 
-  const grandTotal = subtotal + deliveryFee;
+const itemCount =
+  totalItems ||
+  orderItems.reduce(
+    (sum, item) => sum + (Number(item.quantity) || 0),
+    0
+  );
 
-  const [form, setForm] = useState({
+const [form, setForm] = useState({
   fullName: "",
   phone: "",
   address: "",
   apt: "",
   notes: "",
   payment: "zelle",
+  deliverySpeed: "standard",
 });
 
-  const [idFileName, setIdFileName] = useState("");
+const selectedDeliveryOption =
+  DELIVERY_OPTIONS[form.deliverySpeed] || DELIVERY_OPTIONS.standard;
+
+const deliverySurcharge =
+  Number(selectedDeliveryOption.surcharge) || 0;
+
+const finalDeliveryFee =
+  baseDeliveryFee + deliverySurcharge;
+
+const grandTotal =
+  subtotal + finalDeliveryFee;
+
   const [submitted, setSubmitted] = useState(false);
   const [submittedOrder, setSubmittedOrder] = useState(null);
   const [orderError, setOrderError] = useState("");
@@ -77,11 +109,10 @@ export default function CheckoutPage() {
   };
 
   const isReady =
-    itemCount > 0 &&
-    form.fullName.trim() &&
-    form.phone.trim() &&
-    form.address.trim() &&
-    idFileName;
+  itemCount > 0 &&
+  Boolean(form.fullName.trim()) &&
+  Boolean(form.phone.trim()) &&
+  Boolean(form.address.trim());
 
     const selectedPaymentInfo =
   PAYMENT_INSTRUCTIONS[form.payment] || PAYMENT_INSTRUCTIONS.zelle;
@@ -123,57 +154,70 @@ export default function CheckoutPage() {
 }));
 
   const { data, error } = await supabase
-    .from("orders")
-    .insert({
-      user_id: user.id,
-      customer_name: form.fullName.trim(),
-      phone: form.phone.trim(),
-      address: form.address.trim(),
-      apt: form.apt.trim() || null,
-      city: selectedCity,
-      notes: form.notes.trim() || null,
-      items: normalizedItems,
-      subtotal,
-      delivery_fee: deliveryFee,
-      total: grandTotal,
-      payment_method: form.payment,
-      payment_status: "pending",
-      order_status: "pending",
-      payment_memo: orderMemo,
-    })
-    .select("id")
-    .single();
-
-  setIsSubmittingOrder(false);
+  .from("orders")
+  .insert({
+    user_id: user.id,
+    customer_name: form.fullName.trim(),
+    phone: form.phone.trim(),
+    address: form.address.trim(),
+    apt: form.apt.trim() || null,
+    city: selectedCity,
+    notes: form.notes.trim() || null,
+    items: normalizedItems,
+    subtotal,
+    delivery_speed: selectedDeliveryOption.id,
+    base_delivery_fee: baseDeliveryFee,
+    delivery_surcharge: deliverySurcharge,
+    delivery_fee: finalDeliveryFee,
+    total: grandTotal,
+    payment_method: form.payment,
+    payment_status: "pending",
+    order_status: "pending",
+    payment_memo: orderMemo,
+  })
+  .select("id")
+  .single();
 
   if (error) {
+  setIsSubmittingOrder(false);
   setOrderError(error.message);
   return;
 }
 
-await sendPeptideRoyaltyEmail({
+sendPeptideRoyaltyEmail({
   orderId: data?.id || orderMemo,
   customerName: form.fullName.trim(),
   customerContact: form.phone.trim(),
   city: selectedCity,
-  deliveryFee,
+  deliverySpeed: selectedDeliveryOption.id,
+  deliverySpeedLabel: selectedDeliveryOption.label,
+  baseDeliveryFee,
+  deliverySurcharge,
+  deliveryFee: finalDeliveryFee,
   cartItems: normalizedItems,
+}).catch((royaltyError) => {
+  console.error("Peptide royalty email failed:", royaltyError);
 });
 
 setSubmittedOrder({
   orderId: data?.id,
-    memo: orderMemo,
-    payment: form.payment,
-    paymentLabel: paymentInfo.label,
-    recipientLabel: paymentInfo.recipientLabel,
-    recipient: paymentInfo.recipient,
-    noteLabel: paymentInfo.noteLabel,
-    instructions: paymentInfo.instructions,
-    total: grandTotal,
-    city: selectedCity,
-    itemCount,
-  });
-
+  memo: orderMemo,
+  payment: form.payment,
+  paymentLabel: paymentInfo.label,
+  recipientLabel: paymentInfo.recipientLabel,
+  recipient: paymentInfo.recipient,
+  noteLabel: paymentInfo.noteLabel,
+  instructions: paymentInfo.instructions,
+  deliverySpeed: selectedDeliveryOption.id,
+  deliverySpeedLabel: selectedDeliveryOption.label,
+  baseDeliveryFee,
+  deliverySurcharge,
+  deliveryFee: finalDeliveryFee,
+  total: grandTotal,
+  city: selectedCity,
+  itemCount,
+});
+  setIsSubmittingOrder(false);
   setSubmitted(true);
   clearCart();
 };
@@ -219,17 +263,22 @@ if (!isApproved) {
 
   if (submitted) {
   const payment = submittedOrder || {
-    memo: "ORDER-PENDING",
-    paymentLabel: "Payment",
-    recipientLabel: "Send Payment To",
-    recipient: "Payment recipient pending",
-    noteLabel: "Payment Memo",
-    instructions:
-      "Send the exact total using your selected payment method. Your delivery will be confirmed after payment is reviewed.",
-    total: grandTotal,
-    city: selectedCity,
-    itemCount,
-  };
+  memo: "ORDER-PENDING",
+  paymentLabel: "Payment",
+  recipientLabel: "Send Payment To",
+  recipient: "Payment recipient pending",
+  noteLabel: "Payment Memo",
+  instructions:
+    "Send the exact total using your selected payment method. Your delivery will be confirmed after payment is reviewed.",
+  deliverySpeed: selectedDeliveryOption.id,
+  deliverySpeedLabel: selectedDeliveryOption.label,
+  baseDeliveryFee,
+  deliverySurcharge,
+  deliveryFee: finalDeliveryFee,
+  total: grandTotal,
+  city: selectedCity,
+  itemCount,
+};
 
   return (
     <div className="checkout-page checkout-success-page">
@@ -248,15 +297,20 @@ if (!isApproved) {
         </p>
 
         <div className="manual-payment-card">
-          <div className="manual-payment-row">
-            <span>Payment Method</span>
-            <strong>{payment.paymentLabel}</strong>
-          </div>
+  <div className="manual-payment-row">
+    <span>Payment Method</span>
+    <strong>{payment.paymentLabel}</strong>
+  </div>
 
-          <div className="manual-payment-row">
-            <span>Amount Due</span>
-            <strong>${payment.total.toFixed(2)}</strong>
-          </div>
+  <div className="manual-payment-row">
+    <span>Delivery Speed</span>
+    <strong>{payment.deliverySpeedLabel}</strong>
+  </div>
+
+  <div className="manual-payment-row">
+  <span>Amount Due</span>
+  <strong>${payment.total.toFixed(2)}</strong>
+</div>
 
           <div className="manual-payment-row">
             <span>{payment.recipientLabel}</span>
@@ -292,7 +346,7 @@ if (!isApproved) {
   <>
     <SEO
       title="Secure Checkout | The High Council"
-      description="Complete your order securely with delivery details, ID verification, payment instructions, and premium delivery throughout South Florida."
+      description="Complete your order securely with delivery details, delivery priority, payment instructions, and premium delivery throughout South Florida."
       path="/checkout"
       structuredData={{
         "@context": "https://schema.org",
@@ -314,7 +368,7 @@ if (!isApproved) {
       <PageHeader
   title="Confirm Delivery"
   eyebrow="Secure Checkout"
-  subtitle="Enter your delivery details, upload ID verification, and choose how you’d like to pay."
+  subtitle="Enter your delivery details, choose your delivery priority, and select how you’d like to pay."
 />
 
 <div className="checkout-shell">
@@ -378,24 +432,77 @@ if (!isApproved) {
             </div>
 
             <div className="checkout-section">
-              <h2>ID Verification</h2>
+  <div className="checkout-section-heading">
+    <div>
+      <span className="checkout-section-eyebrow">
+        Delivery Priority
+      </span>
 
-              <label className="id-upload-card">
-                <input
-                  type="file"
-                  accept="image/*,.pdf"
-                  onChange={(e) =>
-                    setIdFileName(e.target.files?.[0]?.name || "")
-                  }
-                />
+      <h2>Delivery Speed</h2>
+    </div>
 
-                <span className="id-upload-icon">ID</span>
+    {deliverySurcharge > 0 && (
+      <span className="delivery-speed-surcharge">
+        +${deliverySurcharge.toFixed(2)}
+      </span>
+    )}
+  </div>
 
-                <strong>{idFileName || "Upload ID"}</strong>
+  <div
+    className="delivery-speed-options"
+    role="radiogroup"
+    aria-label="Choose delivery speed"
+  >
+    {Object.values(DELIVERY_OPTIONS).map((option) => {
+      const isSelected = form.deliverySpeed === option.id;
 
-                <small>Required before delivery confirmation.</small>
-              </label>
-            </div>
+      return (
+        <button
+          key={option.id}
+          type="button"
+          role="radio"
+          aria-checked={isSelected}
+          className={`delivery-speed-option ${
+            isSelected ? "is-selected" : ""
+          }`}
+          onClick={() =>
+            updateForm("deliverySpeed", option.id)
+          }
+        >
+          <span
+            className="delivery-speed-control"
+            aria-hidden="true"
+          >
+            <span></span>
+          </span>
+
+          <span className="delivery-speed-copy">
+            <strong>{option.label}</strong>
+            <small>{option.description}</small>
+          </span>
+
+          <span className="delivery-speed-price">
+            {option.surcharge > 0
+              ? `+$${option.surcharge.toFixed(2)}`
+              : "Included"}
+          </span>
+        </button>
+      );
+    })}
+  </div>
+
+  <div className="selected-delivery-preview">
+    <span>Selected Delivery</span>
+
+    <strong>{selectedDeliveryOption.label}</strong>
+
+    <p>
+      {selectedDeliveryOption.id === "expedited"
+        ? "Your order receives priority handling and the earliest available delivery window. Exact arrival time remains subject to availability and traffic."
+        : "Your order will be handled within the normal delivery window for your selected city."}
+    </p>
+  </div>
+</div>
 
             <div className="checkout-section">
               <h2>Payment</h2>
@@ -493,21 +600,33 @@ if (!isApproved) {
           </div>
 
           <div className="summary-totals">
-            <div>
-              <span>Subtotal</span>
-              <strong>${subtotal.toFixed(2)}</strong>
-            </div>
+  <div>
+    <span>Subtotal</span>
+    <strong>${subtotal.toFixed(2)}</strong>
+  </div>
 
-            <div>
-              <span>Delivery</span>
-              <strong>${deliveryFee.toFixed(2)}</strong>
-            </div>
+  <div>
+    <span>Base Delivery</span>
+    <strong>${baseDeliveryFee.toFixed(2)}</strong>
+  </div>
 
-            <div className="summary-grand-total">
-              <span>Total</span>
-              <strong>${grandTotal.toFixed(2)}</strong>
-            </div>
-          </div>
+  {deliverySurcharge > 0 && (
+    <div className="summary-expedited-row">
+      <span>Expedited Delivery</span>
+      <strong>+${deliverySurcharge.toFixed(2)}</strong>
+    </div>
+  )}
+
+  <div>
+    <span>Delivery Total</span>
+    <strong>${finalDeliveryFee.toFixed(2)}</strong>
+  </div>
+
+  <div className="summary-grand-total">
+    <span>Total</span>
+    <strong>${grandTotal.toFixed(2)}</strong>
+  </div>
+</div>
 
           <button
             type="button"

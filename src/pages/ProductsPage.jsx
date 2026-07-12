@@ -593,9 +593,9 @@ window.setTimeout(() => {
                   </div>
 
                   <div className="modal-total-row modal-grand-total">
-                    <span>Total</span>
-                    <strong>${(totalPrice + deliveryFee).toFixed(2)}</strong>
-                  </div>
+  <span>Standard Total</span>
+  <strong>${(totalPrice + deliveryFee).toFixed(2)}</strong>
+</div>
                 </div>
               )}
 
@@ -813,9 +813,9 @@ window.setTimeout(() => {
           </div>
 
           <div>
-            <span>Total</span>
-            <strong>${(totalPrice + deliveryFee).toFixed(2)}</strong>
-          </div>
+  <span>Standard Total</span>
+  <strong>${(totalPrice + deliveryFee).toFixed(2)}</strong>
+</div>
         </div>
 
         <div ref={bagDockRef} className="menu-bag-dock">
