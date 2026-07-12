@@ -58,12 +58,13 @@
   height: 44px;
   border-radius: 15px;
 
-  border: 1px solid rgba(0, 229, 255, 0.38);
-  color: #ffffff;
+  border: 1px solid rgba(0, 229, 255, 0.34);
+  color: #00e5ff;
   background:
-    radial-gradient(circle at 30% 18%, rgba(255, 255, 255, 0.22), transparent 28%),
-    linear-gradient(135deg, rgba(0, 229, 255, 0.28), rgba(255, 78, 196, 0.18)),
-    rgba(7, 7, 18, 0.86);
+    radial-gradient(circle at 28% 18%, rgba(0, 229, 255, 0.18), transparent 32%),
+    radial-gradient(circle at 82% 82%, rgba(255, 78, 196, 0.16), transparent 34%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.025)),
+    rgba(4, 5, 12, 0.9);
 
   font-family: "Chalet", sans-serif;
   font-size: 0.7rem;
@@ -71,9 +72,9 @@
   letter-spacing: 0.06em;
 
   box-shadow:
-    0 0 22px rgba(0, 229, 255, 0.18),
-    0 0 26px rgba(255, 78, 196, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    0 0 18px rgba(0, 229, 255, 0.14),
+    0 0 22px rgba(255, 78, 196, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
 }
 
 .site-brand strong {
@@ -285,14 +286,15 @@
 
   margin-top: 0;
 
-  border-top: 1px solid rgba(255, 199, 87, 0.14);
+  border-top: 1px solid rgba(0, 229, 255, 0.14);
   background:
-    radial-gradient(circle at 20% 0%, rgba(87, 209, 255, 0.1), transparent 34%),
-    radial-gradient(circle at 82% 12%, rgba(255, 199, 87, 0.1), transparent 34%),
-    linear-gradient(180deg, rgba(12, 12, 15, 0.94), rgba(7, 7, 10, 0.98));
+    radial-gradient(circle at 20% 0%, rgba(0, 229, 255, 0.1), transparent 34%),
+    radial-gradient(circle at 82% 12%, rgba(255, 78, 196, 0.08), transparent 34%),
+    linear-gradient(180deg, rgba(12, 12, 18, 0.94), rgba(5, 5, 12, 0.98));
 
   box-shadow:
     0 -24px 60px rgba(0, 0, 0, 0.28),
+    0 0 24px rgba(0, 229, 255, 0.06),
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
@@ -360,13 +362,17 @@
 }
 
 .site-footer-grid span {
-  color: #ffc757;
+  color: #00e5ff;
 
   font-family: "Chalet", sans-serif;
   font-size: 0.66rem;
   font-weight: 1000;
   letter-spacing: 0.11em;
   text-transform: uppercase;
+
+  text-shadow:
+    0 0 12px rgba(0, 229, 255, 0.22),
+    0 0 16px rgba(255, 78, 196, 0.08);
 }
 
 .site-footer-grid a {
