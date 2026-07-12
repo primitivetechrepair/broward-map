@@ -2190,7 +2190,13 @@ p, span, a, li {
   width: 100%;
 }
 
-.peptide-mg-selector {
+/* Peptide MG selector above price */
+.product-card .peptide-mg-selector {
+  width: calc(100% - 8px);
+  margin: 0 4px 10px;
+}
+
+.product-card .peptide-mg-selector + .product-price-row {
   margin: 0 0 12px;
 }
 
