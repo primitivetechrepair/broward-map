@@ -1,0 +1,266 @@
+.age-gate-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+
+  display: grid;
+  place-items: center;
+
+  padding: 22px;
+
+  background:
+    radial-gradient(circle at 18% 18%, rgba(0, 229, 255, 0.18), transparent 34%),
+    radial-gradient(circle at 82% 12%, rgba(255, 78, 196, 0.16), transparent 34%),
+    linear-gradient(rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0.88));
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.age-gate-card {
+  width: min(460px, 100%);
+  padding: 28px;
+
+  position: relative;
+  overflow: hidden;
+
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-top-color: rgba(255, 255, 255, 0.32);
+
+  background:
+    radial-gradient(circle at 20% 0%, rgba(0, 229, 255, 0.16), transparent 38%),
+    radial-gradient(circle at 90% 18%, rgba(255, 78, 196, 0.14), transparent 36%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.04)),
+    rgba(8, 8, 20, 0.92);
+
+  box-shadow:
+    0 34px 80px rgba(0, 0, 0, 0.62),
+    0 0 34px rgba(0, 229, 255, 0.16),
+    0 0 44px rgba(255, 78, 196, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+
+  text-align: center;
+}
+
+.age-gate-card::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+
+  width: 72%;
+  height: 3px;
+
+  transform: translateX(-50%);
+
+  border-radius: 999px;
+  background: linear-gradient(90deg, #00e5ff, #ff4ec4, #4eff9a);
+
+  box-shadow:
+    0 0 16px rgba(0, 229, 255, 0.34),
+    0 0 24px rgba(255, 78, 196, 0.24);
+}
+
+.age-gate-badge {
+  width: 74px;
+  height: 74px;
+
+  margin: 0 auto 18px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 24px;
+  border: 1px solid rgba(78, 255, 154, 0.48);
+
+  background:
+    radial-gradient(circle at 30% 20%, rgba(78, 255, 154, 0.3), transparent 40%),
+    linear-gradient(135deg, rgba(78, 255, 154, 0.2), rgba(0, 229, 255, 0.14)),
+    rgba(0, 0, 0, 0.34);
+
+  color: #4eff9a;
+
+  font-family: "PricedownBl", sans-serif;
+  font-size: 42px;
+  line-height: 0.9;
+
+  text-shadow:
+    0 0 14px rgba(78, 255, 154, 0.42),
+    2px 2px 0 rgba(0, 0, 0, 0.62);
+
+  box-shadow:
+    0 0 22px rgba(78, 255, 154, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.age-gate-eyebrow {
+  margin: 0 0 8px;
+
+  color: rgba(255, 255, 255, 0.58);
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.68rem;
+  font-weight: 1000;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.age-gate-card h2 {
+  margin: 0;
+
+  color: #ffffff;
+
+  font-family: "PricedownBl", sans-serif;
+  font-size: clamp(2.9rem, 12vw, 4.4rem);
+  font-weight: normal;
+  line-height: 0.88;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+
+  text-shadow:
+    4px 4px 0 rgba(0, 0, 0, 0.62),
+    0 0 18px rgba(0, 229, 255, 0.18),
+    0 0 24px rgba(255, 78, 196, 0.12);
+}
+
+.age-gate-copy {
+  max-width: 380px;
+
+  margin: 16px auto 0;
+
+  color: rgba(255, 255, 255, 0.72);
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.86rem;
+  font-weight: 800;
+  line-height: 1.55;
+}
+
+.age-gate-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 9px;
+
+  margin-top: 16px;
+
+  color: rgba(255, 255, 255, 0.44);
+
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.age-gate-links a {
+  color: #00e5ff;
+  text-decoration: none;
+
+  transition:
+    color 0.16s ease,
+    text-shadow 0.16s ease;
+}
+
+.age-gate-links a:hover {
+  color: #ff4ec4;
+  text-shadow: 0 0 12px rgba(255, 78, 196, 0.3);
+}
+
+.age-gate-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+
+  margin-top: 22px;
+}
+
+.age-gate-actions button,
+.age-gate-exit {
+  min-height: 50px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 12px 16px;
+  border-radius: 17px;
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.76rem;
+  font-weight: 1000;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.18s ease,
+    filter 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.age-gate-confirm {
+  border: 1px solid rgba(78, 255, 154, 0.5);
+
+  color: #06130c;
+  background: linear-gradient(135deg, #4eff9a, #00e5ff);
+
+  box-shadow:
+    0 0 22px rgba(78, 255, 154, 0.26),
+    0 0 30px rgba(0, 229, 255, 0.16),
+    0 16px 34px rgba(0, 0, 0, 0.34);
+}
+
+.age-gate-deny,
+.age-gate-exit {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+
+  box-shadow:
+    0 14px 30px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.age-gate-actions button:hover,
+.age-gate-exit:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+
+.age-gate-actions button:active,
+.age-gate-exit:active {
+  transform: scale(0.975);
+}
+
+.age-gate-exit {
+  width: fit-content;
+  margin: 22px auto 0;
+}
+
+@media (max-width: 540px) {
+  .age-gate-card {
+    padding: 24px 18px;
+    border-radius: 26px;
+  }
+
+  .age-gate-badge {
+    width: 64px;
+    height: 64px;
+
+    border-radius: 21px;
+    font-size: 36px;
+  }
+
+  .age-gate-copy {
+    font-size: 0.8rem;
+  }
+
+  .age-gate-actions {
+    grid-template-columns: 1fr;
+  }
+}

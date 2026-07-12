@@ -1,0 +1,102 @@
+.legal-page {
+  width: 100%;
+  min-height: calc(100vh - 86px);
+}
+
+.legal-page-inner {
+  width: min(920px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.legal-eyebrow {
+  margin: 0 0 8px;
+
+  color: rgba(255, 255, 255, 0.56);
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.7rem;
+  font-weight: 1000;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.legal-page h1 {
+  margin: 0 0 18px;
+
+  font-family: "PricedownBl", sans-serif;
+  font-size: clamp(3.2rem, 9vw, 5.2rem);
+  font-weight: normal;
+  line-height: 0.9;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+
+  background: linear-gradient(90deg, #00e5ff, #ff4ec4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+
+  text-shadow:
+    4px 4px 0 rgba(0, 0, 0, 0.54);
+}
+
+.legal-card {
+  display: grid;
+  gap: 16px;
+
+  padding: 24px;
+  border-radius: 28px;
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-top-color: rgba(255, 255, 255, 0.22);
+
+  background:
+    radial-gradient(circle at 18% 0%, rgba(0, 229, 255, 0.12), transparent 36%),
+    radial-gradient(circle at 92% 14%, rgba(255, 78, 196, 0.1), transparent 34%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.035)),
+    rgba(8, 8, 20, 0.82);
+
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.legal-card h2 {
+  margin: 8px 0 -6px;
+
+  color: #4eff9a;
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 1000;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.legal-card p {
+  margin: 0;
+
+  color: rgba(255, 255, 255, 0.72);
+
+  font-family: "Chalet", sans-serif;
+  font-size: 0.88rem;
+  font-weight: 800;
+  line-height: 1.65;
+}
+
+@media (max-width: 768px) {
+  .legal-page-inner {
+    width: min(100% - 24px, 920px);
+  }
+
+  .legal-card {
+    padding: 18px;
+    border-radius: 24px;
+  }
+
+  .legal-card p {
+    font-size: 0.82rem;
+  }
+}

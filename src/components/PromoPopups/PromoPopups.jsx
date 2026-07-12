@@ -27,6 +27,7 @@ export default function PromoPopups({ city = "" }) {
   const navigate = useNavigate();
 
   const [hotItemPromo, setHotItemPromo] = useState(null);
+  const [newsletterPromo, setNewsletterPromo] = useState(null);
   const [activePopup, setActivePopup] = useState(null);
   const [newsletterContact, setNewsletterContact] = useState("");
   const [newsletterStatus, setNewsletterStatus] = useState("");
@@ -44,24 +45,33 @@ export default function PromoPopups({ city = "" }) {
     let isMounted = true;
 
     const loadPromo = async () => {
-      const { data, error } = await supabase
-        .from("site_promos")
-        .select(
-          "promo_key, eyebrow, title, description, image_url, cta_label, cta_path, display_order"
-        )
-        .eq("promo_key", "hot_item_month")
-        .eq("is_active", true)
-        .maybeSingle();
+  const { data, error } = await supabase
+    .from("site_promos")
+    .select(
+  "promo_key, eyebrow, title, description, image_url, cta_label, cta_path, display_order, is_active"
+)
+.in("promo_key", ["hot_item_month", "newsletter_popup"])
+.order("display_order", { ascending: true });
 
-      if (!isMounted) return;
+  if (!isMounted) return;
 
-      if (error) {
-        setHotItemPromo(null);
-        return;
-      }
+  if (error) {
+    setHotItemPromo(null);
+    setNewsletterPromo(null);
+    return;
+  }
 
-      setHotItemPromo(data || null);
-    };
+  const promos = data || [];
+const activePromos = promos.filter((promo) => promo.is_active === true);
+
+setHotItemPromo(
+  activePromos.find((promo) => promo.promo_key === "hot_item_month") || null
+);
+
+setNewsletterPromo(
+  activePromos.find((promo) => promo.promo_key === "newsletter_popup") || null
+);
+};
 
     loadPromo();
 
@@ -71,21 +81,21 @@ export default function PromoPopups({ city = "" }) {
   }, []);
 
   useEffect(() => {
-    if (!hotItemPromo && !shouldShowNewsletter) return;
+    if (!hotItemPromo && !newsletterPromo) return;
 
     const timer = window.setTimeout(() => {
       if (hotItemPromo && shouldShowHotItem) {
-        setActivePopup("hotItem");
-        return;
-      }
+  setActivePopup("hotItem");
+  return;
+}
 
-      if (shouldShowNewsletter) {
-        setActivePopup("newsletter");
-      }
+if (newsletterPromo && shouldShowNewsletter) {
+  setActivePopup("newsletter");
+}
     }, 900);
 
     return () => window.clearTimeout(timer);
-  }, [hotItemPromo, shouldShowHotItem, shouldShowNewsletter]);
+  }, [hotItemPromo, newsletterPromo, shouldShowHotItem, shouldShowNewsletter]);
 
   useEffect(() => {
     if (!activePopup) return;
@@ -106,11 +116,11 @@ export default function PromoPopups({ city = "" }) {
     markSeen(HOT_ITEM_STORAGE_KEY);
     setActivePopup(null);
 
-    if (shouldShowNewsletter) {
-      window.setTimeout(() => {
-        setActivePopup("newsletter");
-      }, 900);
-    }
+    if (newsletterPromo && shouldShowNewsletter) {
+  window.setTimeout(() => {
+    setActivePopup("newsletter");
+  }, 900);
+}
   };
 
   const closeNewsletter = () => {
@@ -145,7 +155,7 @@ export default function PromoPopups({ city = "" }) {
     const { error } = await supabase.from("newsletter_signups").insert({
       contact,
       source: "newsletter_popup",
-      offer_code: "FIRST10",
+      offer_code: newsletterPromo?.cta_path || "FIRST10",
       city: city || null,
     });
 
@@ -158,7 +168,9 @@ export default function PromoPopups({ city = "" }) {
 
     markSeen(NEWSLETTER_STORAGE_KEY);
     setNewsletterContact("");
-    setNewsletterStatus("You’re in. Use FIRST10 on your first order.");
+    setNewsletterStatus(
+  `You’re in. Use ${newsletterPromo?.cta_path || "FIRST10"} on your first order.`
+);
 
     window.setTimeout(() => {
       setActivePopup(null);
@@ -229,15 +241,17 @@ export default function PromoPopups({ city = "" }) {
           </>
         )}
 
-        {activePopup === "newsletter" && (
-          <div className="promo-popup-copy">
-            <span className="promo-popup-eyebrow">Members Get First Access</span>
+        {activePopup === "newsletter" && newsletterPromo && (
+  <div className="promo-popup-copy">
+    {newsletterPromo.eyebrow && (
+      <span className="promo-popup-eyebrow">
+        {newsletterPromo.eyebrow}
+      </span>
+    )}
 
-            <h2>Join The List</h2>
+    <h2>{newsletterPromo.title}</h2>
 
-            <p>
-              Get drop alerts, menu updates, and 10% off your first order.
-            </p>
+    {newsletterPromo.description && <p>{newsletterPromo.description}</p>}
 
             <form
               className="promo-newsletter-form"
@@ -261,7 +275,9 @@ export default function PromoPopups({ city = "" }) {
                 className="promo-popup-primary"
                 disabled={isSubmittingNewsletter}
               >
-                {isSubmittingNewsletter ? "Joining..." : "Get 10% Off"}
+                {isSubmittingNewsletter
+  ? "Joining..."
+  : newsletterPromo.cta_label || "Get 10% Off"}
               </button>
             </form>
 

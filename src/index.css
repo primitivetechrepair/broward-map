@@ -2,18 +2,23 @@
 /* Font Loading               */
 /* ========================== */
 
-/* Load PricedownBl for main titles */
 @font-face {
   font-family: "PricedownBl";
-  src: url("./fonts/PricedownBl.otf") format("opentype");
+  src: url("./assets/fonts/PricedownBl.otf") format("opentype");
   font-weight: normal;
   font-style: normal;
 }
 
-/* Load Chalet for body and secondary text */
 @font-face {
   font-family: "Chalet";
-  src: url("./fonts/Chalet.otf") format("opentype");
+  src: url("./assets/fonts/Chalet.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "SignPainter";
+  src: url("./assets/fonts/SignPainter.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
@@ -40,25 +45,6 @@ body {
   background-color: #000;
 
   position: relative;
-}
-
-/* ========================== */
-/* Global Dark Overlay (FIXED) */
-/* ========================== */
-
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-
-  width: auto;
-  height: auto;
-  min-height: 100vh;
-  min-height: 100dvh;
-
-  background: rgba(0, 0, 0, 0.68);
-  z-index: 0;
-  pointer-events: none;
 }
 
 /* Keep app above overlay */
@@ -116,24 +102,24 @@ h4 {
 /* ========================== */
 /* Body and text              */
 /* ========================== */
-body, p, span, a, li {
+body,
+p,
+span,
+a,
+li,
+button,
+input,
+textarea,
+select {
   font-family: "Chalet", sans-serif;
   font-weight: 400;
-  color: #fff; /* Default text color */
+  color: #fff;
   margin: 0;
 }
 
 /* Ensure all headings inherit the proper font unless overridden */
 h1, h2, h3, h4, h5, h6 {
   margin: 0;
-}
-
-/* ========================== */
-/* Universal Layout Spacing   */
-/* ========================== */
-
-.site-main-content {
-  min-height: calc(100vh - 74px);
 }
 
 /* ========================== */
