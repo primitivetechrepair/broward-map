@@ -458,16 +458,17 @@ const filteredOrders = sortedOrders.filter((order) => {
   if (!searchValue) return matchesFilter;
 
   const searchableText = [
-    order.id,
-    order.customer_name,
-    order.phone,
-    order.city,
-    order.address,
-    order.payment_memo,
-    order.payment_method,
-    order.payment_status,
-    order.order_status,
-  ]
+  order.id,
+  order.customer_name,
+  order.phone,
+  order.city,
+  order.address,
+  order.payment_memo,
+  order.payment_method,
+  order.payment_status,
+  order.order_status,
+  order.delivery_speed,
+]
     .filter(Boolean)
     .join(" ")
     .toLowerCase();
@@ -654,6 +655,21 @@ const orderSummary = {
   const paymentStatus = normalizeOrderStatus(order.payment_status);
   const latestCustomerUpdate = getVisibleLatestCustomerUpdate(order);
 
+  const deliverySpeed =
+    normalizeOrderStatus(order.delivery_speed) === "expedited"
+      ? "expedited"
+      : "standard";
+
+  const deliverySpeedLabel =
+    deliverySpeed === "expedited" ? "Expedited" : "Standard";
+
+  const baseDeliveryFee = Number(order.base_delivery_fee || 0);
+  const deliverySurcharge = Number(order.delivery_surcharge || 0);
+
+  const finalDeliveryFee = Number(
+    order.delivery_fee || baseDeliveryFee + deliverySurcharge
+  );
+
               return (
                 <article key={order.id} className="admin-order-card">
                   <div className="admin-order-top">
@@ -705,6 +721,20 @@ const orderSummary = {
   </div>
 )}
 
+{deliverySpeed === "expedited" && (
+  <div className="admin-expedited-alert">
+    <span>Priority Delivery</span>
+
+    <strong>
+      This order includes expedited handling.
+    </strong>
+
+    <small>
+      Prioritize dispatch and use the earliest available delivery window.
+    </small>
+  </div>
+)}
+
 <div className="admin-contact-actions">
   <a href={`tel:${cleanPhoneNumber(order.phone)}`}>
     Call Customer
@@ -726,42 +756,71 @@ const orderSummary = {
 </div>
 
                   <div className="admin-order-meta">
-                    <div>
-                      <span>Order ID</span>
-                      <strong>{order.id}</strong>
-                    </div>
+  <div>
+    <span>Order ID</span>
+    <strong>{order.id}</strong>
+  </div>
 
-                    <div>
-                      <span>Submitted</span>
-                      <strong>
-                        {new Date(order.created_at).toLocaleString()}
-                      </strong>
-                    </div>
+  <div>
+    <span>Submitted</span>
+    <strong>
+      {new Date(order.created_at).toLocaleString()}
+    </strong>
+  </div>
 
-                    <div>
-                      <span>Payment Method</span>
-                      <strong>
-                        {formatStatusLabel(order.payment_method)}
-                      </strong>
-                    </div>
+  <div>
+    <span>Payment Method</span>
+    <strong>
+      {formatStatusLabel(order.payment_method)}
+    </strong>
+  </div>
 
-                    <div>
-                      <span>Payment Memo</span>
-                      <strong>{order.payment_memo}</strong>
-                    </div>
+  <div>
+    <span>Payment Memo</span>
+    <strong>{order.payment_memo}</strong>
+  </div>
 
-                    <div>
-                      <span>Total</span>
-                      <strong>${Number(order.total || 0).toFixed(2)}</strong>
-                    </div>
+  <div>
+    <span>Delivery Speed</span>
 
-                    <div>
-                      <span>Delivery Fee</span>
-                      <strong>
-                        ${Number(order.delivery_fee || 0).toFixed(2)}
-                      </strong>
-                    </div>
-                  </div>
+    <strong
+      className={`admin-delivery-speed admin-delivery-${deliverySpeed}`}
+    >
+      {deliverySpeedLabel}
+    </strong>
+  </div>
+
+  <div>
+    <span>Subtotal</span>
+    <strong>
+      ${Number(order.subtotal || 0).toFixed(2)}
+    </strong>
+  </div>
+
+  <div>
+    <span>Base Delivery</span>
+    <strong>${baseDeliveryFee.toFixed(2)}</strong>
+  </div>
+
+  <div>
+    <span>Expedited Surcharge</span>
+    <strong>
+      {deliverySurcharge > 0
+        ? `+$${deliverySurcharge.toFixed(2)}`
+        : "$0.00"}
+    </strong>
+  </div>
+
+  <div>
+    <span>Delivery Total</span>
+    <strong>${finalDeliveryFee.toFixed(2)}</strong>
+  </div>
+
+  <div>
+    <span>Order Total</span>
+    <strong>${Number(order.total || 0).toFixed(2)}</strong>
+  </div>
+</div>
 
                   <div className="admin-order-address">
                     <span>Delivery Address</span>
