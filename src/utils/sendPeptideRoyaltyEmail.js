@@ -13,19 +13,35 @@ export const sendPeptideRoyaltyEmail = async ({
   deliveryFee,
   cartItems,
 }) => {
+  console.log("Royalty utility called", {
+    orderId,
+    cartItems,
+    categories: Array.isArray(cartItems)
+      ? cartItems.map((item) => item.category)
+      : [],
+  });
+
   const peptideItems = Array.isArray(cartItems)
     ? cartItems.filter(
         (item) =>
-          String(item.category || "").toLowerCase() === "peptides"
+          String(item.category || "")
+            .trim()
+            .toLowerCase() === "peptides"
       )
     : [];
 
+  console.log("Royalty peptide matches", peptideItems);
+
   if (peptideItems.length === 0) {
+    console.warn("Royalty email skipped: no peptide category match.");
+
     return {
       sent: false,
       reason: "No peptide items in order.",
     };
   }
+
+  console.log("Invoking peptide-royalty-email Edge Function");
 
   const { data, error } = await supabase.functions.invoke(
     "peptide-royalty-email",
@@ -45,20 +61,21 @@ export const sendPeptideRoyaltyEmail = async ({
     }
   );
 
+  console.log("Royalty Edge Function response", {
+    data,
+    error,
+  });
+
   if (error) {
-    console.error("Peptide royalty email failed:", error);
     throw error;
   }
 
   if (data?.sent === false || data?.error) {
-    const functionError = new Error(
+    throw new Error(
       data?.error ||
         data?.reason ||
         "Peptide royalty email was not sent."
     );
-
-    console.error("Peptide royalty email failed:", data);
-    throw functionError;
   }
 
   return data;
