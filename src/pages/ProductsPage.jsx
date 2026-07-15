@@ -44,6 +44,8 @@ const CATEGORY_STATUS = {
   },
 };
 
+const PEPTIDE_DISCLOSURE_VERSION = "1.0";
+
 const getProductBadge = (product, index) => {
   if (index === 0) return "Council Pick";
   if (index === 1) return "High Demand";
@@ -132,7 +134,25 @@ export default function ProductsPage() {
   const [deliveryFee, setDeliveryFee] = useState(0);
 
   const [activeCategory, setActiveCategory] = useState(null);
-  const [activeProductId, setActiveProductId] = useState(null);
+const [activeProductId, setActiveProductId] = useState(null);
+
+const [isPeptideDisclosureOpen, setIsPeptideDisclosureOpen] =
+  useState(false);
+
+const [peptideDisclosureAccepted, setPeptideDisclosureAccepted] =
+  useState(false);
+
+const [hasPeptideDisclosure, setHasPeptideDisclosure] =
+  useState(false);
+
+const [isCheckingPeptideDisclosure, setIsCheckingPeptideDisclosure] =
+  useState(false);
+
+const [isSavingPeptideDisclosure, setIsSavingPeptideDisclosure] =
+  useState(false);
+
+const [peptideDisclosureError, setPeptideDisclosureError] =
+  useState("");
 
   const [addedProductId, setAddedProductId] = useState(null);
   const [bagPulseKey, setBagPulseKey] = useState(0);
@@ -321,7 +341,7 @@ useEffect(() => {
   }, [flyingProduct]);
 
   useEffect(() => {
-  if (!isRequestModalOpen) return;
+  if (!isRequestModalOpen && !isPeptideDisclosureOpen) return;
 
   const originalBodyOverflow = document.body.style.overflow;
   const originalHtmlOverflow = document.documentElement.style.overflow;
@@ -333,8 +353,117 @@ useEffect(() => {
     document.body.style.overflow = originalBodyOverflow;
     document.documentElement.style.overflow = originalHtmlOverflow;
   };
-}, [isRequestModalOpen]);
+}, [isRequestModalOpen, isPeptideDisclosureOpen]);
 
+const openPeptideCategory = async () => {
+  setPeptideDisclosureError("");
+  setIsCheckingPeptideDisclosure(true);
+
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    setIsCheckingPeptideDisclosure(false);
+
+    navigate("/login", {
+      state: {
+        from: location.pathname,
+        message:
+          "Log in or create an account before accessing the Peptides collection.",
+      },
+    });
+
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from("peptide_disclosure_confirmations")
+    .select("id, disclosure_version, acknowledged_at")
+    .eq("user_id", user.id)
+    .eq("disclosure_version", PEPTIDE_DISCLOSURE_VERSION)
+    .maybeSingle();
+
+  setIsCheckingPeptideDisclosure(false);
+
+  if (error) {
+    setPeptideDisclosureError(
+      "We could not verify your disclosure status. Please try again."
+    );
+    setIsPeptideDisclosureOpen(true);
+    return;
+  }
+
+  if (data) {
+    setHasPeptideDisclosure(true);
+    setActiveCategory("Peptides");
+    return;
+  }
+
+  setPeptideDisclosureAccepted(false);
+  setIsPeptideDisclosureOpen(true);
+};
+
+const confirmPeptideDisclosure = async () => {
+  if (!peptideDisclosureAccepted) {
+    setPeptideDisclosureError(
+      "You must confirm that you have read and understand the disclosure."
+    );
+    return;
+  }
+
+  setPeptideDisclosureError("");
+  setIsSavingPeptideDisclosure(true);
+
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    setIsSavingPeptideDisclosure(false);
+    setIsPeptideDisclosureOpen(false);
+
+    navigate("/login", {
+      state: {
+        from: location.pathname,
+        message:
+          "Log in or create an account before accessing the Peptides collection.",
+      },
+    });
+
+    return;
+  }
+
+  const { error } = await supabase
+    .from("peptide_disclosure_confirmations")
+    .upsert(
+      {
+        user_id: user.id,
+        disclosure_version: PEPTIDE_DISCLOSURE_VERSION,
+        acknowledged: true,
+        acknowledged_at: new Date().toISOString(),
+      },
+      {
+        onConflict: "user_id,disclosure_version",
+      }
+    );
+
+  setIsSavingPeptideDisclosure(false);
+
+  if (error) {
+    setPeptideDisclosureError(
+      "Your confirmation could not be recorded. Please try again."
+    );
+    return;
+  }
+
+  setHasPeptideDisclosure(true);
+  setIsPeptideDisclosureOpen(false);
+  setPeptideDisclosureAccepted(false);
+  setActiveCategory("Peptides");
+};
   const handleQuantityChange = (id, delta) => {
     setQuantities((prev) => ({
       ...prev,
@@ -644,19 +773,22 @@ window.setTimeout(() => {
           onClick={(e) => e.stopPropagation()}
         >
           <button
-  type="button"
-  className="product-request-close"
-  onClick={() => setIsRequestModalOpen(false)}
-  aria-label="Close product request form"
->
-  ×
-</button>
+            type="button"
+            className="product-request-close"
+            onClick={() => setIsRequestModalOpen(false)}
+            aria-label="Close product request form"
+          >
+            ×
+          </button>
 
           <div className="product-request-header">
             <span>Looking for something?</span>
+
             <h2>Product Request</h2>
+
             <p>
-              Request a product or category and we’ll let you know if it becomes available.
+              Request a product or category and we’ll let you know if it
+              becomes available.
             </p>
           </div>
 
@@ -706,7 +838,9 @@ window.setTimeout(() => {
               Notes
               <textarea
                 value={requestForm.notes}
-                onChange={(e) => updateRequestForm("notes", e.target.value)}
+                onChange={(e) =>
+                  updateRequestForm("notes", e.target.value)
+                }
                 placeholder="Flavor, strength, brand, quantity, or any details..."
               />
             </label>
@@ -729,9 +863,112 @@ window.setTimeout(() => {
       </div>,
       document.body
     )
+    : null;
+
+const peptideDisclosureModal = isPeptideDisclosureOpen
+  ? createPortal(
+      <div
+        className="peptide-disclosure-overlay"
+        onClick={() => {
+          if (isSavingPeptideDisclosure) return;
+
+          setIsPeptideDisclosureOpen(false);
+          setPeptideDisclosureAccepted(false);
+          setPeptideDisclosureError("");
+        }}
+      >
+        <section
+          className="peptide-disclosure-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="peptide-disclosure-title"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            type="button"
+            className="peptide-disclosure-close"
+            disabled={isSavingPeptideDisclosure}
+            onClick={() => {
+              setIsPeptideDisclosureOpen(false);
+              setPeptideDisclosureAccepted(false);
+              setPeptideDisclosureError("");
+            }}
+            aria-label="Close peptide health disclosure"
+          >
+            ×
+          </button>
+
+          <div className="peptide-disclosure-header">
+            <span>Required Account Confirmation</span>
+
+            <h2 id="peptide-disclosure-title">
+              Peptide Health Disclosure
+            </h2>
+          </div>
+
+          <div className="peptide-disclosure-copy">
+            <p>
+              Products displayed in this category are not intended to
+              diagnose, treat, cure, or prevent any disease. Information
+              provided on this platform is for general informational purposes
+              only and is not medical advice.
+            </p>
+
+            <p>
+              Peptide products may carry health risks and may not be appropriate
+              for every individual. Consult a qualified healthcare professional
+              before purchasing, using, or considering any peptide-related
+              product.
+            </p>
+
+            <p>
+              By continuing, you confirm that you understand this disclosure,
+              accept responsibility for your purchasing decisions, and will not
+              rely on this platform as a substitute for professional medical
+              guidance.
+            </p>
+          </div>
+
+          <label className="peptide-disclosure-checkbox">
+            <input
+              type="checkbox"
+              checked={peptideDisclosureAccepted}
+              onChange={(e) => {
+                setPeptideDisclosureAccepted(e.target.checked);
+                setPeptideDisclosureError("");
+              }}
+            />
+
+            <span>
+              I have read and understand the Peptide Health Disclosure.
+            </span>
+          </label>
+
+          {peptideDisclosureError && (
+            <div className="peptide-disclosure-error">
+              {peptideDisclosureError}
+            </div>
+          )}
+
+          <button
+            type="button"
+            className="peptide-disclosure-confirm"
+            disabled={
+              !peptideDisclosureAccepted || isSavingPeptideDisclosure
+            }
+            onClick={confirmPeptideDisclosure}
+          >
+            {isSavingPeptideDisclosure
+              ? "Recording Confirmation..."
+              : "Acknowledge and Continue"}
+          </button>
+        </section>
+      </div>,
+      document.body
+    )
   : null;
 
-  return (
+return (
   <>
     <SEO
       title={
@@ -864,12 +1101,18 @@ window.setTimeout(() => {
       className={`category-card ${
         isCategoryDisabled ? "is-disabled is-out-of-stock" : ""
       }`}
-      disabled={isCategoryDisabled}
+      disabled={isCategoryDisabled || isCheckingPeptideDisclosure}
       aria-disabled={isCategoryDisabled}
       onClick={() => {
-        if (isCategoryDisabled) return;
-        setActiveCategory(cat);
-      }}
+  if (isCategoryDisabled) return;
+
+  if (cat === "Peptides") {
+    openPeptideCategory();
+    return;
+  }
+
+  setActiveCategory(cat);
+}}
     >
       <img src={CATEGORY_IMAGES[cat]} alt={cat} />
 
@@ -936,7 +1179,24 @@ window.setTimeout(() => {
   <section className="products-zone products-zone-products">
     {renderZoneHeading(activeCategory, "Collection Menu")}
 
-          <button
+{activeCategory === "Peptides" && hasPeptideDisclosure && (
+  <div className="peptide-disclosure-banner">
+    <div className="peptide-disclosure-banner-icon">✓</div>
+
+    <div>
+      <strong>Health Disclosure Acknowledged</strong>
+
+      <p>
+        Peptide products are not intended to diagnose, treat, cure, or
+        prevent disease. Consult a qualified healthcare professional
+        before use. Your disclosure acknowledgment is recorded on your
+        account.
+      </p>
+    </div>
+  </div>
+)}
+
+<button
             onClick={() => setActiveCategory(null)}
             className="back-to-categories-btn"
           >
@@ -966,6 +1226,7 @@ const productPrice =
   selectedGram,
   selectedMgOption,
 });
+
 
   return (
     <article
@@ -1137,7 +1398,8 @@ const productPrice =
 <PromoPopups city={selectedCity} />
 
       {bagModal}
-      {productRequestModal}
+{productRequestModal}
+{peptideDisclosureModal}
     </div>
   </>
 );
