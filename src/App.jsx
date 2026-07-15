@@ -11,6 +11,8 @@ import CheckoutPage from "./pages/CheckoutPage/CheckoutPage";
 
 import LoginPage from "./pages/Auth/LoginPage";
 import RegisterPage from "./pages/Auth/RegisterPage";
+import ForgotPasswordPage from "./pages/Auth/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/Auth/ResetPasswordPage";
 import PortalDashboard from "./pages/Portal/PortalDashboard";
 import PortalOrders from "./pages/Portal/PortalOrders";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
@@ -26,17 +28,20 @@ import PrivacyPage from "./pages/Legal/PrivacyPage.jsx";
 import "./App.css";
 import "./components/PageHeader/PageHeader.css";
 
+
 function AppWrapper() {
   const location = useLocation();
 
   const noGlobalBackgroundRoutes = [
-    "/products",
-    "/checkout",
-    "/login",
-    "/register",
-    "/portal",
-    "/admin",
-  ];
+  "/products",
+  "/checkout",
+  "/login",
+  "/register",
+  "/forgot-password",
+  "/reset-password",
+  "/portal",
+  "/admin",
+];
 
   const showBackground = !noGlobalBackgroundRoutes.some((route) =>
     location.pathname.startsWith(route)
@@ -84,6 +89,10 @@ function AppWrapper() {
           <Route path="/login" element={<LoginPage />} />
 
           <Route path="/register" element={<RegisterPage />} />
+
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
 
           <Route
             path="/portal"

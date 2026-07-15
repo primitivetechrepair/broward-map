@@ -77,16 +77,22 @@ export default function LoginPage() {
           </label>
 
           <label>
-            Password
-            <input
-              type="password"
-              value={form.password}
-              onChange={(e) => updateForm("password", e.target.value)}
-              placeholder="Enter password"
-              autoComplete="current-password"
-              required
-            />
-          </label>
+  Password
+  <input
+    type="password"
+    value={form.password}
+    onChange={(e) => updateForm("password", e.target.value)}
+    placeholder="Enter password"
+    autoComplete="current-password"
+    required
+  />
+</label>
+
+<div className="auth-forgot-row">
+  <Link to="/forgot-password">
+    Forgot password or login email?
+  </Link>
+</div>
 
           {confirmed === "true" && (
   <div className="auth-success">
